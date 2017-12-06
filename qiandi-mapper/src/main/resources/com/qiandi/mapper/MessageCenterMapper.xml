@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.MessageCenterMapper">
+    
+    
+    <!-- 批量插入数据 -->
+    <insert id="insertByList" parameterType="java.util.List">
+	   	  ${@com.qiandi.table.MessageCenterTable@SQL1}
+		    <foreach collection="list" item="item" index="index" separator=",">
+		        (#{item.id},#{item.title},#{item.content},now(),now(),
+		        #{item.readStatus},#{item.adminUserId})     
+		    </foreach>
+    </insert>
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="MessageCenter">
+    	 ${@com.qiandi.table.MessageCenterTable@SQL1}
+       (#{title},#{content},now(),now(),#{readStatus});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="MessageCenter">
+    		${@com.qiandi.table.MessageCenterTable@SQL3}
+        set ${@com.qiandi.table.MessageCenterTable@title} = #{title},
+        		${@com.qiandi.table.MessageCenterTable@content} = #{content},
+        		${@com.qiandi.table.MessageCenterTable@sendTime} = #{sendTime},
+        		${@com.qiandi.table.MessageCenterTable@readTime} = #{readTime},
+            ${@com.qiandi.table.MessageCenterTable@readStatus} = #{readStatus}
+        where ${@com.qiandi.table.MessageCenterTable@id}= #{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="Integer">
+    	 ${@com.qiandi.table.MessageCenterTable@SQL4}
+       ${@com.qiandi.table.MessageCenterTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="MessageCenter" resultType="MessageCenter">
+        <!-- select ${@com.qiandi.table.MessageCenterTable@selectSQL} 
+        from   ${@com.qiandi.table.MessageCenterTable@fromSQL} -->
+        	${@com.qiandi.table.MessageCenterTable@SQL}
+           <if test="id!=null"> and ${@com.qiandi.table.MessageCenterTable@id}=#{id} </if>
+           <if test="title!=null"> and ${@com.qiandi.table.MessageCenterTable@title}=#{title} </if>
+           <if test="content!=null"> and ${@com.qiandi.table.MessageCenterTable@content}=#{content} </if>
+           <if test="sendTime!=null"> and ${@com.qiandi.table.MessageCenterTable@sendTime}=#{sendTime} </if>
+           <if test="readStatus!=null"> and ${@com.qiandi.table.MessageCenterTable@readStatus}=#{readStatus} </if>
+    </select>
+    
+</mapper>

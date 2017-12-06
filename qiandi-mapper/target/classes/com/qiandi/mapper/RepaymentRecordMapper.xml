@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.RepaymentRecordMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="RepaymentRecord">
+   ${@com.qiandi.table.RepaymentRecordTable@insertSQL}
+      (
+      #{id},#{repaymentId},#{paymentMethod},#{paymentRepaymentCount},
+       #{paymentLateFeeCount},#{repaymentCertificate},#{repaymentStatus},#{operateAdminUserId},
+        #{operateQianShangUserId},#{reviewAdminUserId},#{reviewTime},#{failReasonId},#{overdueCount},
+         #{createTime}
+      );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="RepaymentRecord">
+        update ${@com.qiandi.table.RepaymentRecordTable@tableName} 
+        set 
+        ${@com.qiandi.table.RepaymentRecordTable@repaymentId} =#{repaymentId},
+         ${@com.qiandi.table.RepaymentRecordTable@paymentMethod} =#{paymentMethod},
+        ${@com.qiandi.table.RepaymentRecordTable@paymentRepaymentCount} =#{paymentRepaymentCount},
+         ${@com.qiandi.table.RepaymentRecordTable@paymentLateFeeCount} =#{paymentLateFeeCount},
+        ${@com.qiandi.table.RepaymentRecordTable@repaymentCertificate} =#{repaymentCertificate},
+         ${@com.qiandi.table.RepaymentRecordTable@repaymentStatus} =#{repaymentStatus},
+        ${@com.qiandi.table.RepaymentRecordTable@operateAdminUserId} =#{operateAdminUserId},
+         ${@com.qiandi.table.RepaymentRecordTable@operateQianShangUserId} =#{operateQianShangUserId},
+        ${@com.qiandi.table.RepaymentRecordTable@reviewAdminUserId} =#{reviewAdminUserId},
+         ${@com.qiandi.table.RepaymentRecordTable@reviewTime} =#{reviewTime},
+        ${@com.qiandi.table.RepaymentRecordTable@failReasonId} =#{failReasonId},
+        ${@com.qiandi.table.RepaymentRecordTable@overdueCount} =#{overdueCount},
+         ${@com.qiandi.table.RepaymentRecordTable@createTime} =#{createTime}
+        where  ${@com.qiandi.table.RepaymentRecordTable@id} =#{id} and
+         ${@com.qiandi.table.RepaymentRecordTable@isDeleted} =#{isDeleted} 
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.RepaymentRecordTable@tableName} set ${@com.qiandi.table.RepaymentRecordTable@isDeleted}=true
+        where ${@com.qiandi.table.RepaymentRecordTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="RepaymentRecord" resultType="RepaymentRecord">
+       ${@com.qiandi.table.RepaymentRecordTable@selectSQL}
+           <if test="id!=null"> and ${@com.qiandi.table.RepaymentRecordTable@id}=#{id} </if>
+    </select>
+    
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.AdminReceiptAccountMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="AdminReceiptAccount">
+      ${@com.qiandi.table.AdminReceiptAccountTable@insertSQL} 
+       (
+       	#{id},#{accountName},#{accountNum},#{openBank},
+       		#{bankNum},#{createTime},#{type}
+       );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="AdminReceiptAccount">
+        update ${@com.qiandi.table.AdminReceiptAccountTable@tableName} 
+        set 
+        ${@com.qiandi.table.AdminReceiptAccountTable@accountName} =#{accountName},
+        ${@com.qiandi.table.AdminReceiptAccountTable@accountNum} =#{accountNum},
+         ${@com.qiandi.table.AdminReceiptAccountTable@openBank} =#{openBank},
+        ${@com.qiandi.table.AdminReceiptAccountTable@bankNum} =#{bankNum},
+         ${@com.qiandi.table.AdminReceiptAccountTable@createTime} =#{createTime},
+        ${@com.qiandi.table.AdminReceiptAccountTable@type} =#{type}
+        where  ${@com.qiandi.table.AdminReceiptAccountTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.AdminReceiptAccountTable@tableName} set ${@com.qiandi.table.AdminReceiptAccountTable@isDeleted}=true
+        where ${@com.qiandi.table.AdminReceiptAccountTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="AdminReceiptAccount" resultType="AdminReceiptAccount">
+        ${@com.qiandi.table.AdminReceiptAccountTable@selectSQL}
+           <if test="id!=null"> and ${@com.qiandi.table.AdminReceiptAccountTable@id}=#{id} </if>
+           <if test="type!=null"> and ${@com.qiandi.table.AdminReceiptAccountTable@type}=#{type} </if>
+    </select>
+    
+</mapper>

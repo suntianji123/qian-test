@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.RecivedFailRechargeMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="RecivedFailRecharge">
+       insert into ${@com.qiandi.table.RecivedFailRechargeTable@tableName}(
+       ${@com.qiandi.table.RecivedFailRechargeTable@id},
+       ${@com.qiandi.table.RecivedFailRechargeTable@name},
+       ${@com.qiandi.table.RecivedFailRechargeTable@parentId},
+       ${@com.qiandi.table.RecivedFailRechargeTable@level}
+       ) 
+       values (#{id},#{name},#{parentId},#{level});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="RecivedFailRecharge">
+        update ${@com.qiandi.table.RecivedFailRechargeTable@tableName} 
+        set 
+        ${@com.qiandi.table.RecivedFailRechargeTable@name} =#{name},
+        ${@com.qiandi.table.RecivedFailRechargeTable@parentId} =#{parentId},
+        ${@com.qiandi.table.RecivedFailRechargeTable@level} =#{level}
+        where  ${@com.qiandi.table.RecivedFailRechargeTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.RecivedFailRechargeTable@tableName} set ${@com.qiandi.table.RecivedFailRechargeTable@isDeleted}=true
+        where ${@com.qiandi.table.RecivedFailRechargeTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="RecivedFailRecharge" resultType="RecivedFailRecharge">
+        select 
+        ${@com.qiandi.table.RecivedFailRechargeTable@id} as id,
+       ${@com.qiandi.table.RecivedFailRechargeTable@name} as name,
+       ${@com.qiandi.table.RecivedFailRechargeTable@parentId} as parentId,
+       ${@com.qiandi.table.RecivedFailRechargeTable@level} as level
+         from ${@com.qiandi.table.RecivedFailRechargeTable@tableName}
+        where ${@com.qiandi.table.RecivedFailRechargeTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.RecivedFailRechargeTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{name})"> and ${@com.qiandi.table.RecivedFailRechargeTable@name}=#{name} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{parentId})"> and ${@com.qiandi.table.RecivedFailRechargeTable@parentId}=#{parentId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{level})"> and ${@com.qiandi.table.RecivedFailRechargeTable@level}=#{level} </if>
+    </select>
+    
+</mapper>

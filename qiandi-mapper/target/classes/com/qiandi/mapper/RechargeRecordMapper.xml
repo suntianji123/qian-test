@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.RechargeRecordMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="RechargeRecord">
+			${@com.qiandi.table.RechargeRecordTable@insertSQL}
+			(
+				#{id},#{couponId},#{menberUserId},#{operateMenberUserId},
+				#{operateQianShangUserId},#{operateAdminUserId},#{orderId},#{price},
+				#{settlementPrice},#{settlementPercent},#{pipelinePrice},
+				#{paymentMethod},#{rechargeType},#{repaymentStatus},#{repaymentTime},
+				#{paymentValue},#{rechargeCount},#{billing},#{rechargePlateForm},
+				#{createTime},#{handsel},#{status},#{smsBlance},#{liquidationStatus},#{liquidationTime},#{totalLiquidation},
+				#{count},#{repaymentCertificate},#{failReasonId},
+				#{havingLiquidation}
+			)
+    </insert>
+    <!-- 批量插入数据 -->
+    <insert id="insertByWeiXinPay" parameterType="java.util.List">
+		 insert into ${@com.qiandi.table.RechargeRecordTable@tableName} (
+		 ${@com.qiandi.table.RechargeRecordTable@id},
+		 ${@com.qiandi.table.RechargeRecordTable@menberUserId},
+		 ${@com.qiandi.table.RechargeRecordTable@price},
+		 ${@com.qiandi.table.RechargeRecordTable@paymentMethod},
+		 ${@com.qiandi.table.RechargeRecordTable@minRepaymentTime},
+		 ${@com.qiandi.table.RechargeRecordTable@actualRepaymentTime},
+		 ${@com.qiandi.table.RechargeRecordTable@accountPeriod},
+		 ${@com.qiandi.table.RechargeRecordTable@rechargeType},
+		 ${@com.qiandi.table.RechargeRecordTable@repaymentStatus},
+		 ${@com.qiandi.table.RechargeRecordTable@repaymentTime},
+		 ${@com.qiandi.table.RechargeRecordTable@paymentValue},
+		 ${@com.qiandi.table.RechargeRecordTable@overTakenCount},
+		 ${@com.qiandi.table.RechargeRecordTable@rechargeCount},
+		 ${@com.qiandi.table.RechargeRecordTable@billing},
+		 ${@com.qiandi.table.RechargeRecordTable@failCount},
+		 ${@com.qiandi.table.RechargeRecordTable@rechargePlateForm},
+		 ${@com.qiandi.table.RechargeRecordTable@createTime},
+		 ${@com.qiandi.table.RechargeRecordTable@handsel},
+		 ${@com.qiandi.table.RechargeRecordTable@status},
+		 ${@com.qiandi.table.RechargeRecordTable@orderId},
+		 ${@com.qiandi.table.RechargeRecordTable@smsBlance},
+		 ${@com.qiandi.table.RechargeRecordTable@liquidationStatus},
+		 ${@com.qiandi.table.RechargeRecordTable@liquidationTime},
+		 ${@com.qiandi.table.RechargeRecordTable@totalLiquidation},
+		 ${@com.qiandi.table.RechargeRecordTable@count} 
+  		
+		 )
+   		 values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.id},#{item.menberUserId},#{item.price},#{item.paymentMethod},#{item.minRepaymentTime},#{item.actualRepaymentTime},0,1,
+	        #{item.repaymentStatus},#{item.paymentValue},0,#{item.rechargeCount},#{item.billing},
+	        0,1,#{item.createTime},0,1,#{item.orderId},#{item.smsBlance},#{item.count})  
+	    </foreach>	
+    </insert>
+    
+    <!-- 批量插入数据 -->
+    <insert id="insertByAccount" parameterType="java.util.List">
+		 insert into ${@com.qiandi.table.RechargeRecordTable@tableName} (
+		 ${@com.qiandi.table.RechargeRecordTable@id},
+		 ${@com.qiandi.table.RechargeRecordTable@menberUserId},
+		 ${@com.qiandi.table.RechargeRecordTable@price},
+		 ${@com.qiandi.table.RechargeRecordTable@paymentMethod},
+		 ${@com.qiandi.table.RechargeRecordTable@minRepaymentTime},
+		 ${@com.qiandi.table.RechargeRecordTable@actualRepaymentTime},
+		 ${@com.qiandi.table.RechargeRecordTable@accountPeriod},
+		 ${@com.qiandi.table.RechargeRecordTable@rechargeType},
+		 ${@com.qiandi.table.RechargeRecordTable@repaymentStatus},
+		  ${@com.qiandi.table.RechargeRecordTable@repaymentTime},
+		 ${@com.qiandi.table.RechargeRecordTable@paymentValue},
+		 ${@com.qiandi.table.RechargeRecordTable@overTakenCount},
+		 ${@com.qiandi.table.RechargeRecordTable@rechargeCount},
+		 ${@com.qiandi.table.RechargeRecordTable@billing},
+		 ${@com.qiandi.table.RechargeRecordTable@failCount},
+		 ${@com.qiandi.table.RechargeRecordTable@rechargePlateForm},
+		 ${@com.qiandi.table.RechargeRecordTable@createTime},
+		 ${@com.qiandi.table.RechargeRecordTable@handsel},
+		 ${@com.qiandi.table.RechargeRecordTable@status},
+		 ${@com.qiandi.table.RechargeRecordTable@orderId},
+		 ${@com.qiandi.table.RechargeRecordTable@smsBlance},
+		 ${@com.qiandi.table.RechargeRecordTable@count}
+		 )   
+   		 values  
+	    <foreach collection="list" item="item" index="index" separator="," >  
+	        (#{item.id},#{item.menberUserId},#{item.price},#{item.paymentMethod},#{item.minRepaymentTime},#{item.actualRepaymentTime},0,1,
+	        #{item.repaymentStatus},#{item.paymentValue},0,#{item.rechargeCount},#{item.billing},
+	        0,1,#{item.createTime},0,2,#{item.orderId},#{item.smsBlance},#{item.count})
+	    </foreach>	
+    </insert>
+    
+    
+    
+    
+	 <!-- 修改方法 -->
+    <update id="update" parameterType="RechargeRecord">
+     update ${@com.qiandi.table.RechargeRecordTable@tableName}
+     set 
+     	${@com.qiandi.table.RechargeRecordTable@couponId} = #{couponId},
+     	${@com.qiandi.table.RechargeRecordTable@menberUserId} = #{menberUserId},
+     	${@com.qiandi.table.RechargeRecordTable@operateMenberUserId} = #{operateMenberUserId},
+     	${@com.qiandi.table.RechargeRecordTable@operateQianShangUserId} = #{operateQianShangUserId},
+     	${@com.qiandi.table.RechargeRecordTable@operateAdminUserId} = #{operateAdminUserId},
+     	${@com.qiandi.table.RechargeRecordTable@orderId} = #{orderId},
+     	${@com.qiandi.table.RechargeRecordTable@price} = #{price},
+     	${@com.qiandi.table.RechargeRecordTable@settlementPrice} = #{settlementPrice},
+     	${@com.qiandi.table.RechargeRecordTable@settlementPercent} = #{settlementPercent},
+     	${@com.qiandi.table.RechargeRecordTable@pipelinePrice} = #{pipelinePrice},
+     	${@com.qiandi.table.RechargeRecordTable@paymentMethod} = #{paymentMethod},
+     	${@com.qiandi.table.RechargeRecordTable@rechargeType} = #{rechargeType},
+     	${@com.qiandi.table.RechargeRecordTable@repaymentStatus} = #{repaymentStatus},
+     	${@com.qiandi.table.RechargeRecordTable@repaymentTime} = #{repaymentTime},
+     	${@com.qiandi.table.RechargeRecordTable@paymentValue} = #{paymentValue},
+     	${@com.qiandi.table.RechargeRecordTable@rechargeCount} = #{rechargeCount},
+     	${@com.qiandi.table.RechargeRecordTable@billing} = #{billing},
+     	${@com.qiandi.table.RechargeRecordTable@rechargePlateForm} = #{rechargePlateForm},
+     	${@com.qiandi.table.RechargeRecordTable@createTime} = #{createTime},
+     	${@com.qiandi.table.RechargeRecordTable@handsel} = #{handsel},
+     	${@com.qiandi.table.RechargeRecordTable@status} = #{status},
+     	${@com.qiandi.table.RechargeRecordTable@smsBlance} = #{smsBlance},
+     	${@com.qiandi.table.RechargeRecordTable@count} = #{count},
+     	${@com.qiandi.table.RechargeRecordTable@repaymentCertificate}=#{repaymentCertificate},
+	   ${@com.qiandi.table.RechargeRecordTable@failReasonId}=#{failReasonId},
+         ${@com.qiandi.table.RechargeRecordTable@havingLiquidation} =#{havingLiquidation},
+     	${@com.qiandi.table.RechargeRecordTable@totalLiquidation} = #{totalLiquidation},
+     	${@com.qiandi.table.RechargeRecordTable@liquidationStatus} = #{liquidationStatus},
+     	${@com.qiandi.table.RechargeRecordTable@liquidationTime} = #{liquidationTime}
+     	where ${@com.qiandi.table.RechargeRecordTable@id} = #{id} and 
+     	${@com.qiandi.table.RechargeRecordTable@isDeleted} = false
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.RechargeRecordTable@tableName}
+        set ${@com.qiandi.table.RechargeRecordTable@isDeleted}=true 
+        where ${@com.qiandi.table.RechargeRecordTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="RechargeRecord" resultType="RechargeRecord">
+         ${@com.qiandi.table.RechargeRecordTable@selectSQL}
+           <if test="id!=null"> and ${@com.qiandi.table.RechargeRecordTable@id}=#{id} </if>
+    </select>
+    
+    
+    <select id="selectData" parameterType="map" resultType="RechargeRecordData">
+       <!-- 查询出所有的充值记录 -->
+       <!-- 如果是用户在线自助充值 -->
+       
+       		 select 
+       		 		rr.${@com.qiandi.table.RechargeRecordTable@id} as id,
+					rr.${@com.qiandi.table.RechargeRecordTable@price} as price,
+					m.${@com.qiandi.table.MenberUserTable@name} as name,
+					rr.${@com.qiandi.table.RechargeRecordTable@count} as count,
+					rr.${@com.qiandi.table.RechargeRecordTable@smsBlance} as smsBlance,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargeCount} as totalAmountCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@createTime} as createTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@status} as status,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentValue} as totalAmountPayAble,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentMethod} as paymentMethod,
+					rr.${@com.qiandi.table.RechargeRecordTable@repaymentStatus} as repaymentStatus,
+					rr.${@com.qiandi.table.RechargeRecordTable@accountPeriod} accountPeriod,
+					rr.${@com.qiandi.table.RechargeRecordTable@minRepaymentTime} as minRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@actualRepaymentTime} as actualRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@overTakenCount} as overTakenCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@handsel} as handsel,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargePlateForm} as rechargePlateForm,
+					rr.${@com.qiandi.table.RechargeRecordTable@billing} as billing,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargeType} as rechargeType
+			 from ${@com.qiandi.table.RechargeRecordTable@tableName} rr 
+			 left join ${@com.qiandi.table.MenberUserTable@tableName} m on 
+			 rr.${@com.qiandi.table.RechargeRecordTable@menberUserId} = m.${@com.qiandi.table.MenberUserTable@id}
+	       where rr.${@com.qiandi.table.RechargeRecordTable@isDeleted}= false
+	      	<if test="id!=null">and rr.${@com.qiandi.table.RechargeRecordTable@id}=#{id}</if>
+	      	<!-- <if test="beginTime!=null  and beginTime!=endTime">and rr.createTime${@com.qiandi.table.RechargeRecordTable@isDeleted} &gt;= #{beginTime}</if>
+            <if test="endTime!=null and beginTime!=endTime">and rr.createTime &lt;= #{endTime}</if>
+            <if test="beginTime==endTime and beginTime!=null">and date_format(rr.createTime,'%Y-%m-%d') = date_format(#{beginTime},'%Y-%m-%d')</if> -->
+            <if test="rechargePlateForm!=null">and rr.${@com.qiandi.table.RechargeRecordTable@rechargePlateForm} = #{rechargePlateForm}</if>
+            <if test="status!=null">and rr.${@com.qiandi.table.RechargeRecordTable@status} = #{status}</if>
+            <if test="repaymentStatus!=null">and rr.${@com.qiandi.table.RechargeRecordTable@repaymentStatus} = #{repaymentStatus}</if>
+            <if test="paymentMethod!=null">and rr.${@com.qiandi.table.RechargeRecordTable@paymentMethod} = #{paymentMethod}</if>
+            <if test="rechargeType!=null">and rr.${@com.qiandi.table.RechargeRecordTable@rechargeType} = #{rechargeType}</if>
+            <if test="billing!=null">and rr.${@com.qiandi.table.RechargeRecordTable@billing} = #{billing}</if>
+       
+    </select>
+    
+    <select id="selectRechargeRecordList" parameterType="Integer" resultType="RechargeRecordData">
+       <!-- 查询出所有的充值记录 -->
+       <!-- 如果是用户在线自助充值 -->
+       
+       		 select 
+       		 		rr.${@com.qiandi.table.RechargeRecordTable@id} as id,
+					rr.${@com.qiandi.table.RechargeRecordTable@price} as price,
+					m.${@com.qiandi.table.MenberUserTable@name} as name,
+					rr.${@com.qiandi.table.RechargeRecordTable@count} as count,
+					rr.${@com.qiandi.table.RechargeRecordTable@smsBlance} as smsBlance,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargeCount} as totalAmountCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@createTime} as createTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@status} as status,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentValue} as totalAmountPayAble,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentMethod} as paymentMethod,
+					rr.${@com.qiandi.table.RechargeRecordTable@repaymentStatus} as repaymentStatus,
+					rr.${@com.qiandi.table.RechargeRecordTable@accountPeriod} accountPeriod,
+					rr.${@com.qiandi.table.RechargeRecordTable@minRepaymentTime} as minRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@actualRepaymentTime} as actualRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@overTakenCount} as overTakenCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@handsel} as handsel,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargePlateForm} as rechargePlateForm,
+					rr.${@com.qiandi.table.RechargeRecordTable@billing} as billing,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargeType} as rechargeType
+			 from ${@com.qiandi.table.RechargeRecordTable@tableName} rr 
+			 left join ${@com.qiandi.table.MenberUserTable@tableName} m on
+			  rr.${@com.qiandi.table.RechargeRecordTable@menberUserId} = m.${@com.qiandi.table.MenberUserTable@id}
+	       where rr.${@com.qiandi.table.RechargeRecordTable@isDeleted}= false
+	        and rr.${@com.qiandi.table.RechargeRecordTable@menberUserId} = #{menberUserId} 
+	        order by rr.${@com.qiandi.table.RechargeRecordTable@createTime} desc
+    </select>
+    
+    <select id="selectRechargeRecordListById" parameterType="java.util.List" resultType="RechargeRecordData">
+       <!-- 查询出所有的充值记录 -->
+       <!-- 如果是用户在线自助充值 -->
+       
+       		 select 
+       		 		rr.${@com.qiandi.table.RechargeRecordTable@id} as id,
+					rr.${@com.qiandi.table.RechargeRecordTable@price} as price,
+					m.${@com.qiandi.table.RechargeRecordTable@name} as name,
+					rr.${@com.qiandi.table.RechargeRecordTable@count} as count,
+					rr.${@com.qiandi.table.RechargeRecordTable@smsBlance} as smsBlance,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargeCount} as totalAmountCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@createTime} as createTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@status} as status,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentValue} as totalAmountPayAble,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentMethod} as paymentMethod,
+					rr.${@com.qiandi.table.RechargeRecordTable@repaymentStatus} as repaymentStatus,
+					rr.${@com.qiandi.table.RechargeRecordTable@accountPeriod} as accountPeriod,
+					rr.${@com.qiandi.table.RechargeRecordTable@minRepaymentTime} as minRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@actualRepaymentTime} as actualRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@overTakenCount} as overTakenCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@handsel} as handsel,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargePlateForm} as rechargePlateForm,
+					rr.${@com.qiandi.table.RechargeRecordTable@billing} as billing,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargeType} as rechargeType
+			 from ${@com.qiandi.table.RechargeRecordTable@tableName} rr 
+			 left join ${@com.qiandi.table.MenberUserTable@tableName} m
+			  on rr.${@com.qiandi.table.RechargeRecordTable@menberUserId} = m.${@com.qiandi.table.MenberUserTable@id}
+	       where rr.${@com.qiandi.table.RechargeRecordTable@isDeleted}= false 
+	       and rr.${@com.qiandi.table.RechargeRecordTable@id} in
+	       <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			order by rr.${@com.qiandi.table.RechargeRecordTable@createTime} desc
+    </select>
+    
+    
+    
+    <select id="selectOneData" parameterType="int" resultType="RechargeRecordData">
+    	select 
+       		 		rr.${@com.qiandi.table.RechargeRecordTable@id} as id,
+					rr.${@com.qiandi.table.RechargeRecordTable@price} as price,
+					m.${@com.qiandi.table.RechargeRecordTable@name} as name,
+					rr.${@com.qiandi.table.RechargeRecordTable@count} as count,
+					rr.${@com.qiandi.table.RechargeRecordTable@smsBlance} as smsBlance,
+					rr.${@com.qiandi.table.RechargeRecordTable@totalAmountCount} as totalAmountCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@createTime} as createTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@status} as status,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentValue} as totalAmountPayAble,
+					rr.${@com.qiandi.table.RechargeRecordTable@paymentMethod} as paymentMethod,
+					rr.${@com.qiandi.table.RechargeRecordTable@repaymentStatus} as repaymentStatus,
+					rr.${@com.qiandi.table.RechargeRecordTable@accountPeriod} as accountPeriod,
+					rr.${@com.qiandi.table.RechargeRecordTable@minRepaymentTime} as minRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@actualRepaymentTime} as actualRepaymentTime,
+					rr.${@com.qiandi.table.RechargeRecordTable@overTakenCount} as overTakenCount,
+					rr.${@com.qiandi.table.RechargeRecordTable@handsel} as handsel,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargePlateForm} as rechargePlateForm,
+					rr.${@com.qiandi.table.RechargeRecordTable@billing} as billing,
+					rr.${@com.qiandi.table.RechargeRecordTable@rechargeType} as rechargeType
+			 from ${@com.qiandi.table.RechargeRecordTable@tableName} rr 
+			 left join ${@com.qiandi.table.MenberUserTable@tableName} m 
+			 on rr.${@com.qiandi.table.RechargeRecordTable@menberUserId} = m.${@com.qiandi.table.MenberUserTable@id}
+	       where rr.${@com.qiandi.table.RechargeRecordTable@isDeleted}= false
+	      and rr.${@com.qiandi.table.RechargeRecordTable@id}= #{id}
+    </select>
+    
+    <select id="selectRechargeRecordTotalCount" parameterType="Integer" resultType="Map">
+    	select 
+    	sum(${@com.qiandi.table.RechargeRecordTable@rechargeCount}) as totalRechargeCount,
+    	(select sum(${@com.qiandi.table.RechargeRecordTable@paymentValue})  
+    	 from ${@com.qiandi.table.RechargeRecordTable@tableName} 
+    	where ${@com.qiandi.table.RechargeRecordTable@isDeleted} = false
+    	 and ${@com.qiandi.table.RechargeRecordTable@menberUserId} = #{menberUserId} 
+    	 and ${@com.qiandi.table.RechargeRecordTable@repaymentStatus} = 3) as paidTotalPaymentValueCount,
+    	(select sum(${@com.qiandi.table.RechargeRecordTable@paymentValue}) as unpaidTotalPaymentValueCount from ${@com.qiandi.table.RechargeRecordTable@tableName} 
+    	where ${@com.qiandi.table.RechargeRecordTable@isDeleted} = false 
+    	and ${@com.qiandi.table.RechargeRecordTable@menberUserId} = #{menberUserId} 
+    	and ${@com.qiandi.table.RechargeRecordTable@repaymentStatus} = 2) as unpaidTotalPaymentValueCount
+    	 from ${@com.qiandi.table.RechargeRecordTable@tableName}
+    	where ${@com.qiandi.table.RechargeRecordTable@isDeleted} = false 
+    	and ${@com.qiandi.table.RechargeRecordTable@menberUserId} = #{menberUserId};
+    </select>
+    
+    
+    
+    
+</mapper>

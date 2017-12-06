@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.ChannelMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Channel">
+      ${@com.qiandi.table.ChannelTable@insertSQL}
+    (#{id},#{name},#{addAdminUserId},
+    #{yiDongAisleId},#{lianTongAisleId},#{dianXingAisleId},
+    #{createTime});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Channel">
+        update ${@com.qiandi.table.ChannelTable@tableName} 
+        set 
+        ${@com.qiandi.table.ChannelTable@name} =#{name},
+        ${@com.qiandi.table.ChannelTable@addAdminUserId} =#{addAdminUserId},
+        ${@com.qiandi.table.ChannelTable@yiDongAisleId} =#{yiDongAisleId},
+        ${@com.qiandi.table.ChannelTable@lianTongAisleId} =#{lianTongAisleId},
+        ${@com.qiandi.table.ChannelTable@dianXingAisleId} =#{dianXingAisleId},
+        ${@com.qiandi.table.ChannelTable@createTime} =#{createTime}
+        where  ${@com.qiandi.table.ChannelTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.ChannelTable@tableName} set ${@com.qiandi.table.ChannelTable@isDeleted}=true
+        where ${@com.qiandi.table.ChannelTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Channel" resultType="Channel">
+       ${@com.qiandi.table.ChannelTable@selectSQL} 
+       <if test="id!=null"> and c.${@com.qiandi.table.ChannelTable@id}= #{id}</if>
+        <if test="name!=null"> and c.${@com.qiandi.table.ChannelTable@name}= #{name}</if>
+        ${@com.qiandi.table.ChannelTable@selectOrderBySQL}
+    </select>
+    
+    <select id="selectData" parameterType="Map" resultType="ChannelData">
+   	 ${@com.qiandi.table.ChannelTable@selectSQL_admin}
+   	 <if test="id!=null"> and c.${@com.qiandi.table.ChannelTable@id}= #{id}</if>
+   	 <if test="beginTime!=null">and c.${@com.qiandi.table.ChannelTable@createTime} &gt;= #{beginTime}</if>
+   	 <if test="endTime!=null">and c.${@com.qiandi.table.ChannelTable@createTime} &lt;= #{endTime}</if>
+    <if test="addAdminUserName!=null">and au.${@com.qiandi.table.AdminUserTable@name} like "%"#{addAdminUserName}"%"</if>
+    ${@com.qiandi.table.ChannelTable@selectOrderBySQL}
+    </select>
+    
+    <update id="deleteByArray" >
+        ${@com.qiandi.table.ChannelTable@deleteByArraySQL}
+          <foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+    </update>
+    
+    
+    <select id="selectByArray" parameterType="Map" resultType="ChannelData" >
+        ${@com.qiandi.table.ChannelTable@selectSQL_admin} and 
+         ${@com.qiandi.table.ChannelTable@id} in
+          <foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		 ${@com.qiandi.table.ChannelTable@selectOrderBySQL}
+    </select>
+    
+    <select id="selectAisle" parameterType="String" resultType="Map">
+    	${@com.qiandi.table.ChannelTable@selectAisleSQL} #{name}
+    </select>
+    
+    
+</mapper>

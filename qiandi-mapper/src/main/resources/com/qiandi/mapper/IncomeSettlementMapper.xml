@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.IncomeSettlementMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="IncomeSettlement">
+      ${@com.qiandi.table.IncomeSettlementTable@insertSQL} 
+        (
+        #{id},#{rechargeRecordId},#{qianShangUserId},#{liquidation},
+        #{type},#{liquidationStatus},#{handsel},#{rebate},#{createTime}
+        );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="IncomeSettlement">
+        update ${@com.qiandi.table.IncomeSettlementTable@tableName} 
+        set 
+        ${@com.qiandi.table.IncomeSettlementTable@name} =#{name},
+        ${@com.qiandi.table.IncomeSettlementTable@parentId} =#{parentId},
+        ${@com.qiandi.table.IncomeSettlementTable@level} =#{level}
+        where  ${@com.qiandi.table.IncomeSettlementTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.IncomeSettlementTable@tableName} set ${@com.qiandi.table.IncomeSettlementTable@isDeleted}=true
+        where ${@com.qiandi.table.IncomeSettlementTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="IncomeSettlement" resultType="IncomeSettlement">
+        select 
+        ${@com.qiandi.table.IncomeSettlementTable@id} as id,
+       ${@com.qiandi.table.IncomeSettlementTable@name} as name,
+       ${@com.qiandi.table.IncomeSettlementTable@parentId} as parentId,
+       ${@com.qiandi.table.IncomeSettlementTable@level} as level
+         from ${@com.qiandi.table.IncomeSettlementTable@tableName}
+        where ${@com.qiandi.table.IncomeSettlementTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.IncomeSettlementTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{name})"> and ${@com.qiandi.table.IncomeSettlementTable@name}=#{name} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{parentId})"> and ${@com.qiandi.table.IncomeSettlementTable@parentId}=#{parentId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{level})"> and ${@com.qiandi.table.IncomeSettlementTable@level}=#{level} </if>
+    </select>
+    
+</mapper>

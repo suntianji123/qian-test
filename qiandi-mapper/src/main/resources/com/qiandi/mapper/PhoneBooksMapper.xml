@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qiandi.mapper.PhoneBooksMapper">
+    <!-- 查询通讯录分组 -->
+    <select id="findGroups" resultType="Group">
+		select
+		gs.${@com.qiandi.table.Groups@groupName} as groupName,
+		gs.${@com.qiandi.table.Groups@id} as id
+		from ${@com.qiandi.table.Groups@tableName}  gs,${@com.qiandi.table.ContactgroupsTable@tableName} cg,
+		${@com.qiandi.table.MenberUserTable@tableName}  menber
+		where gs.${@com.qiandi.table.Groups@id}=cg.${@com.qiandi.table.ContactgroupsTable@groupId}
+		and cg.${@com.qiandi.table.ContactgroupsTable@contactId}=menber.${@com.qiandi.table.MenberUserTable@id}
+		and menber.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phone.phoneNum}
+		and gs.${@com.qiandi.table.Groups@groupName}!='全部'
+		and gs.${@com.qiandi.table.Groups@isDeleted}=0
+	</select>
+    <!--查询分组记录数 -->
+    <select id="getGroupNum" resultType="java.util.HashMap">
+		select count(*) as
+		count,temp.id from (
+		select
+		groups.${@com.qiandi.table.Groups@id} as id ,contacts.${@com.qiandi.table.ContactTable@phoneNum} as phoneNum,
+		contacts.${@com.qiandi.table.ContactTable@name} as name,contacts.${@com.qiandi.table.ContactTable@gender}  as gender,
+		groups.${@com.qiandi.table.Groups@groupName} as groupName
+		from ${@com.qiandi.table.ContactTable@tableName}  contacts inner join ${@com.qiandi.table.Groups@tableName}  groups
+		on
+		contacts.${@com.qiandi.table.ContactTable@groupId}=groups.${@com.qiandi.table.Groups@id}
+		inner join ${@com.qiandi.table.MenberUserTable@tableName}  menber
+		on
+		menber.${@com.qiandi.table.MenberUserTable@id} =contacts.${@com.qiandi.table.ContactTable@menberUserId} where
+		menber.${@com.qiandi.table.MenberUserTable@phoneNum} =#{phone.phoneNum} and contacts.${@com.qiandi.table.ContactTable@isDeleted}=0 )temp GROUP
+		BY temp.groupName
+	</select>
+    <!-- 根据手机号获取ID -->
+    <select id="findByPhoneNum" resultType="Long">
+		select ${@com.qiandi.table.MenberUserTable@id} from
+		${@com.qiandi.table.MenberUserTable@tableName} where ${@com.qiandi.table.MenberUserTable@phoneNum}=#{phoneNum}
+	</select>
+    <!-- 根据用户  id  查询所有相应的手机号码 -->
+    <select id="phoneNUms" resultType="int">
+		select ${@com.qiandi.table.ContactTable@phoneNum}  from ${@com.qiandi.table.ContactTable@tableName}  where ${@com.qiandi.table.ContactTable@menberUserId} =#{id}
+	</select>
+    <!--通讯录分组删除 -->
+    <delete id="deleteGroupById" parameterType="java.lang.String">
+        update
+        ${@com.qiandi.table.Groups@tableName} gs,
+        ${@com.qiandi.table.ContactTable@tableName} cs,
+        ${@com.qiandi.table.MenberUserTable@tableName} menber
+        <set>gs.${@com.qiandi.table.Groups@isDeleted} =1</set>
+        where gs.${@com.qiandi.table.Groups@id}=#{id} and menber.
+        ${@com.qiandi.table.MenberUserTable@id}=cs.${@com.qiandi.table.ContactTable@menberUserId}
+        and
+        menber.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phoneNum}
+    </delete>
+
+    <select id="getPhoneBook" resultType="java.util.HashMap">
+		select
+		cs.${@com.qiandi.table.ContactTable@id}  as id,cs.${@com.qiandi.table.ContactTable@phoneNum}  as phoneNum,
+		cs.${@com.qiandi.table.ContactTable@name}  as name,cs.${@com.qiandi.table.ContactTable@gender}  as gender,
+		gs.${@com.qiandi.table.Groups@groupName} as groupName
+		from ${@com.qiandi.table.Groups@tableName}  gs,${@com.qiandi.table.ContactgroupsTable@tableName}
+		cg,${@com.qiandi.table.ContactTable@tableName} cs
+		right join
+		${@com.qiandi.table.MenberUserTable@tableName}  menber on menber.${@com.qiandi.table.MenberUserTable@id} =cs.${@com.qiandi.table.ContactTable@menberUserId}
+		where
+		gs.${@com.qiandi.table.Groups@id}=cg.${@com.qiandi.table.ContactgroupsTable@groupId} and
+		cg.${@com.qiandi.table.ContactgroupsTable@contactId}=cs.${@com.qiandi.table.ContactTable@id}
+		and gs.${@com.qiandi.table.Groups@isDeleted}=false
+	</select>
+
+    <!--显示全部数量 -->
+    <select id="findAllInfo" resultType="int">
+        select count(1) from ${@com.qiandi.table.ContactTable@tableName} contacts
+        inner join ${@com.qiandi.table.Groups@tableName} groups on
+        (groups.${@com.qiandi.table.Groups@id} =contacts.${@com.qiandi.table.ContactTable@groupId})
+        inner join
+        ${@com.qiandi.table.MenberUserTable@tableName} menber
+        on(contacts.${@com.qiandi.table.ContactTable@menberUserId}=menber.${@com.qiandi.table.MenberUserTable@id})
+        where
+        menber.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phone.phoneNum} and
+        contacts.${@com.qiandi.table.ContactTable@isDeleted}=0
+       <!-- <if test="ctx.phoneNum!=null and ctx.phoneNum!=''">and contacts.${@com.qiandi.table.ContactTable@phoneNum} like
+            concat('%',#{ctx.phoneNum},'%')
+        </if>
+        <if test="ctx.name!=null and ctx.name!=''">and contacts.${@com.qiandi.table.ContactTable@name} like concat(
+            '%',#{ctx.name},'%')
+        </if>
+        <if test="ctx.gender!=null and ctx.gender!=''">and
+            contacts.${@com.qiandi.table.ContactTable@gender}=#{ctx.gender}
+        </if>-->
+    </select>
+
+    <!--通讯录分组新增 -->
+    <insert id="addGroup" parameterType="Group">
+		insert into
+		${@com.qiandi.table.Groups@tableName}(${@com.qiandi.table.Groups@groupName}) values(#{groupName})
+	</insert>
+    <insert id="add">
+		insert into ${@com.qiandi.table.ContactgroupsTable@tableName} (${@com.qiandi.table.ContactgroupsTable@contactid},${@com.qiandi.table.ContactgroupsTable@groupid})
+		VALUES(#{contactid},(select max(${@com.qiandi.table.Groups@id}) from ${@com.qiandi.table.Groups@tableName}));
+	</insert>
+
+    <!-- 给中间表添加数据(给通讯录添加数据) -->
+    <insert id="addContactgroups">
+		insert into ${@com.qiandi.table.ContactgroupsTable@tableName}(${@com.qiandi.table.ContactgroupsTable@contactId},${@com.qiandi.table.ContactgroupsTable@groupId})
+		values((select
+		max(${@com.qiandi.table.ContactTable@id}) from ${@com.qiandi.table.ContactTable@tableName}),#{groupId});
+	</insert>
+
+    <!--通讯录分组模块 移至分组 -->
+    <update id="moveGroup">
+        update ${@com.qiandi.table.Groups@tableName} groups inner join ${@com.qiandi.table.ContactTable@tableName}
+        contacts on
+        contacts.${@com.qiandi.table.ContactTable@groupId}=groups.${@com.qiandi.table.Groups@id}
+        <set>
+            contacts.${@com.qiandi.table.ContactTable@groupId}=#{item.groupId}
+        </set>
+        where contacts.${@com.qiandi.table.ContactTable@id} in
+        <foreach collection="list" item="item" open=" (" close=" )"
+                 separator=",">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <!--根据ID修改分组信息 -->
+    <update id="updateGroup" parameterType="Group">
+		update ${@com.qiandi.table.Groups@tableName} set
+		${@com.qiandi.table.Groups@groupName}=#{groupName} where ${@com.qiandi.table.Groups@id}=#{id}
+	</update>
+
+    <!--关联映射 -->
+    <resultMap type="Group" id="GroupMap">
+        <id property="id" column="id"/>
+        <result property="groupName" column="groupName"/>
+        <collection property="contacts" javaType="java.util.List"
+                    ofType="Contact">
+            <id property="id" column="id"/>
+            <result property="menberUserId" column="menberUserId"/>
+            <result property="phoneNum" column="phoneNum"/>
+            <result property="name" column="name"/>
+            <result property="gender" column="gender"/>
+            <result property="company" column="company"/>
+            <result property="groupId" column="groupId"/>
+            <result property="operator" column="operator"/>
+            <result property="address" column="address"/>
+            <result property="customize" column="customize"/>
+            <result property="createtime" column="createtime"/>
+        </collection>
+    </resultMap>
+
+    <!--查询所有手机号码-->
+    <select id="FindAllPhoneNum" resultType="java.util.List">
+		select  contacts.${@com.qiandi.table.ContactTable@phoneNum} from ${@com.qiandi.table.ContactTable@tableName} contacts
+	</select>
+
+    <!--通讯录列表查询(查询所有和条件查询) -->
+    <select id="findAllContact" resultType="java.util.Map"
+            parameterType="java.util.HashMap">
+        select
+        contacts.${@com.qiandi.table.ContactTable@createtime} as createtime,
+        contacts.${@com.qiandi.table.ContactTable@id} as id,contacts.${@com.qiandi.table.ContactTable@phoneNum} as
+        phoneNum,
+        contacts.${@com.qiandi.table.ContactTable@name} as name,contacts.${@com.qiandi.table.ContactTable@gender} as
+        gender,
+        groups.${@com.qiandi.table.Groups@groupName} as groupName,contacts.${@com.qiandi.table.ContactTable@company} as
+        company,
+        contacts.${@com.qiandi.table.ContactTable@address} as
+        address,contacts.${@com.qiandi.table.ContactTable@operator} as operator
+        from ${@com.qiandi.table.ContactTable@tableName} contacts
+        inner join ${@com.qiandi.table.Groups@tableName} groups on
+        (groups.${@com.qiandi.table.Groups@id}=contacts.${@com.qiandi.table.ContactTable@groupId})
+        inner join
+        ${@com.qiandi.table.MenberUserTable@tableName} menber
+        on(contacts.${@com.qiandi.table.ContactTable@menberUserId}=menber.${@com.qiandi.table.MenberUserTable@id} )
+        where
+        menber.${@com.qiandi.table.MenberUserTable@phoneNum} =#{phone} and
+        contacts.${@com.qiandi.table.ContactTable@isDeleted}=0
+        <if test="ctx.phoneNum!=null and ctx.phoneNum!=''">and contacts.${@com.qiandi.table.ContactTable@phoneNum} like
+            concat('%',#{ctx.phoneNum},'%')
+        </if>
+        <if test="ctx.name!=null and ctx.name!=''">and contacts.${@com.qiandi.table.ContactTable@name} like concat(
+            '%',#{ctx.name},'%')
+        </if>
+        <if test="ctx.gender!=null and ctx.gender!=''">and
+            contacts.${@com.qiandi.table.ContactTable@gender}=#{ctx.gender}
+        </if>
+        <if test="id!=null and id!=''">and contacts.${@com.qiandi.table.ContactTable@id}=#{id}</if>
+        order by contacts.${@com.qiandi.table.ContactTable@createtime} DESC
+    </select>
+    <!-- 批量查询 :单个导出-->
+    <!--    <select id="exports" >
+       select
+       contacts.createtime,
+           contacts.id,contacts.phoneNum,contacts.name,contacts.gender,groups.groupName,contacts.company,
+        contacts.address,contacts.operator
+           from t_contacts contacts
+           inner join t_groups groups on
+           (groups.id=contacts.groupId)
+           inner join
+           t_menberusers menber
+           on(contacts.menberUserId=menber.id)
+           where
+           contacts.isDeleted=false  and contacts.id in
+           <foreach collection="list" item="items" open="(" close=")"
+               separator=",">
+           #{items.ids}
+           </foreach>
+       </select> -->
+    <!--根据id查询通讯录信息 -->
+    <select id="findContactById" resultMap="GroupMap" parameterType="Long">
+		select
+		contacts.${@com.qiandi.table.ContactTable@id} as id,contacts.${@com.qiandi.table.ContactTable@phoneNum} as phoneNum,
+		contacts.${@com.qiandi.table.ContactTable@name} as name ,contacts.${@com.qiandi.table.ContactTable@gender} as gender,
+		groups.${@com.qiandi.table.Groups@groupName} as groupName,contacts.${@com.qiandi.table.ContactTable@company} as company
+		,contacts.${@com.qiandi.table.ContactTable@address} as address,contacts.${@com.qiandi.table.ContactTable@operator} as operator,
+		contacts.${@com.qiandi.table.ContactTable@customize} as customize
+		from ${@com.qiandi.table.ContactTable@tableName} contacts inner join ${@com.qiandi.table.Groups@tableName}  groups
+		on(contacts.groupId=groups.${@com.qiandi.table.Groups@id})
+		inner join ${@com.qiandi.table.MenberUserTable@tableName}  menber
+		on(contacts.menberUserId=menber.${@com.qiandi.table.MenberUserTable@id} )
+		where
+		contacts.${@com.qiandi.table.ContactTable@id}=#{id} and
+		contacts.${@com.qiandi.table.ContactTable@isDeleted}=0
+	</select>
+
+    <!--通讯录新增 单个新增 -->
+    <insert id="addContact">
+		insert into ${@com.qiandi.table.ContactTable@tableName}(${@com.qiandi.table.ContactTable@menberUserId},
+		${@com.qiandi.table.ContactTable@id}
+		,${@com.qiandi.table.ContactTable@phoneNum},${@com.qiandi.table.ContactTable@name},
+		${@com.qiandi.table.ContactTable@gender},${@com.qiandi.table.ContactTable@groupId},
+		${@com.qiandi.table.ContactTable@operator},${@com.qiandi.table.ContactTable@address},
+		${@com.qiandi.table.ContactTable@customize},${@com.qiandi.table.ContactTable@createtime})
+		values(#{menberUserId},#{id},#{phoneNum},#{name},#{gender},#{groupId},#{operator},#{address},#{customize},#{createtime})
+	</insert>
+
+    <!--通讯录信息修改 单个修改 -->
+    <update id="updateContact">
+        update
+        ${@com.qiandi.table.ContactTable@tableName} contacts
+        inner join ${@com.qiandi.table.Groups@tableName} groups
+        on
+        groups.${@com.qiandi.table.Groups@id}=contacts.${@com.qiandi.table.ContactTable@groupId}
+        <set>
+            contacts.${@com.qiandi.table.ContactTable@phoneNum}=#{ctx.phoneNum},
+            contacts.${@com.qiandi.table.ContactTable@name}=#{ctx.name},
+            contacts.${@com.qiandi.table.ContactTable@gender}=#{ctx.gender},
+            groups.${@com.qiandi.table.Groups@groupName}=#{grp.groupName}
+        </set>
+        where contacts.${@com.qiandi.table.ContactTable@id}=#{ctx.id}
+    </update>
+
+    <!--通讯录信息删除 -->
+    <delete id="deleteConact" parameterType="java.util.List">
+        update ${@com.qiandi.table.ContactTable@tableName} contact
+        <set>
+            contact.${@com.qiandi.table.ContactTable@isDeleted}=true
+        </set>
+        where contact.${@com.qiandi.table.ContactTable@id} in
+        <foreach collection="list" item="items" open="(" close=")"
+                 separator=",">
+            #{items.id}
+        </foreach>
+    </delete>
+
+    <!-- 分组查询相应的结果 -->
+    <select id="grouping" resultType="java.util.Map" parameterType="java.util.Map">
+        select
+        contacts.${@com.qiandi.table.ContactTable@createtime} as createtime,
+        contacts.${@com.qiandi.table.ContactTable@id} as id,contacts.${@com.qiandi.table.ContactTable@phoneNum} as
+        phoneNum,
+        contacts.${@com.qiandi.table.ContactTable@name} as name,contacts.${@com.qiandi.table.ContactTable@gender} as
+        gender,
+        groups.${@com.qiandi.table.Groups@groupName} as groupName, contacts.${@com.qiandi.table.ContactTable@address} as
+        address,
+        contacts.${@com.qiandi.table.ContactTable@operator} as operator
+        from ${@com.qiandi.table.ContactTable@tableName} contacts inner join ${@com.qiandi.table.Groups@tableName}
+        groups
+        on
+        contacts.${@com.qiandi.table.ContactTable@groupId} =groups.${@com.qiandi.table.Groups@id} inner join
+        ${@com.qiandi.table.MenberUserTable@tableName} menber
+        on
+        menber.${@com.qiandi.table.MenberUserTable@id} =contacts.${@com.qiandi.table.ContactTable@menberUserId} where
+        menber.${@com.qiandi.table.MenberUserTable@phoneNum} =#{phoneNum} and
+        contacts.${@com.qiandi.table.ContactTable@isDeleted} =0
+        <if test="id!=null and id!=''">and groups.${@com.qiandi.table.Groups@id}=#{id}</if>
+        order by contacts.${@com.qiandi.table.ContactTable@createtime} DESC
+    </select>
+    <!-- 导入 -->
+    <insert id="batchInsert" parameterType="Contact">
+		insert into
+		${@com.qiandi.table.ContactTable@tableName} (${@com.qiandi.table.ContactTable@phoneNum} ,(${@com.qiandi.table.ContactTable@id},
+		${@com.qiandi.table.ContactTable@name} ,${@com.qiandi.table.ContactTable@gender} ,
+		${@com.qiandi.table.ContactTable@company},${@com.qiandi.table.ContactTable@menberUserId} ,
+		${@com.qiandi.table.ContactTable@createtime}) VALUES
+		(#{phoneNum},#{name},#{id},#{gender},#{company},#{menberUserId},#{createtime})
+	</insert>
+
+    <insert id="addPhoneNum">
+		insert into
+		${@com.qiandi.table.ContactTable@tableName} (${@com.qiandi.table.ContactTable@phoneNum},(${@com.qiandi.table.ContactTable@id},
+		${@com.qiandi.table.ContactTable@menberUserId},${@com.qiandi.table.ContactTable@createtime}) VALUES(#{id},#{phoneNum},#{menberUserId},#{createtime})
+	</insert>
+</mapper>

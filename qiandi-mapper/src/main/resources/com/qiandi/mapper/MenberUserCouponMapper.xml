@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.MenberUserCouponMapper">
+    
+    <insert id="insert" parameterType="MenberUserCoupon">
+        insert into ${@com.qiandi.table.MenberUserCouponTable@tableName}(rechargeRecordId,menberUserId,couponId,startTime,
+        endTime,userTime,status,createTime) 
+        values(#{rechargeRecordId},#{menberUserId},#{couponId},#{startTime},#{endTime}
+        ,#{userTime},#{status},now())
+    </insert>
+
+    <update id="update" parameterType="MenberUserCoupon">
+        update ${@com.qiandi.table.MenberUserCouponTable@tableName} set
+            ${@com.qiandi.table.MenberUserCouponTable@rechargeRecordId}=#{rechargeRecordId},
+            ${@com.qiandi.table.MenberUserCouponTable@menberUserId}=#{menberUserId},
+            ${@com.qiandi.table.MenberUserCouponTable@couponId}=#{couponId},
+            ${@com.qiandi.table.MenberUserCouponTable@startTime}=#{startTime},
+            ${@com.qiandi.table.MenberUserCouponTable@endTime}=#{endTime},
+            ${@com.qiandi.table.MenberUserCouponTable@userTime}=#{userTime},
+            ${@com.qiandi.table.MenberUserCouponTable@status}=#{status},
+            ${@com.qiandi.table.MenberUserCouponTable@createTime}=now()}
+        where ${@com.qiandi.table.MenberUserCouponTable@id}=#{id}
+    </update>
+    
+    <update id="updateByOrderId" parameterType="long">
+        update ${@com.qiandi.table.MenberUserCouponTable@tableName} set
+            
+            ${@com.qiandi.table.MenberUserCouponTable@status}=2
+        where ${@com.qiandi.table.MenberUserCouponTable@orderId}=#{orderId}
+    </update>
+    
+    <!-- 修改订单id -->
+    <update id="updateOrderId" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update ${@com.qiandi.table.MenberUserCouponTable@tableName}
+	        <set>
+	            ${@com.qiandi.table.MenberUserCouponTable@orderId} = #{item.orderId},
+	            ${@com.qiandi.table.MenberUserCouponTable@status} = #{item.status}
+	        </set>
+	        where ${@com.qiandi.table.MenberUserCouponTable@id} = #{item.id}
+    	</foreach>     
+    </update>
+    
+    
+   <!--  <delete id="delete" parameterType="int">
+        delete from ${@com.qiandi.table.MenberUserCouponTable@tableName} where id=#{id}
+    </delete>
+        
+    <delete id="deleteByFirstId" parameterType="int">
+        delete from ${@com.qiandi.table.MenberUserCouponTable@tableName} where menberUserId=#{menberUserId}
+    </delete>
+        
+    <delete id="deleteBySecondId" parameterType="int">
+        delete from ${@com.qiandi.table.MenberUserCouponTable@tableName} where couponId=#{couponId}
+    </delete> -->
+
+    
+    <select id="select" parameterType="MenberUserCoupon" resultType="MenberUserCoupon">
+        select 
+	        ${@com.qiandi.table.MenberUserCouponTable@id} as id,
+	        ${@com.qiandi.table.MenberUserCouponTable@orderId} as orderId,
+	        ${@com.qiandi.table.MenberUserCouponTable@menberUserId} as menberUserId,
+	        ${@com.qiandi.table.MenberUserCouponTable@couponId} as couponId,
+	        ${@com.qiandi.table.MenberUserCouponTable@startTime} as startTime,
+          	${@com.qiandi.table.MenberUserCouponTable@endTime} as endTime,
+            ${@com.qiandi.table.MenberUserCouponTable@useTime} as useTime,
+            ${@com.qiandi.table.MenberUserCouponTable@status} as status,
+	        ${@com.qiandi.table.MenberUserCouponTable@createTime} as createTime
+        from ${@com.qiandi.table.MenberUserCouponTable@tableName}
+        <where>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.MenberUserCouponTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{menberUserId})"> and ${@com.qiandi.table.MenberUserCouponTable@menberUserId}=#{menberUserId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{couponId})"> and ${@com.qiandi.table.MenberUserCouponTable@couponId}=#{couponId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{status})"> and ${@com.qiandi.table.MenberUserCouponTable@status}=#{status} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{orderId})"> and ${@com.qiandi.table.MenberUserCouponTable@orderId}=#{orderId} </if>
+        </where>
+    </select>
+    
+    <!-- 查询会员可用的优惠券信息 -->
+     <select id="selectCouponList" parameterType="Map" resultType="Map">
+        select 
+        mc.${@com.qiandi.table.MenberUserCouponTable@id} as id,
+        c.${@com.qiandi.table.CouponTable@money} as money,
+        c.${@com.qiandi.table.CouponTable@fullUsed} as fullUsed ,
+        c.${@com.qiandi.table.CouponTable@limitProduct} as limitProduct ,
+        c.${@com.qiandi.table.CouponTable@number} as number,
+        mc.${@com.qiandi.table.MenberUserCouponTable@startTime} as startTime ,
+        mc.${@com.qiandi.table.MenberUserCouponTable@endTime} as endTime 
+        from ${@com.qiandi.table.MenberUserCouponTable@tableName} mc
+        left join ${@com.qiandi.table.CouponTable@tableName} c on
+         mc.${@com.qiandi.table.MenberUserCouponTable@couponId} =
+          c.${@com.qiandi.table.CouponTable@id} 
+        where mc.${@com.qiandi.table.MenberUserCouponTable@isDeleted} = false
+         and c.${@com.qiandi.table.CouponTable@isDeleted} = false 
+        and mc.${@com.qiandi.table.MenberUserCouponTable@menberUserId} = #{menberUserId}
+        and mc.${@com.qiandi.table.MenberUserCouponTable@status} = #{status}
+        and c.${@com.qiandi.table.CouponTable@limitProduct} = #{limitProduct}
+    </select>
+    
+    <!-- 查询会员可用的优惠券信息 -->
+     <select id="calcuTotalMoney" parameterType="Integer" resultType="Integer">
+        select 
+       	sum(c.${@com.qiandi.table.CouponTable@money})
+        from ${@com.qiandi.table.MenberUserCouponTable@tableName} mc
+        left join ${@com.qiandi.table.CouponTable@tableName} c on 
+        mc.${@com.qiandi.table.MenberUserCouponTable@couponId}
+         = c.${@com.qiandi.table.CouponTable@id} 
+        where mc.${@com.qiandi.table.MenberUserCouponTable@isDeleted} = false
+         and c.${@com.qiandi.table.CouponTable@isDeleted} = false 
+        and mc.${@com.qiandi.table.MenberUserCouponTable@id} in
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+		</foreach>
+    </select>
+    
+           
+   <!--  <select id="selectFirstListBySecondId" parameterType="int" resultType="MenberUser">
+        select f.*
+        from ${@com.qiandi.table.MenberUserCouponTable@tableName} fs left join T_MenberUsers f on fs.menberUserId=f.id
+        where f.isDeleted=false and fs.couponId=#{couponId}
+    </select> 
+    
+    <select id="selectSecondListByFirstId" parameterType="int" resultType="Coupon">
+        select s.*
+        from ${@com.qiandi.table.MenberUserCouponTable@tableName} fs left join T_Permissions s on fs.couponId=s.id
+        where s.isDeleted=false and fs.menberUserId=#{menberUserId}
+    </select> -->
+    
+    <!-- 查询已经赠送的优惠券信息 -->
+     <select id="selectSendData" parameterType="Map" resultType="MenberUserCouponData">
+       ${@com.qiandi.table.MenberUserCouponTable@selectSendSQL_admin} 
+    	<if test="id!=null">${@com.qiandi.table.MenberUserCouponTable@selectIdNotNullSQL_admin} #{id}</if>
+    	<if test="menberUserAccountName!=null">${@com.qiandi.table.MenberUserCouponTable@selectMenberUserAccountNameNotNullSQL_admin} #{menberUserAccountName}</if>
+    	<if test="menberUserName!=null">${@com.qiandi.table.MenberUserCouponTable@selectMenberUserNameNotNullSQL_admin} "%"#{menberUserName}"%" </if>
+    	<if test="menberUserPhoneNum!=null">${@com.qiandi.table.MenberUserCouponTable@selectMenberUserPhoneNumNotNullSQL_admin}  #{menberUserPhoneNum}</if>
+    	<if test="qianShangUserName!=null">${@com.qiandi.table.MenberUserCouponTable@selectQianShangUserNameNotNullSQL_admin}  "%"#{qianShangUserName} "%"</if>
+    	<if test="addAdminUserName!=null">${@com.qiandi.table.MenberUserCouponTable@selectAddAdminUserNameNotNullSQL_admin}  "%"#{addAdminUserName} "%"</if>
+    	<if test="status!=null">${@com.qiandi.table.MenberUserCouponTable@selectStatusNotNullSQL_admin}  #{status} </if>
+    	<if test="beginTime!=null and endTime!= null">
+            and ${@com.qiandi.table.MenberUserCouponTable@selectBeginTimeNotNullSQL_admin}  #{beginTime} 
+           	and ${@com.qiandi.table.MenberUserCouponTable@selectEndTimeNotNullSQL_admin}  #{endTime} 
+            </if>
+            <if test="startBeginTime!=null and startEndTime!= null">
+            and ${@com.qiandi.table.MenberUserCouponTable@selectStartBeginTimeNotNullSQL_admin}  #{startBeginTime} 
+           	and ${@com.qiandi.table.MenberUserCouponTable@selectStartEndTimeNotNullSQL_admin}  #{startEndTime} 
+            </if>
+            <if test="endBeginTime!=null and endEndTime!= null">
+            and ${@com.qiandi.table.MenberUserCouponTable@selectEndBeginTimeNotNullSQL_admin}  #{endBeginTime} 
+           	and ${@com.qiandi.table.MenberUserCouponTable@selectEndEndTimeNotNullSQL_admin}  #{endEndTime} 
+            </if>
+    	${@com.qiandi.table.MenberUserCouponTable@selectOrderBySQL_admin} 
+       
+       
+    </select>
+    
+    <!-- 查询已经赠送的优惠券信息 -->
+     <select id="selectUseData" parameterType="Map" resultType="MenberUserCouponData">
+       ${@com.qiandi.table.MenberUserCouponTable@selectUseSQL_admin} 
+    	<if test="id!=null">${@com.qiandi.table.MenberUserCouponTable@selectIdNotNullSQL_admin} #{id}</if>
+    	<if test="rechargeRecordId!=null">${@com.qiandi.table.MenberUserCouponTable@selectRechargeRecordIdNotNullSQL_admin} #{rechargeRecordId}</if>
+    	<if test="menberUserAccountName!=null">${@com.qiandi.table.MenberUserCouponTable@selectMenberUserAccountNameNotNullSQL_admin} #{menberUserAccountName}</if>
+    	<if test="menberUserName!=null">${@com.qiandi.table.MenberUserCouponTable@selectMenberUserNameNotNullSQL_admin} "%"#{menberUserName}"%" </if>
+    	<if test="menberUserPhoneNum!=null">${@com.qiandi.table.MenberUserCouponTable@selectMenberUserPhoneNumNotNullSQL_admin}  #{menberUserPhoneNum}</if>
+    	<if test="qianShangUserName!=null">${@com.qiandi.table.MenberUserCouponTable@selectQianShangUserNameNotNullSQL_admin}  "%"#{qianShangUserName} "%"</if>
+    	<if test="status!=null">${@com.qiandi.table.MenberUserCouponTable@selectStatusNotNullSQL_admin}  #{status} </if>
+    	<if test="useBeginTime!=null and useEndTime!= null">
+            and ${@com.qiandi.table.MenberUserCouponTable@selectUseBeginTimeNotNullSQL_admin}  #{useBeginTime} 
+           	and ${@com.qiandi.table.MenberUserCouponTable@selectUseEndTimeNotNullSQL_admin}  #{useEndTime} 
+            </if>
+    	${@com.qiandi.table.MenberUserCouponTable@selectOrderBySQL_admin} 
+    </select>
+    
+       <!-- 批量删除 -->
+    <update id="deleteByArray"  >
+	        ${@com.qiandi.table.MenberUserCouponTable@deleteByArraySQL}
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	<update id="delete" parameterType="long">
+    		 ${@com.qiandi.table.MenberUserCouponTable@deleteSQL} #{id}
+    	
+    	</update>
+    	
+    		 <!-- 批量选择赠送记录 -->
+    <select id="selectSendByArray" resultType="MenberUserCouponData">
+	        ${@com.qiandi.table.MenberUserCouponTable@selectSendSQL_admin} 
+	        ${@com.qiandi.table.MenberUserCouponTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.MenberUserCouponTable@selectOrderBySQL_admin} 
+    	</select>
+    	
+    			 <!-- 批量选择使用记录 -->
+    <select id="selectUseByArray" resultType="MenberUserCouponData">
+	        ${@com.qiandi.table.MenberUserCouponTable@selectUseSQL_admin} 
+	        ${@com.qiandi.table.MenberUserCouponTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.MenberUserCouponTable@selectOrderBySQL_admin} 
+    	</select>
+    
+    
+   
+    
+</mapper>

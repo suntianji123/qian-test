@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.EvaluationMapper">
+    
+    <insert id="insert" parameterType="Evaluation">
+        ${@com.qiandi.table.EvaluationTable@SQL1}
+        #{rechargeRecordId},#{type},#{status},#{displayStatus})
+    </insert>
+
+    <update id="update" parameterType="Evaluation">
+    		${@com.qiandi.table.EvaluationTable@SQL2}
+            ${@com.qiandi.table.EvaluationTable@rechargeRecordId}=#{rechargeRecordId},
+            ${@com.qiandi.table.EvaluationTable@type}=#{type},
+            ${@com.qiandi.table.EvaluationTable@status}=#{status},
+            ${@com.qiandi.table.EvaluationTable@displayStatus}=#{displayStatus}
+        where ${@com.qiandi.table.EvaluationTable@id}=#{id}
+    </update>
+    
+    
+    <delete id="delete" parameterType="Long">
+    		${@com.qiandi.table.EvaluationTable@SQL3}
+        ${@com.qiandi.table.EvaluationTable@id}=#{id}
+    </delete>
+    
+    <select id="select" parameterType="Evaluation" resultType="Evaluation">
+    		${@com.qiandi.table.EvaluationTable@SQL4}
+        <if test="id!=null"> and ${@com.qiandi.table.EvaluationTable@id}=#{id} </if>
+    </select>
+    
+    <select id="selectEvas"  parameterType="java.util.HashMap" resultType="java.util.HashMap">
+			 ${@com.qiandi.table.EvaluationTable@SQL}
+			<if test="startTime!=null and startTime!='' and startTime !='undefined' and endTime!=null and endTime!=''  and endTime !='undefined' ">  
+				and d.createTime between #{startTime}  and #{endTime} 
+			</if>
+			<if test="recordId!=null and recordId !='' and recordId !='undefined'">  
+				 and a.${@com.qiandi.table.EvaluationTable@id}=#{recordId} 
+			</if>
+			<if test="rechargeId!=null and rechargeId !='' and rechargeId!='undefined'">  
+				 and a.${@com.qiandi.table.EvaluationTable@rechargeRecordId}=#{rechargeId} 
+			</if>
+			<if test="status!=null and status!='undefined'">  
+				 and a.${@com.qiandi.table.EvaluationTable@status}=#{status} 
+			</if>
+			<if test="type!=null and type!='undefined'">  
+				 and a.${@com.qiandi.table.EvaluationTable@type}=#{type} 
+			</if>
+    </select>
+    
+    <!-- 统计好评情况 -->
+    <select id="statisticalEva" resultType="java.util.HashMap">
+    	${@com.qiandi.table.EvaluationTable@SQL5}
+    </select>
+    
+    <!-- 统计是否评价 -->
+    <select id="yesAndNoEva" resultType="java.util.HashMap">
+    	${@com.qiandi.table.EvaluationTable@SQL6}
+    </select>
+</mapper>

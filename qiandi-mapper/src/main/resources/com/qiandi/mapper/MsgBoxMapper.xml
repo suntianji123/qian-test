@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qiandi.mapper.MsgBoxMapper">
+	<!-- 显示所有收件箱信息  -->
+	<select id="MsgBoxlist" resultType="java.util.HashMap">
+		select
+		inbox.${@com.qiandi.table.InBoxTable@id} as id,inbox.${@com.qiandi.table.InBoxTable@phoneNum} as phoneNum,
+		inbox.${@com.qiandi.table.InBoxTable@content} as content,inbox.${@com.qiandi.table.InBoxTable@createTime} as createTime,
+		inbox.${@com.qiandi.table.InBoxTable@operator} as operator,inbox.${@com.qiandi.table.InBoxTable@address} as address
+		from ${@com.qiandi.table.InBoxTable@tableName}	inbox,${@com.qiandi.table.MenberUserTable@tableName} menber
+		where inbox.${@com.qiandi.table.InBoxTable@menberUserId}=menber.${@com.qiandi.table.MenberUserTable@id}
+		and inbox.${@com.qiandi.table.InBoxTable@isDeleted} =0 and menber.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phone} 
+		<if test="box.phoneNum!=null">and inbox.${@com.qiandi.table.InBoxTable@phoneNum}  like concat('%',#{box.phoneNum},'%')
+		</if>
+		<if test="box.content!=null and box.content!=''">and inbox.${@com.qiandi.table.InBoxTable@content}  like concat('%',#{box.content},'%') </if>
+		<if test="box.operator!=null and box.operator!=''">and inbox.${@com.qiandi.table.InBoxTable@operator} =#{box.operator}</if>
+		<if test="createTime!=null and createTime!=''">and to_days(inbox.${@com.qiandi.table.InBoxTable@createTime} )  <![CDATA[   >=  ]]>  to_days(#{createTime})  </if> 
+	     <if test="lastLoginTime!=null and lastLoginTime!=''">and to_days(inbox.${@com.qiandi.table.InBoxTable@createTime} )  <![CDATA[   <=  ]]>  to_days(#{lastLoginTime})</if>
+	     <if test="id!=null and id!=''">and inbox.${@com.qiandi.table.InBoxTable@id} =#{id}</if>
+	order by  inbox.${@com.qiandi.table.InBoxTable@createTime} DESC
+	</select>
+
+    <!--查询收件箱总数-->
+    <select id="getTotalCount" resultType="int">
+       select count(1)
+	    from
+	   ${@com.qiandi.table.InBoxTable@tableName}	inbox,${@com.qiandi.table.MenberUserTable@tableName} menber
+		where inbox.${@com.qiandi.table.InBoxTable@menberUserId}=menber.${@com.qiandi.table.MenberUserTable@id}
+		and inbox.${@com.qiandi.table.InBoxTable@isDeleted} =0 and menber.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phone} 
+	     <if test="box.phoneNum!=null">and inbox.${@com.qiandi.table.InBoxTable@phoneNum}  like concat('%',#{box.phoneNum},'%')
+		</if>
+		<if test="box.content!=null and box.content!=''">and inbox.${@com.qiandi.table.InBoxTable@content}  like concat('%',#{box.content},'%') </if>
+		<if test="box.operator!=null and box.operator!=''">and inbox.${@com.qiandi.table.InBoxTable@operator} =#{box.operator}</if>
+		<if test="createTime!=null and createTime!=''">and to_days(inbox.${@com.qiandi.table.InBoxTable@createTime} )  <![CDATA[   >=  ]]>  to_days(#{createTime})  </if> 
+	     <if test="lastLoginTime!=null and lastLoginTime!=''">and to_days(inbox.${@com.qiandi.table.InBoxTable@createTime} )  <![CDATA[   <=  ]]>  to_days(#{lastLoginTime})</if>
+	     </select>
+    
+	<resultMap type="com.qiandi.pojo.InBox" id="map">
+		<id property="id" column="id" />
+		<result property="phoneNum" column="phoneNum" />
+		<result property="content" column="content" />
+		<result property="createTime" column="createTime" />
+		<result property="operator" column="operator" />
+		<result property="address" column="address" />
+	</resultMap>
+
+<!-- 根据id查询收件箱信息 end -->
+	<select id="inBox" parameterType="int" resultType="InBox">
+		select
+		inbox.${@com.qiandi.table.InBoxTable@id} as id,inbox.${@com.qiandi.table.InBoxTable@phoneNum} as phoneNum,
+		inbox.${@com.qiandi.table.InBoxTable@content} as content,inbox.${@com.qiandi.table.InBoxTable@createTime} as createTime,
+		inbox.${@com.qiandi.table.InBoxTable@operator} as operator,inbox.${@com.qiandi.table.InBoxTable@address} as address
+		from ${@com.qiandi.table.InBoxTable@tableName}	inbox  where ${@com.qiandi.table.InBoxTable@id} =#{id}
+	</select>
+	
+    <select id="getAllMsgBox"   resultType="java.util.HashMap">
+       select
+		inbox.${@com.qiandi.table.InBoxTable@id} as id,inbox.${@com.qiandi.table.InBoxTable@phoneNum} as phoneNum,
+		inbox.${@com.qiandi.table.InBoxTable@content} as content,inbox.${@com.qiandi.table.InBoxTable@createTime} as createTime,
+		inbox.${@com.qiandi.table.InBoxTable@operator} as operator,inbox.${@com.qiandi.table.InBoxTable@address} as address
+		from ${@com.qiandi.table.InBoxTable@tableName}	inbox ,${@com.qiandi.table.MenberUserTable@tableName}  as  us
+		where inbox.${@com.qiandi.table.InBoxTable@menberUserId}=us.${@com.qiandi.table.MenberUserTable@id} 
+		and inbox.${@com.qiandi.table.InBoxTable@isDeleted}=0
+    </select>
+
+	
+	<!-- 批量删除收件箱信息 -->
+	<delete id="update" parameterType="java.util.List">
+		update ${@com.qiandi.table.InBoxTable@tableName}
+		<set>
+			${@com.qiandi.table.InBoxTable@isDeleted}=1
+		</set>
+		where ${@com.qiandi.table.InBoxTable@id}  in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item.id}
+		</foreach>
+	</delete>
+</mapper>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.BalanceWarningStatusMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="BalanceWarningStatus">
+       insert into ${@com.qiandi.table.BalanceWarningStatusTable@tableName}(
+        ${@com.qiandi.table.BalanceWarningStatusTable@id},
+       ${@com.qiandi.table.BalanceWarningStatusTable@menberUserId},
+       ${@com.qiandi.table.BalanceWarningStatusTable@type},
+       ${@com.qiandi.table.BalanceWarningStatusTable@warningStatus},
+       ${@com.qiandi.table.BalanceWarningStatusTable@defaultValue},
+       ${@com.qiandi.table.BalanceWarningStatusTable@reminderMode},
+       ${@com.qiandi.table.BalanceWarningStatusTable@plateForm},
+       ${@com.qiandi.table.BalanceWarningStatusTable@addMenberUserId},
+       ${@com.qiandi.table.BalanceWarningStatusTable@addAdminUserId},
+       ${@com.qiandi.table.BalanceWarningStatusTable@createTime}) 
+       values (#{id},#{menberUserId},#{type},#{warningStatus},#{defaultValue},#{reminderMode},
+       #{plateForm},#{addMenberUserId},#{addAdminUserId},#{createTime});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="BalanceWarningStatus">
+    	update ${@com.qiandi.table.BalanceWarningStatusTable@tableName} set 
+    	${@com.qiandi.table.BalanceWarningStatusTable@menberUserId} = #{menberUserId},
+    	${@com.qiandi.table.BalanceWarningStatusTable@addMenberUserId} = #{addMenberUserId},
+    	${@com.qiandi.table.BalanceWarningStatusTable@type} = #{type},
+    	${@com.qiandi.table.BalanceWarningStatusTable@noticeCount} = #{noticeCount},
+    	${@com.qiandi.table.BalanceWarningStatusTable@warningStatus} = #{warningStatus},
+    	${@com.qiandi.table.BalanceWarningStatusTable@defaultValue} = #{defaultValue},
+    	${@com.qiandi.table.BalanceWarningStatusTable@plateForm} = #{plateForm},
+    	${@com.qiandi.table.BalanceWarningStatusTable@reminderMode} = #{reminderMode}
+    	where ${@com.qiandi.table.BalanceWarningStatusTable@id}  = #{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="int">
+    ${@com.qiandi.table.BalanceWarningStatusTable@deleteSQL}  #{id}
+    	
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="BalanceWarningStatus" resultType="BalanceWarningStatus">
+        select 
+        	${@com.qiandi.table.BalanceWarningStatusTable@id} as id,
+        	${@com.qiandi.table.BalanceWarningStatusTable@menberUserId} as menberUserId,
+        	${@com.qiandi.table.BalanceWarningStatusTable@addAdminUserId} as addAdminUserId,
+        	${@com.qiandi.table.BalanceWarningStatusTable@addMenberUserId} as addMenberUserId,
+        	${@com.qiandi.table.BalanceWarningStatusTable@type} as type,
+        	${@com.qiandi.table.BalanceWarningStatusTable@warningStatus} as warningStatus,
+        	${@com.qiandi.table.BalanceWarningStatusTable@defaultValue} as defaultValue,
+        	${@com.qiandi.table.BalanceWarningStatusTable@reminderMode} as reminderMode,
+        	${@com.qiandi.table.BalanceWarningStatusTable@noticeCount} as noticeCount,
+        	${@com.qiandi.table.BalanceWarningStatusTable@plateForm} as plateForm,
+        	${@com.qiandi.table.BalanceWarningStatusTable@createTime} as createTime
+        from ${@com.qiandi.table.BalanceWarningStatusTable@tableName}
+        where ${@com.qiandi.table.BalanceWarningStatusTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> 
+           and ${@com.qiandi.table.BalanceWarningStatusTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{menberUserId})">
+            and ${@com.qiandi.table.BalanceWarningStatusTable@menberUserId}=#{menberUserId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{warningStatus})">
+            and ${@com.qiandi.table.BalanceWarningStatusTable@warningStatus}=#{warningStatus} </if>
+    </select>
+    
+     <!-- 查询所有需要短信预警的方法 -->
+    <select id="selectWarningList" parameterType="BalanceWarningStatus" resultType="Map">
+        select 
+        mu.${@com.qiandi.table.BalanceWarningStatusTable@phoneNum} as phoneNum,
+        mu.${@com.qiandi.table.BalanceWarningStatusTable@smsBlance} as smsBlance,
+        mu.${@com.qiandi.table.BalanceWarningStatusTable@email} as email,
+        bws.${@com.qiandi.table.BalanceWarningStatusTable@defaultValue} as defaultValue,
+        bws.${@com.qiandi.table.BalanceWarningStatusTable@id} as balanceWarningStatusId,
+        bws.${@com.qiandi.table.BalanceWarningStatusTable@reminderMode} as reminderMode 
+         from ${@com.qiandi.table.BalanceWarningStatusTable@tableName} bws
+        left join ${@com.qiandi.table.MenberUserTable@tableName} mu on bws.${@com.qiandi.table.BalanceWarningStatusTable@menberUserId} 
+        = mu.${@com.qiandi.table.MenberUserTable@id} 
+        where  mu.${@com.qiandi.table.MenberUserTable@smsBlance}  &lt;= bws.${@com.qiandi.table.BalanceWarningStatusTable@defaultValue}
+         and bws.${@com.qiandi.table.BalanceWarningStatusTable@isDeleted}=false 
+        and bws.${@com.qiandi.table.BalanceWarningStatusTable@warningStatus}=true and 
+        bws.${@com.qiandi.table.BalanceWarningStatusTable@noticeCount} = 0
+    </select>
+    
+    <!-- 批量修改短信预警次数 -->
+    <update id="updateByList" parameterType="java.util.List">
+	       update ${@com.qiandi.table.BalanceWarningStatusTable@tableName} set ${@com.qiandi.table.BalanceWarningStatusTable@noticeCount} = 1
+	        where ${@com.qiandi.table.BalanceWarningStatusTable@id} in 
+	    	<foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+   	</update>
+   	
+   	<select id="selectData" parameterType="Map" resultType="BalanceWarningStatusData">
+   	${@com.qiandi.table.BalanceWarningStatusTable@selectSQL_admin} 
+    	<if test="id!=null">${@com.qiandi.table.BalanceWarningStatusTable@selectIdNotNullSQL_admin} #{id}</if>
+    	<if test="menberUserAccountName!=null">${@com.qiandi.table.BalanceWarningStatusTable@selectMenberUserAccountNameNotNullSQL_admin} #{menberUserAccountName}</if>
+    	<if test="menberUserName!=null">${@com.qiandi.table.BalanceWarningStatusTable@selectMenberUserNameNotNullSQL_admin} "%"#{menberUserName}"%" </if>
+    	<if test="menberUserPhoneNum!=null">${@com.qiandi.table.BalanceWarningStatusTable@selectPhoneNumNotNullSQL_admin}  #{phoneNum}</if>
+    	<if test="qianShangUserName!=null">${@com.qiandi.table.BalanceWarningStatusTable@selectQianShangUserNameNotNullSQL_admin}  "%"#{qianShangUserName} "%"</if>
+    	<if test="warningStatus!=null">${@com.qiandi.table.BalanceWarningStatusTable@selectWarningStatusNotNullSQL_admin}  #{warningStatus}</if>
+    	<if test="beginTime!=null and endTime!= null">
+            and ${@com.qiandi.table.BalanceWarningStatusTable@selectBeginTimeNotNullSQL_admin}  #{beginTime} 
+           	and ${@com.qiandi.table.BalanceWarningStatusTable@selectEndTimeNotNullSQL_admin}  #{endTime} 
+            </if>
+   	${@com.qiandi.table.BalanceWarningStatusTable@selectOrderBySQL_admin} 
+   	
+   	</select>
+   	
+   		<select id="selectOneData" parameterType="String" resultType="BalanceWarningStatusData">
+   	${@com.qiandi.table.BalanceWarningStatusTable@selectSQL_admin} 
+    	${@com.qiandi.table.BalanceWarningStatusTable@selectMenberUserAccountNameNotNullSQL_admin} #{menberUserAccountName} 
+   	
+   	</select>
+   	
+   		 <!-- 批量选择 -->
+    <select id="selectByArray" resultType="BalanceWarningStatusData">
+	        ${@com.qiandi.table.BalanceWarningStatusTable@selectSQL_admin} 
+	        ${@com.qiandi.table.BalanceWarningStatusTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.BalanceWarningStatusTable@selectOrderBySQL_admin} 
+    	</select>
+    	
+    		 <!-- 批量删除 -->
+    <update id="deleteByArray" >
+	        ${@com.qiandi.table.BalanceWarningStatusTable@deleteByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	
+    		
+    
+    
+</mapper>

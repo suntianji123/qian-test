@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.AreaMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Area">
+       insert into ${@com.qiandi.table.AreaTable@tableName}(
+       ${@com.qiandi.table.AreaTable@id},
+       ${@com.qiandi.table.AreaTable@name},
+       ${@com.qiandi.table.AreaTable@parentId},
+       ${@com.qiandi.table.AreaTable@level}
+       ) 
+       values (#{id},#{name},#{parentId},#{level});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Area">
+        update ${@com.qiandi.table.AreaTable@tableName} 
+        set 
+        ${@com.qiandi.table.AreaTable@name} =#{name},
+        ${@com.qiandi.table.AreaTable@parentId} =#{parentId},
+        ${@com.qiandi.table.AreaTable@level} =#{level}
+        where  ${@com.qiandi.table.AreaTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.AreaTable@tableName} set ${@com.qiandi.table.AreaTable@isDeleted}=true
+        where ${@com.qiandi.table.AreaTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Area" resultType="Area">
+        select 
+        ${@com.qiandi.table.AreaTable@id} as id,
+       ${@com.qiandi.table.AreaTable@name} as name,
+       ${@com.qiandi.table.AreaTable@parentId} as parentId,
+       ${@com.qiandi.table.AreaTable@level} as level
+         from ${@com.qiandi.table.AreaTable@tableName}
+        where ${@com.qiandi.table.AreaTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.AreaTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{name})"> and ${@com.qiandi.table.AreaTable@name}=#{name} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{parentId})"> and ${@com.qiandi.table.AreaTable@parentId}=#{parentId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{level})"> and ${@com.qiandi.table.AreaTable@level}=#{level} </if>
+    </select>
+    
+</mapper>

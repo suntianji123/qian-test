@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.SystemCharacterMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="SystemCharacter">
+       insert into ${@com.qiandi.table.SystemCharacterTable@tableName}(
+       ${@com.qiandi.table.SystemCharacterTable@id},
+       ${@com.qiandi.table.SystemCharacterTable@content}
+       ) 
+       values (#{id},#{content};
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="SystemCharacter">
+        update ${@com.qiandi.table.SystemCharacterTable@tableName} 
+        set ${@com.qiandi.table.SystemCharacterTable@content}=#{content}
+        where  ${@com.qiandi.table.SystemCharacterTable@id}=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.SystemCharacterTable@tableName} set
+        ${@com.qiandi.table.SystemCharacterTable@isDeleted}=true 
+        where ${@com.qiandi.table.SystemCharacterTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="SystemCharacter" resultType="SystemCharacter">
+        select 
+         ${@com.qiandi.table.SystemCharacterTable@id} as id,
+       ${@com.qiandi.table.SystemCharacterTable@content} as content
+         from ${@com.qiandi.table.SystemCharacterTable@tableName}
+        where ${@com.qiandi.table.SystemCharacterTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.SystemCharacterTable@id}=#{id} </if>
+    </select>
+    
+</mapper>

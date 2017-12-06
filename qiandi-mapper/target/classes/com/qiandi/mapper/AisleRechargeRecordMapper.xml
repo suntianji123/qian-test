@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.AisleRechargeRecordMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="AisleRechargeRecord">
+       ${@com.qiandi.table.AisleRechargeRecordTable@insertSQL}
+       (
+       #{id},#{applyTime},#{aisleId},#{applyAdminUserId},
+       #{auditAdminUserId},#{rechargeCount},#{paymentMethod},#{accountName},
+       #{openBank},#{accountNum},#{rechargeStatus},#{auditResult},
+       #{payoutCompany},#{payoutNum},#{payoutMan},#{payoutTime}
+       );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="AisleRechargeRecord">
+        update ${@com.qiandi.table.AisleRechargeRecordTable@tableName} 
+        set 
+        ${@com.qiandi.table.AisleRechargeRecordTable@applyTime} =#{applyTime},
+         ${@com.qiandi.table.AisleRechargeRecordTable@aisleId} =#{aisleId},
+        ${@com.qiandi.table.AisleRechargeRecordTable@applyAdminUserId} =#{applyAdminUserId},
+         ${@com.qiandi.table.AisleRechargeRecordTable@auditAdminUserId} =#{auditAdminUserId},
+        ${@com.qiandi.table.AisleRechargeRecordTable@rechargeCount} =#{rechargeCount},
+         ${@com.qiandi.table.AisleRechargeRecordTable@paymentMethod} =#{paymentMethod},
+        ${@com.qiandi.table.AisleRechargeRecordTable@accountName} =#{accountName},
+         ${@com.qiandi.table.AisleRechargeRecordTable@openBank} =#{openBank},
+        ${@com.qiandi.table.AisleRechargeRecordTable@accountNum} =#{accountNum},
+         ${@com.qiandi.table.AisleRechargeRecordTable@rechargeStatus} =#{rechargeStatus},
+        ${@com.qiandi.table.AisleRechargeRecordTable@auditResult} =#{auditResult},
+         ${@com.qiandi.table.AisleRechargeRecordTable@payoutCompany} =#{payoutCompany},
+        ${@com.qiandi.table.AisleRechargeRecordTable@payoutNum} =#{payoutNum},
+         ${@com.qiandi.table.AisleRechargeRecordTable@payoutMan} =#{payoutMan},
+        ${@com.qiandi.table.AisleRechargeRecordTable@payoutTime} =#{payoutTime}
+        where  ${@com.qiandi.table.AisleRechargeRecordTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.AisleRechargeRecordTable@tableName} set ${@com.qiandi.table.AisleRechargeRecordTable@isDeleted}=true
+        where ${@com.qiandi.table.AisleRechargeRecordTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="AisleRechargeRecord" resultType="AisleRechargeRecord">
+        ${@com.qiandi.table.AisleRechargeRecordTable@selectSQL}
+        <if test="id!=null"> and ${@com.qiandi.table.AisleRechargeRecordTable@id} = #{id}</if> 
+       
+    </select>
+    
+    <select id="selectData" parameterType="Map" resultType="AisleRechargeRecordData">
+    ${@com.qiandi.table.AisleRechargeRecordTable@selectSQL_admin}
+    <if test="id!=null"> and ar.${@com.qiandi.table.AisleRechargeRecordTable@id} = #{id}</if>
+    <if test="auditResult!=null"> and ar.${@com.qiandi.table.AisleRechargeRecordTable@auditResult} = #{auditResult}</if>
+    <if test="applyAdminUserName!=null"> and au1.${@com.qiandi.table.AdminUserTable@name} like "%"#{applyAdminUserName}"%"</if>
+     <if test="auditAdminUserName!=null"> and au2.${@com.qiandi.table.AdminUserTable@name} like "%"#{auditAdminUserName}"%"</if>
+     <if test="aisleName!=null"> and a.${@com.qiandi.table.AisleTable@name} like "%"#{aisleName}"%"</if>
+     <if test="aisleCompany!=null"> and a.${@com.qiandi.table.AisleTable@company} like "%"#{aisleCompany}"%"</if>
+     <if test="rechargeStatus!=null"> and ar.${@com.qiandi.table.AisleRechargeRecordTable@rechargeStatus} = #{rechargeStatus}</if>
+      <if test="payoutCompany!=null"> and ar.${@com.qiandi.table.AisleRechargeRecordTable@payoutCompany} like "%"#{payoutCompany}"%"</if>
+      <if test="payoutMan!=null"> and ar.${@com.qiandi.table.AisleRechargeRecordTable@payoutMan} like "%"#{payoutMan}"%"</if>
+      <if test="beginTime!=null">and ar.${@com.qiandi.table.AisleRechargeRecordTable@applyTime} &gt;= #{beginTime}</if>
+   	 <if test="endTime!=null">and ar.${@com.qiandi.table.AisleRechargeRecordTable@applyTime} &lt;= #{endTime}</if>
+      ${@com.qiandi.table.AisleRechargeRecordTable@selectOrderBySQL}
+    </select>
+    
+    
+      		 <!-- 批量删除 -->
+    <update id="updateAuditResult1ByArray" >
+	        ${@com.qiandi.table.AisleRechargeRecordTable@updateAuditResultByArraySQL} "1" where
+	        ${@com.qiandi.table.AisleRechargeRecordTable@id} in 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	    		 <!-- 批量删除 -->
+    <update id="updateAuditResult2ByArray" >
+	        ${@com.qiandi.table.AisleRechargeRecordTable@updateAuditResultByArraySQL} "2" where
+	        ${@com.qiandi.table.AisleRechargeRecordTable@id} in 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    
+    <update id="updateAuditResultByArray" parameterType="Map">
+    		update ${@com.qiandi.table.AisleRechargeRecordTable@tableName}  set 
+    		${@com.qiandi.table.AisleRechargeRecordTable@auditResult} = #{auditResult},
+    		${@com.qiandi.table.AisleRechargeRecordTable@auditAdminUserId} = #{auditAdminUserId} 
+    		where ${@com.qiandi.table.AisleRechargeRecordTable@id} in 
+    		<foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    </update>
+    
+    <update id="deleteByArray">
+    	${@com.qiandi.table.AisleRechargeRecordTable@deleteByArraySQL}
+    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    </update>
+    
+    
+    <select id="selectByArray" resultType="AisleRechargeRecordData">
+     ${@com.qiandi.table.AisleRechargeRecordTable@selectSQL_admin}
+     and ar.${@com.qiandi.table.AisleRechargeRecordTable@id} in
+    <foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+	</foreach>
+	  ${@com.qiandi.table.AisleRechargeRecordTable@selectOrderBySQL}
+    </select>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</mapper>

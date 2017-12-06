@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.AddressMapper">
+    
+    <insert id="insert" parameterType="Address">
+        insert into ${@com.qiandi.table.AddressTable@tableName}(
+        ${@com.qiandi.table.AddressTable@id},
+        ${@com.qiandi.table.AddressTable@menberUserId},
+        ${@com.qiandi.table.AddressTable@areaId},
+        ${@com.qiandi.table.AddressTable@detailAddress},
+        ${@com.qiandi.table.AddressTable@recipient},
+        ${@com.qiandi.table.AddressTable@phoneNum},
+        ${@com.qiandi.table.AddressTable@createTime},
+        ${@com.qiandi.table.AddressTable@addMenberUserId},
+        ${@com.qiandi.table.AddressTable@addAdminUserId},
+        ${@com.qiandi.table.AddressTable@isDefault},
+        ${@com.qiandi.table.AddressTable@viewAddress}) values(#{id},#{menberUserId},
+        #{areaId},#{detailAddress},#{recipient},#{phoneNum},now(),#{addMenberUserId},#{addAdminUserId},#{isDefault},#{viewAddress})
+    </insert>
+
+    <update id="update" parameterType="Address">
+        update ${@com.qiandi.table.AddressTable@tableName} set
+        	${@com.qiandi.table.AddressTable@menberUserId}= #{menberUserId},
+            ${@com.qiandi.table.AddressTable@areaId}=#{areaId},
+            ${@com.qiandi.table.AddressTable@detailAddress}=#{detailAddress},
+             ${@com.qiandi.table.AddressTable@recipient}=#{recipient},
+             ${@com.qiandi.table.AddressTable@phoneNum}=#{phoneNum},
+              ${@com.qiandi.table.AddressTable@createTime}=#{createTime},
+              ${@com.qiandi.table.AddressTable@addMenberUserId}=#{addMenberUserId},
+               ${@com.qiandi.table.AddressTable@isDefault}=#{isDefault},
+                ${@com.qiandi.table.AddressTable@viewAddress}=#{viewAddress}
+        where ${@com.qiandi.table.AddressTable@id}=#{id}
+    </update>
+    
+    
+    <update id="delete" parameterType="long">
+      ${@com.qiandi.table.AddressTable@deleteSQL} #{id}
+    </update>
+    
+  <select id="selectData" parameterType="Map" resultType="AddressData">
+    	${@com.qiandi.table.AddressTable@selectSQL_admin} 
+    	<if test="id!=null">${@com.qiandi.table.AddressTable@selectIdNotNullSQL_admin} #{id}</if>
+    	<if test="menberUserAccountName!=null">${@com.qiandi.table.AddressTable@selectMenberUserAccountNameNotNullSQL_admin} #{menberUserAccountName}</if>
+    	<if test="menberUserName!=null">${@com.qiandi.table.AddressTable@selectMenberUserNameNotNullSQL_admin} "%"#{menberUserName}"%" </if>
+    	<if test="phoneNum!=null">${@com.qiandi.table.AddressTable@selectPhoneNumNotNullSQL_admin}  #{phoneNum}</if>
+    	<if test="qianShangUserName!=null">${@com.qiandi.table.AddressTable@selectQianShangUserNameNotNullSQL_admin}  "%"#{qianShangUserName} "%"</if>
+    	<if test="addMenberUserName!=null">${@com.qiandi.table.AddressTable@selectAddMenberUserNameNotNullSQL_admin}  "%"#{addMenberUserName} "%"</if>
+    	<if test="beginTime!=null and endTime!= null">
+            and ${@com.qiandi.table.AddressTable@selectBeginTimeNotNullSQL_admin}  #{beginTime} 
+           	and ${@com.qiandi.table.AddressTable@selectEndTimeNotNullSQL_admin}  #{endTime} 
+            </if>
+    	${@com.qiandi.table.AddressTable@selectOrderBySQL_admin} 
+    </select> 
+    
+    <select id="select" parameterType="Address" resultType="Address">
+        select 
+        ${@com.qiandi.table.AddressTable@id} as id,
+        ${@com.qiandi.table.AddressTable@menberUserId} as menberUserId,
+        ${@com.qiandi.table.AddressTable@areaId} as areaId,
+        ${@com.qiandi.table.AddressTable@detailAddress} as detailAddress,
+        ${@com.qiandi.table.AddressTable@recipient} as recipient,
+        ${@com.qiandi.table.AddressTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.AddressTable@createTime} as createTime,
+        ${@com.qiandi.table.AddressTable@addMenberUserId} as addMenberUserId,
+        ${@com.qiandi.table.AddressTable@isDefault} as isDefault,
+        ${@com.qiandi.table.AddressTable@viewAddress}  as viewAddress
+         from ${@com.qiandi.table.AddressTable@tableName}
+        where ${@com.qiandi.table.AddressTable@isDeleted} =false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.AddressTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{areaId})"> and ${@com.qiandi.table.AddressTable@areaId}=#{areaId} </if>
+    </select>
+    
+    
+    <update id="updateIsDefault" parameterType="Address">
+        update ${@com.qiandi.table.AddressTable@tableName} set
+        	${@com.qiandi.table.AddressTable@isDefault} = #{isDefault}
+        where ${@com.qiandi.table.AddressTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and
+            ${@com.qiandi.table.AddressTable@id}=#{id} </if>
+    </update>
+    
+     <!-- 批量删除 -->
+    <update id="deleteByArray" >
+	        ${@com.qiandi.table.AddressTable@deleteByArraySQL}
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	 <!-- 批量选择 -->
+    <select id="selectByArray" resultType="AddressData">
+	        ${@com.qiandi.table.AddressTable@selectSQL_admin} 
+	        ${@com.qiandi.table.AddressTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.AddressTable@selectOrderBySQL_admin} 
+    	</select>
+    
+</mapper>

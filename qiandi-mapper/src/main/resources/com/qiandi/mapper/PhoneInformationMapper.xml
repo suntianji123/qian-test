@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.PhoneInformationMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="PhoneInformation">
+    ${@com.qiandi.table.PhoneInformationTable@insertSQL}
+       (#{id},#{phoneNum},#{statusId},#{operator},#{province},#{city},#{createTime},#{addAdminUserId});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="PhoneInformation">
+        update ${@com.qiandi.table.PhoneInformationTable@tableName} 
+        set
+          ${@com.qiandi.table.PhoneInformationTable@phoneNum}=#{phoneNum},
+          ${@com.qiandi.table.PhoneInformationTable@statusId}=#{statusId},
+           ${@com.qiandi.table.PhoneInformationTable@operator}=#{operator},
+            ${@com.qiandi.table.PhoneInformationTable@province}=#{province},
+             ${@com.qiandi.table.PhoneInformationTable@city}=#{city},
+          ${@com.qiandi.table.PhoneInformationTable@createTime}=#{createTime},
+          ${@com.qiandi.table.PhoneInformationTable@addAdminUserId}=#{addAdminUserId}
+        where   ${@com.qiandi.table.PhoneInformationTable@id}=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="int">
+       update ${@com.qiandi.table.PhoneInformationTable@tableName} set 
+       ${@com.qiandi.table.PhoneInformationTable@isDeleted} =true
+        where ${@com.qiandi.table.PhoneInformationTable@id} =#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="PhoneInformation" resultType="PhoneInformation">
+       ${@com.qiandi.table.PhoneInformationTable@selectSQL}
+         <if test="id!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@id}=#{id} </if>
+   	 	<if test="phoneNum!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@phoneNum}=#{phoneNum} </if>
+   	 	<if test="statusId!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@statusId}=#{statusId} </if>
+   	 	<if test="operator!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@operator}  like "%"#{operator}"%"</if>
+   	 	<if test="province!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@province}  like "%"#{province}"%"</if>
+   	 	<if test="city!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@city}  like "%"#{city}"%"</if>
+   	 
+   	 	${@com.qiandi.table.PhoneInformationTable@selectOrderBySQL_admin}
+    </select>
+    
+     <!-- 查询出所有的黑 空手机号 -->
+    <select id="selectBlackAndBlankList"  parameterType="Map" resultType="PhoneInformation">
+        select 
+         ${@com.qiandi.table.PhoneInformationTable@id} as id,
+       ${@com.qiandi.table.PhoneInformationTable@phoneNum} as phoneNum,
+       ${@com.qiandi.table.PhoneInformationTable@statusId} as statusId
+         from ${@com.qiandi.table.PhoneInformationTable@tableName}
+        where ${@com.qiandi.table.PhoneInformationTable@isDeleted}=false
+         and (${@com.qiandi.table.PhoneInformationTable@statusId}=#{blackId} or
+	${@com.qiandi.table.PhoneInformationTable@statusId} =#{blankId})
+    </select>
+    
+    <select id="selectListByBlack" parameterType="java.util.List" resultType="PhoneInformation">
+	      select 
+	       ${@com.qiandi.table.PhoneInformationTable@id} as id,
+       ${@com.qiandi.table.PhoneInformationTable@phoneNum} as phoneNum,
+       ${@com.qiandi.table.PhoneInformationTable@status} as status,
+       ${@com.qiandi.table.PhoneInformationTable@createTime} as createTime,
+       ${@com.qiandi.table.PhoneInformationTable@adminUserId} as adminUserId
+	       from ${@com.qiandi.table.PhoneInformationTable@tableName} where 
+	       ${@com.qiandi.table.PhoneInformationTable@isDeleted} = false and 
+	       ${@com.qiandi.table.PhoneInformationTable@status} =2  and
+	        ${@com.qiandi.table.PhoneInformationTable@phoneNum} in
+	    	<foreach collection="list" index="index" item="phoneNum" open="(" separator="," close=")">
+				#{phoneNum}
+			</foreach>
+    	</select>
+    	
+   	<select id="selectListBySpace" parameterType="java.util.List" resultType="PhoneInformation">
+      select 
+        ${@com.qiandi.table.PhoneInformationTable@id} as id,
+       ${@com.qiandi.table.PhoneInformationTable@phoneNum} as phoneNum,
+       ${@com.qiandi.table.PhoneInformationTable@status} as status,
+       ${@com.qiandi.table.PhoneInformationTable@createTime} as createTime,
+       ${@com.qiandi.table.PhoneInformationTable@adminUserId} as adminUserId
+       from ${@com.qiandi.table.PhoneInformationTable@tableName}
+        where ${@com.qiandi.table.PhoneInformationTable@isDeleted} = false and 
+        ${@com.qiandi.table.PhoneInformationTable@status} =3  and 
+        ${@com.qiandi.table.PhoneInformationTable@phoneNum} in
+    	<foreach collection="list" index="index" item="phoneNum" open="(" separator="," close=")">
+			#{phoneNum}
+		</foreach>
+   	</select>
+   	
+   	<select id="selectData" parameterType="Map" resultType="PhoneInformationData">
+   		${@com.qiandi.table.PhoneInformationTable@selectSQL_admin}
+   	 	<if test="id!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@id}=#{id} </if>
+   	 	<if test="phoneNum!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@phoneNum}=#{phoneNum} </if>
+   	 	<if test="statusId!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@statusId}=#{statusId} </if>
+   	 	<if test="operator!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@operator}  like "%"#{operator}"%"</if>
+   	 	<if test="province!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@province}  like "%"#{province}"%"</if>
+   	 	<if test="city!=null"> and pi.${@com.qiandi.table.PhoneInformationTable@city}  like "%"#{city}"%"</if>
+   	 	<if test="beginTime!=null and endTime!= null">
+            and pi.${@com.qiandi.table.PhoneInformationTable@createTime} &gt;=  #{beginTime} 
+           	and pi.${@com.qiandi.table.PhoneInformationTable@createTime} &lt;=  #{endTime} 
+            </if>
+   	 	${@com.qiandi.table.PhoneInformationTable@selectOrderBySQL_admin}
+   	</select>
+   	
+   	
+   	  <update id="deleteByArray" >
+        ${@com.qiandi.table.PhoneInformationTable@deleteByArraySQL}
+          <foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+    </update>
+    
+    <select id="selectByArray" parameterType="Map" resultType="PhoneInformationData" >
+        ${@com.qiandi.table.PhoneInformationTable@selectSQL_admin} and 
+         ${@com.qiandi.table.PhoneInformationTable@id} in
+          <foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		${@com.qiandi.table.PhoneInformationTable@selectOrderBySQL_admin}
+    </select>
+   	
+    
+</mapper>

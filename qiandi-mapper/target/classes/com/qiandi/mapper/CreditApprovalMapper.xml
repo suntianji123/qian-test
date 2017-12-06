@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.CreditApprovalMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="CreditApproval">
+       ${@com.qiandi.table.CreditApprovalTable@insertSQL} 
+       (
+       		#{id},#{menberUserSettingId},#{quota},#{oldQuota},#{accountPeriod},
+	      #{applyQianShangUserId},#{applyAdminUserId},#{applyTime},
+	      #{reviewQianShangUserId},#{reviewAdminUserId},#{reviewTime},
+	      #{reviewStatus},#{plateform},#{failReasonId}
+       );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="CreditApproval">
+        update ${@com.qiandi.table.CreditApprovalTable@tableName} 
+        set 
+        ${@com.qiandi.table.CreditApprovalTable@menberUserSettingId} =#{menberUserSettingId},
+        ${@com.qiandi.table.CreditApprovalTable@quota} =#{quota},
+        ${@com.qiandi.table.CreditApprovalTable@oldQuota} =#{oldQuota},
+        ${@com.qiandi.table.CreditApprovalTable@accountPeriod} =#{accountPeriod},
+        ${@com.qiandi.table.CreditApprovalTable@applyQianShangUserId} =#{applyQianShangUserId},
+        ${@com.qiandi.table.CreditApprovalTable@applyAdminUserId} =#{applyAdminUserId}, 
+        ${@com.qiandi.table.CreditApprovalTable@applyTime} =#{applyTime},
+        ${@com.qiandi.table.CreditApprovalTable@reviewQianShangUserId} =#{reviewQianShangUserId},
+        ${@com.qiandi.table.CreditApprovalTable@reviewAdminUserId} =#{reviewAdminUserId}, 
+        ${@com.qiandi.table.CreditApprovalTable@reviewTime} =#{reviewTime},
+        ${@com.qiandi.table.CreditApprovalTable@reivewStatus} =#{reivewStatus},
+        ${@com.qiandi.table.CreditApprovalTable@plateform} =#{plateform},
+        ${@com.qiandi.table.CreditApprovalTable@failReasonId} =#{failReasonId}
+        where  ${@com.qiandi.table.CreditApprovalTable@id} =#{id}
+        and ${@com.qiandi.table.CreditApprovalTable@isDeleted} = false
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.CreditApprovalTable@tableName} set ${@com.qiandi.table.CreditApprovalTable@isDeleted}=true
+        where ${@com.qiandi.table.CreditApprovalTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="CreditApproval" resultType="CreditApproval">
+        ${@com.qiandi.table.CreditApprovalTable@selectSQL} 
+           <if test="id!=null"> and ${@com.qiandi.table.CreditApprovalTable@id}=#{id} </if>
+           <if test="menberUserSettingId!=null"> and ${@com.qiandi.table.CreditApprovalTable@menberUserSettingId}=#{menberUserSettingId} </if>
+           <if test="reviewStatus!=null"> and ${@com.qiandi.table.CreditApprovalTable@reivewStatus}=#{reviewStatus} </if>
+    </select>
+    
+</mapper>

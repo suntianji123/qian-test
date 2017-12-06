@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.MenberUserPermissionMapper">
+    
+    <insert id="insert" parameterType="MenberUserPermission">
+        insert into ${@com.qiandi.table.MenberUserPermissionTable@tableName}(
+        ${@com.qiandi.table.MenberUserPermissionTable@menberUserId},
+        ${@com.qiandi.table.MenberUserPermissionTable@permissionId}) 
+        values(#{menberUserId},#{permissionId})
+    </insert>
+
+    <update id="update" parameterType="MenberUserPermission">
+        update ${@com.qiandi.table.MenberUserPermissionTable@tableName} set
+            ${@com.qiandi.table.MenberUserPermissionTable@menberUserId} =#{menberUserId},
+            ${@com.qiandi.table.MenberUserPermissionTable@permissionId} =#{permissionId}
+        where id=#{id}
+    </update>
+    
+    <delete id="delete" parameterType="long">
+        delete from ${@com.qiandi.table.MenberUserPermissionTable@tableName} where
+         ${@com.qiandi.table.MenberUserPermissionTable@id} =#{id}
+    </delete>
+        
+    <delete id="deleteByFirstId" parameterType="long">
+        delete from ${@com.qiandi.table.MenberUserPermissionTable@tableName} where 
+        ${@com.qiandi.table.MenberUserPermissionTable@menberUserId} =#{menberUserId}
+    </delete>
+        
+    <delete id="deleteBySecondId" parameterType="long">
+        delete from ${@com.qiandi.table.MenberUserPermissionTable@tableName} where
+         ${@com.qiandi.table.MenberUserPermissionTable@permissionId} =#{permissionId}
+    </delete>
+
+    
+    <select id="select" parameterType="MenberUserPermission" resultType="MenberUserPermission">
+        select 
+        ${@com.qiandi.table.MenberUserPermissionTable@id} as id,
+        ${@com.qiandi.table.MenberUserPermissionTable@menberUserId} as menberUserId,
+        ${@com.qiandi.table.MenberUserPermissionTable@permissionId} as permissionId
+         from ${@com.qiandi.table.MenberUserPermissionTable@tableName}
+        <where>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> 
+           and ${@com.qiandi.table.MenberUserPermissionTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{menberUserId})"> 
+           and ${@com.qiandi.table.MenberUserPermissionTable@menberUserId}=#{menberUserId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{permissionId})">
+            and ${@com.qiandi.table.MenberUserPermissionTable@permissionId}=#{permissionId} </if>
+        </where>
+    </select>
+    
+           
+    <select id="selectFirstListBySecondId" parameterType="long" resultType="MenberUser">
+        select f.*
+        from ${@com.qiandi.table.MenberUserPermissionTable@tableName} fs left join ${@com.qiandi.table.MenberUserTable@tableName} f 
+        on fs.${@com.qiandi.table.MenberUserTable@menberUserId}=f.${@com.qiandi.table.MenberUserTable@id}
+        where f.${@com.qiandi.table.MenberUserTable@isDeleted}=false and fs.${@com.qiandi.table.MenberUserPermissionTable@permissionId}=#{permissionId}
+    </select> 
+    
+    <select id="selectSecondListByFirstId" parameterType="long" resultType="Permission">
+        select 
+        s.${@com.qiandi.table.PermissionTable@id} as id,
+        s.${@com.qiandi.table.PermissionTable@type} as type,
+        s.${@com.qiandi.table.PermissionTable@path} as path,
+        s.${@com.qiandi.table.PermissionTable@description} as description
+        from ${@com.qiandi.table.MenberUserPermissionTable@tableName} fs left join 
+        ${@com.qiandi.table.PermissionTable@tableName} s on
+         fs.${@com.qiandi.table.MenberUserPermissionTable@permissionId}=
+         s.${@com.qiandi.table.PermissionTable@id}
+        where s.${@com.qiandi.table.PermissionTable@isDeleted}=false and
+         fs.${@com.qiandi.table.MenberUserPermissionTable@menberUserId}=#{menberUserId}
+    </select>
+    
+    <select id="checkPermission" parameterType="map" resultType="int">
+        select count(${@com.qiandi.table.MenberUserPermissionTable@tableName}.${@com.qiandi.table.MenberUserPermissionTable@id}) 
+        from ${@com.qiandi.table.MenberUserPermissionTable@tableName} 
+            left join ${@com.qiandi.table.MenberUserTable@tableName} on ${@com.qiandi.table.MenberUserTable@tableName}.${@com.qiandi.table.MenberUserTable@id}
+            =${@com.qiandi.table.MenberUserPermissionTable@tableName}.${@com.qiandi.table.MenberUserPermissionTable@menberUserId}
+            left join ${@com.qiandi.table.PermissionTable@tableName} on ${@com.qiandi.table.MenberUserPermissionTable@tableName}.${@com.qiandi.table.MenberUserPermissionTable@permissionId}
+            =${@com.qiandi.table.PermissionTable@tableName}.${@com.qiandi.table.PermissionTable@id}
+        where  ${@com.qiandi.table.MenberUserTable@tableName}.${@com.qiandi.table.MenberUserTable@isDeleted}=false
+            and ${@com.qiandi.table.PermissionTable@tableName}.${@com.qiandi.table.PermissionTable@isDeleted}=false
+            and ${@com.qiandi.table.MenberUserPermissionTable@tableName}.${@com.qiandi.table.MenberUserPermissionTable@menberUserId}=#{menberUserId}
+            and ${@com.qiandi.table.PermissionTable@tableName}.${@com.qiandi.table.PermissionTable@path}=#{path}
+    </select>
+    
+</mapper>

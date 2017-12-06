@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.NumberProcessMapper">
+    
+    <insert id="insert" parameterType="NumberProcess">
+        insert into ${@com.qiandi.table.NumberProcessTable@tableName}(
+        ${@com.qiandi.table.NumberProcessTable@id},
+        ${@com.qiandi.table.NumberProcessTable@menberUserId},
+        ${@com.qiandi.table.NumberProcessTable@phoneNum},
+        ${@com.qiandi.table.NumberProcessTable@operator},
+        ${@com.qiandi.table.NumberProcessTable@province},
+        ${@com.qiandi.table.NumberProcessTable@city},
+        ${@com.qiandi.table.NumberProcessTable@isUsed},
+        ${@com.qiandi.table.NumberProcessTable@createTime},
+        ${@com.qiandi.table.NumberProcessTable@content},
+        ${@com.qiandi.table.NumberProcessTable@segment}
+        ) values
+        (#{id},#{menberUserId},#{phoneNum},#{operator},#{province},#{city},#{isUsed},now(),#{content},#{segment})
+    </insert>
+
+    <update id="update" parameterType="NumberProcess">
+        update ${@com.qiandi.table.NumberProcessTable@tableName} set
+        	${@com.qiandi.table.NumberProcessTable@menberUserId} = #{menberUserId},
+            ${@com.qiandi.table.NumberProcessTable@phoneNum}=#{phoneNum},
+            ${@com.qiandi.table.NumberProcessTable@operator}=#{operator},
+             ${@com.qiandi.table.NumberProcessTable@province}=#{province},
+             ${@com.qiandi.table.NumberProcessTable@city}=#{city},
+              ${@com.qiandi.table.NumberProcessTable@isUsed}=#{isUsed}
+        where ${@com.qiandi.table.NumberProcessTable@id}=#{id}
+    </update>
+    
+    
+    <delete id="delete" parameterType="int">
+        delete from ${@com.qiandi.table.NumberProcessTable@tableName} where
+         ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId}
+    </delete>
+    
+    <select id="select" parameterType="NumberProcess" resultType="NumberProcess">
+        select 
+         ${@com.qiandi.table.NumberProcessTable@id} as id,
+        ${@com.qiandi.table.NumberProcessTable@menberUserId} as menberUserId,
+        ${@com.qiandi.table.NumberProcessTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.NumberProcessTable@operator} as operator,
+        ${@com.qiandi.table.NumberProcessTable@province} as province,
+        ${@com.qiandi.table.NumberProcessTable@city} as city,
+        ${@com.qiandi.table.NumberProcessTable@isUsed} as isUsed,
+        ${@com.qiandi.table.NumberProcessTable@createTime} as createTime,
+        ${@com.qiandi.table.NumberProcessTable@content} as content,
+        ${@com.qiandi.table.NumberProcessTable@segment} as segment
+         from ${@com.qiandi.table.NumberProcessTable@tableName}
+        where  ${@com.qiandi.table.NumberProcessTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> 
+           and ${@com.qiandi.table.NumberProcessTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{menberUserId})">
+            and ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} </if>
+           order by ${@com.qiandi.table.NumberProcessTable@createTime} desc
+    </select>
+    
+      <select id="selectData" parameterType="NumberProcess" resultType="NumberProcess">
+        select 
+        ${@com.qiandi.table.NumberProcessTable@id} as id,
+        ${@com.qiandi.table.NumberProcessTable@menberUserId} as menberUserId,
+        ${@com.qiandi.table.NumberProcessTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.NumberProcessTable@operator} as operator,
+        ${@com.qiandi.table.NumberProcessTable@province} as province,
+        ${@com.qiandi.table.NumberProcessTable@city} as city,
+        ${@com.qiandi.table.NumberProcessTable@isUsed} as isUsed,
+        ${@com.qiandi.table.NumberProcessTable@createTime} as createTime,
+        ${@com.qiandi.table.NumberProcessTable@content} as content,
+        ${@com.qiandi.table.NumberProcessTable@segment} as segment
+         from ${@com.qiandi.table.NumberProcessTable@tableName}
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.NumberProcessTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{menberUserId})"> and ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} </if>
+           
+    </select>
+    
+     <select id="selectOrderByProvince" parameterType="Map" resultType="NumberProcess">
+        select 
+        ${@com.qiandi.table.NumberProcessTable@id} as id,
+        ${@com.qiandi.table.NumberProcessTable@menberUserId} as menberUserId,
+        ${@com.qiandi.table.NumberProcessTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.NumberProcessTable@operator} as operator,
+        ${@com.qiandi.table.NumberProcessTable@province} as province,
+        ${@com.qiandi.table.NumberProcessTable@city} as city,
+        ${@com.qiandi.table.NumberProcessTable@isUsed} as isUsed,
+        ${@com.qiandi.table.NumberProcessTable@createTime} as createTime,
+        ${@com.qiandi.table.NumberProcessTable@content} as content,
+        ${@com.qiandi.table.NumberProcessTable@segment} as segment
+         from ${@com.qiandi.table.NumberProcessTable@tableName}
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false 
+        and ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} 
+        order by ${@com.qiandi.table.NumberProcessTable@province}
+    </select>
+    
+    <select id="selectOrderByCity" parameterType="Map" resultType="NumberProcess">
+        select 
+        ${@com.qiandi.table.NumberProcessTable@id} as id,
+        ${@com.qiandi.table.NumberProcessTable@menberUserId} as menberUserId,
+        ${@com.qiandi.table.NumberProcessTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.NumberProcessTable@operator} as operator,
+        ${@com.qiandi.table.NumberProcessTable@province} as province,
+        ${@com.qiandi.table.NumberProcessTable@city} as city,
+        ${@com.qiandi.table.NumberProcessTable@isUsed} as isUsed,
+        ${@com.qiandi.table.NumberProcessTable@createTime} as createTime,
+        ${@com.qiandi.table.NumberProcessTable@content} as content,
+        ${@com.qiandi.table.NumberProcessTable@segment} as segment
+         from ${@com.qiandi.table.NumberProcessTable@tableName}
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false
+         and ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} 
+         order by ${@com.qiandi.table.NumberProcessTable@city}
+    </select>
+    
+    <select id="selectOrderByOperator" parameterType="Map" resultType="NumberProcess">
+        select 
+        ${@com.qiandi.table.NumberProcessTable@id} as id,
+        ${@com.qiandi.table.NumberProcessTable@menberUserId} as menberUserId,
+        ${@com.qiandi.table.NumberProcessTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.NumberProcessTable@operator} as operator,
+        ${@com.qiandi.table.NumberProcessTable@province} as province,
+        ${@com.qiandi.table.NumberProcessTable@city} as city,
+        ${@com.qiandi.table.NumberProcessTable@isUsed} as isUsed,
+        ${@com.qiandi.table.NumberProcessTable@createTime} as createTime,
+        ${@com.qiandi.table.NumberProcessTable@content} as content,
+        ${@com.qiandi.table.NumberProcessTable@segment} as segment
+         from ${@com.qiandi.table.NumberProcessTable@tableName}
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false 
+        and ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} 
+        order by ${@com.qiandi.table.NumberProcessTable@operator}
+    </select>
+    
+    <select id="countNumberProcessItemByMenberUserId" parameterType="int" resultType="Map">
+        select 
+        (select count(*) from ${@com.qiandi.table.NumberProcessTable@tableName} 
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false
+         and ${@com.qiandi.table.NumberProcessTable@operator} like "%移动%" and 
+        ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId}) as yiDongCount,
+        (select count(*) from ${@com.qiandi.table.NumberProcessTable@tableName} 
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false 
+        and ${@com.qiandi.table.NumberProcessTable@operator} like "%联通%" and 
+        ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId}) as lianTongCount,
+        (select count(*) from ${@com.qiandi.table.NumberProcessTable@tableName} 
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false and 
+        ${@com.qiandi.table.NumberProcessTable@operator} like "%电信%" and 
+        ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId}) as dianXingCount,
+        (select sum(${@com.qiandi.table.NumberProcessTable@segment}) from ${@com.qiandi.table.NumberProcessTable@tableName} 
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false and 
+        ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId}) as totalSegment,
+        (select sum(${@com.qiandi.table.NumberProcessTable@segment}) from ${@com.qiandi.table.NumberProcessTable@tableName} 
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false and 
+        ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} and  operator like "%移动%") as totalYiDongCount,
+         (select sum(${@com.qiandi.table.NumberProcessTable@segment}) from ${@com.qiandi.table.NumberProcessTable@tableName}
+          where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false and 
+        ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} and  
+        ${@com.qiandi.table.NumberProcessTable@operator} like "%联通%") as totalLianTongCount,
+         (select sum(${@com.qiandi.table.NumberProcessTable@segment}) from ${@com.qiandi.table.NumberProcessTable@tableName} 
+         where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false and 
+        ${@com.qiandi.table.NumberProcessTable@menberUserId}=#{menberUserId} and  
+        ${@com.qiandi.table.NumberProcessTable@operator} like "%电信%") as totalDianXingCount
+    </select>
+    
+    
+    <update id="updateIsDefault" parameterType="NumberProcess">
+        update ${@com.qiandi.table.NumberProcessTable@tableName} set
+        	${@com.qiandi.table.NumberProcessTable@isDefault} = #{isDefault}
+        where ${@com.qiandi.table.NumberProcessTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> 
+           and ${@com.qiandi.table.NumberProcessTable@id}=#{id} </if>
+    </update>
+    
+    <update id="deleteById" parameterType="long">
+        update ${@com.qiandi.table.NumberProcessTable@tableName} set
+	     ${@com.qiandi.table.NumberProcessTable@isDeleted}=true
+          where ${@com.qiandi.table.NumberProcessTable@id} =#{id} 
+          and ${@com.qiandi.table.NumberProcessTable@isDeleted} = false
+    </update>
+    
+    <update id="updateByMenberUserId" parameterType="map">
+        update ${@com.qiandi.table.NumberProcessTable@tableName} set
+	     ${@com.qiandi.table.NumberProcessTable@content} = #{content},
+	     ${@com.qiandi.table.NumberProcessTable@segment} = #{segment}
+          where ${@com.qiandi.table.NumberProcessTable@isDeleted} = false 
+          and ${@com.qiandi.table.NumberProcessTable@menberUserId} =  #{menberUserId}
+    </update>
+    
+    <!-- 批量插入需要导入的手机号数据-->
+	    <insert id="insertByList" parameterType="java.util.List">
+		   	  insert into ${@com.qiandi.table.NumberProcessTable@tableName}
+			    (
+			    ${@com.qiandi.table.NumberProcessTable@menberUserId},
+			    ${@com.qiandi.table.NumberProcessTable@phoneNum},
+			    ${@com.qiandi.table.NumberProcessTable@operator},
+			    ${@com.qiandi.table.NumberProcessTable@province},
+			    ${@com.qiandi.table.NumberProcessTable@city},
+			    ${@com.qiandi.table.NumberProcessTable@isUsed},
+			    ${@com.qiandi.table.NumberProcessTable@createTime},
+			    ${@com.qiandi.table.NumberProcessTable@content},
+			    ${@com.qiandi.table.NumberProcessTable@segment}
+			    )
+			    VALUES
+			    <foreach collection="list" item="item" index="index" separator=",">
+			        (#{item.menberUserId},#{item.phoneNum},#{item.operator},#{item.province},
+			        #{item.city},#{item.isUsed},now(),#{item.content},#{item.segment})     
+			    </foreach>
+	    </insert>
+	    
+	   <update id="updateByList" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update ${@com.qiandi.table.NumberProcessTable@tableName}
+	        <set>
+	            ${@com.qiandi.table.NumberProcessTable@content} = #{item.content},
+	            ${@com.qiandi.table.NumberProcessTable@segment} = #{item.segment}
+	        </set>
+	        where ${@com.qiandi.table.NumberProcessTable@id} = #{item.id}
+    	</foreach>     
+    </update>
+    
+    
+    
+    
+</mapper>

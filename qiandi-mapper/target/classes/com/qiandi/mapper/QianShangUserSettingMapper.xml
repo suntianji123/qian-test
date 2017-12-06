@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.QianShangUserSettingMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="QianShangUserSetting">
+       ${@com.qiandi.table.QianShangUserSettingTable@insertSQL} 
+       (
+       #{id},#{qianShangUserId},#{accountStatus},#{levelOneUserCount},
+       #{userCount},#{address}
+       )
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="QianShangUserSetting">
+        update ${@com.qiandi.table.QianShangUserSettingTable@tableName} 
+        set 
+	        ${@com.qiandi.table.QianShangUserSettingTable@qianShangUserId} =#{qianShangUserId},
+	        ${@com.qiandi.table.QianShangUserSettingTable@accountStatus} =#{accountStatus},
+	        ${@com.qiandi.table.QianShangUserSettingTable@levelOneUserCount} =#{levelOneUserCount},
+	        ${@com.qiandi.table.QianShangUserSettingTable@userCount} =#{userCount},
+	        ${@com.qiandi.table.QianShangUserSettingTable@address} =#{address}
+        where  ${@com.qiandi.table.QianShangUserSettingTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.QianShangUserSettingTable@tableName} set ${@com.qiandi.table.QianShangUserSettingTable@isDeleted}=true
+        where ${@com.qiandi.table.QianShangUserSettingTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="QianShangUserSetting" resultType="QianShangUserSetting">
+       ${@com.qiandi.table.QianShangUserSettingTable@selectSQL}
+       <if test="id!=null"> and ${@com.qiandi.table.QianShangUserSettingTable@id}=#{id}</if> 
+       <if test="qianShangUserId!=null"> and ${@com.qiandi.table.QianShangUserSettingTable@qianShangUserId}=#{qianShangUserId}</if> 
+    </select>
+    
+</mapper>

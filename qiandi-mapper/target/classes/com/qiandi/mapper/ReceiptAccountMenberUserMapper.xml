@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.ReceiptAccountMenberUserMapper">
+    
+    <insert id="insert" parameterType="ReceiptAccountMenberUser">
+        insert into T_ReceiptAccountMenberUsers(receiptAccountId,menberUserId,type,status
+        ,createTime,paymentNum) 
+        values(#{receiptAccountId},#{menberUserId},#{type},#{status},#{createTime},#{paymentNum})
+    </insert>
+
+    <update id="update" parameterType="ReceiptAccountMenberUser">
+        update T_ReceiptAccountMenberUsers set
+            receiptAccountId=#{receiptAccountId},
+            menberUserId=#{menberUserId},
+            type=#{type},
+            status=#{status},
+            createTime=#{createTime},
+            paymentNum=#{paymentNum}
+        where id=#{id}
+    </update>
+    
+    <delete id="delete" parameterType="long">
+        delete from T_ReceiptAccountMenberUsers where id=#{id}
+    </delete>
+        
+    <delete id="deleteByFirstId" parameterType="long">
+        delete from T_ReceiptAccountMenberUsers where receiptAccountId=#{receiptAccountId}
+    </delete>
+        
+    <delete id="deleteBySecondId" parameterType="long">
+        delete from T_ReceiptAccountMenberUsers where menberUserId=#{menberUserId}
+    </delete>
+
+    
+    <select id="select" parameterType="ReceiptAccountMenberUser" resultType="ReceiptAccountMenberUser">
+        select * from T_ReceiptAccountMenberUsers
+        <where>
+           <if test="id!=null"> and id=#{id} </if>
+           <if test="receiptAccountId!=null"> and receiptAccountId=#{receiptAccountId} </if>
+           <if test="menberUserId!=null"> and menberUserId=#{menberUserId} </if>
+        </where>
+    </select>
+    
+           
+    <select id="selectFirstListBySecondId" parameterType="long" resultType="Role">
+        select f.*
+        from T_ReceiptAccountMenberUsers fs left join T_ReceiptAccounts f on fs.receiptAccountId=f.id
+        where f.isDeleted=false and fs.menberUserId=#{menberUserId}
+    </select> 
+    
+    <select id="selectSecondListByFirstId" parameterType="long" resultType="Permission">
+        select s.*
+        from T_ReceiptAccountMenberUsers fs left join T_MenberUsers s on fs.menberUserId=s.id
+        where s.isDeleted=false and fs.receiptAccountId=#{receiptAccountId}
+    </select>
+    
+</mapper>

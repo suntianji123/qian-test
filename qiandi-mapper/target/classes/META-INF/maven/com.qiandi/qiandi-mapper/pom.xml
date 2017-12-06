@@ -1,0 +1,37 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.qiandi</groupId>
+    <artifactId>qiandi-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>qiandi-mapper</artifactId>
+  
+  <dependencies>
+    <dependency>
+        <groupId>com.qiandi</groupId>
+        <artifactId>qiandi-pojo</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    
+		
+		<!-- mybatis依赖 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
+    
+    <dependency>
+            <groupId>com.qiandi</groupId>
+            <artifactId>qiandi-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
+  
+  </dependencies>
+  </project>

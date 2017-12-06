@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.BillingMethodMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="BillingMethod">
+       insert into ${@com.qiandi.table.BillingMethodTable@tableName}(
+       ${@com.qiandi.table.BillingMethodTable@id},
+       ${@com.qiandi.table.BillingMethodTable@menberUserId},
+       ${@com.qiandi.table.BillingMethodTable@createTime},
+       ${@com.qiandi.table.BillingMethodTable@addAdminUserId}
+       ) 
+       values (#{id},#{menberUserId},#{createTime},#{addAdminUserId});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="BillingMethod">
+        update ${@com.qiandi.table.BillingMethodTable@tableName} 
+        set 
+        ${@com.qiandi.table.BillingMethodTable@menberUserId} =#{menberUserId},
+        ${@com.qiandi.table.BillingMethodTable@createTime} =#{createTime},
+        ${@com.qiandi.table.BillingMethodTable@addAdminUserId} =#{addAdminUserId}
+        where  ${@com.qiandi.table.BillingMethodTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.BillingMethodTable@tableName} set ${@com.qiandi.table.BillingMethodTable@isDeleted}=true
+        where ${@com.qiandi.table.BillingMethodTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="BillingMethod" resultType="BillingMethod">
+        select 
+        ${@com.qiandi.table.BillingMethodTable@id} as id,
+       ${@com.qiandi.table.BillingMethodTable@menberUserId} as menberUserId,
+       ${@com.qiandi.table.BillingMethodTable@createTime} as createTime,
+       ${@com.qiandi.table.BillingMethodTable@addAdminUserId} as addAdminUserId
+         from ${@com.qiandi.table.BillingMethodTable@tableName}
+        where ${@com.qiandi.table.BillingMethodTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.BillingMethodTable@id}=#{id}</if>
+    </select>
+    
+     <!-- 查询方法 -->
+    <select id="selectData" parameterType="Map" resultType="BillingMethodData">
+        select 
+        bm.${@com.qiandi.table.BillingMethodTable@id} as id,
+       mu.${@com.qiandi.table.MenberUserTable@accountName} as menberUserAccountName,
+       mu.${@com.qiandi.table.MenberUserTable@name} as menberUserName,
+       mu.${@com.qiandi.table.MenberUserTable@level} as level,
+        ms.${@com.qiandi.table.MenberUserSettingTable@billingMethod} as billingMethod,
+        mu.${@com.qiandi.table.MenberUserTable@phoneNum} as menberUserPhoneNum,
+       au.${@com.qiandi.table.AdminUserTable@name} as addAdminUserName,
+       qu.${@com.qiandi.table.QianShangUserTable@name} as qianShangUserName,
+       bm.${@com.qiandi.table.BillingMethodTable@createTime} as createTime
+         from ${@com.qiandi.table.BillingMethodTable@tableName} bm
+         left join ${@com.qiandi.table.AdminUserTable@tableName} au on
+         bm.${@com.qiandi.table.BillingMethodTable@addAdminUserId} = au.${@com.qiandi.table.AdminUserTable@id}
+          left join ${@com.qiandi.table.MenberUserTable@tableName} mu on
+           bm.${@com.qiandi.table.BillingMethodTable@menberUserId} = mu.${@com.qiandi.table.MenberUserTable@id}
+           left join ${@com.qiandi.table.QianShangUserTable@tableName} qu on
+           mu.${@com.qiandi.table.MenberUserTable@qianShangUserId} = qu.${@com.qiandi.table.QianShangUserTable@id}
+           left join ${@com.qiandi.table.MenberUserSettingTable@tableName} ms on
+           mu.${@com.qiandi.table.MenberUserTable@id} = ms.${@com.qiandi.table.MenberUserSettingTable@menberUserId}
+        where bm.${@com.qiandi.table.BillingMethodTable@isDeleted}=false
+           <if test="id!=null"> and bm.${@com.qiandi.table.BillingMethodTable@id}=#{id}</if>
+           <if test="beginTime!=null and endTime!= null">
+            and bm.${@com.qiandi.table.BillingMethodTable@createTime}  &gt;= #{beginTime} 
+           	and bm.${@com.qiandi.table.BillingMethodTable@createTime}  &lt;= #{endTime} 
+            </if>
+            <if test="menberUserAccountName!=null"> and mu.${@com.qiandi.table.MenberUserTable@accountName} like "%"#{menberUserAccountName}"%"</if>
+            <if test="qianShangUserName!=null"> and qu.${@com.qiandi.table.QianShangUserTable@name} like "%"#{qianShangUserName}"%"</if>
+            order by bm.${@com.qiandi.table.BillingMethodTable@createTime} desc
+    </select>
+    
+    <!-- 批量删除 -->
+    <update id="deleteByArray" >
+	       update ${@com.qiandi.table.BillingMethodTable@tableName} set
+	        ${@com.qiandi.table.BillingMethodTable@isDeleted} = true 
+	        where ${@com.qiandi.table.BillingMethodTable@id} in 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	<!-- 批量查找 -->
+    <select id="selectByArray" resultType="Map">
+     select 
+        bm.${@com.qiandi.table.BillingMethodTable@id} as id,
+       mu.${@com.qiandi.table.MenberUserTable@accountName} as menberUserAccountName,
+       mu.${@com.qiandi.table.MenberUserTable@name} as menberUserName,
+       mu.${@com.qiandi.table.MenberUserTable@level} as level,
+        mu.${@com.qiandi.table.MenberUserTable@phoneNum} as menberUserPhoneNum,
+        ms.${@com.qiandi.table.MenberUserSettingTable@billingMethod} as billingMethod,
+       au.${@com.qiandi.table.AdminUserTable@name} as addAdminUserName,
+       qu.${@com.qiandi.table.QianShangUserTable@name} as qianShangUserName,
+       bm.${@com.qiandi.table.BillingMethodTable@createTime} as createTime
+         from ${@com.qiandi.table.BillingMethodTable@tableName} bm
+         left join ${@com.qiandi.table.AdminUserTable@tableName} au on
+         bm.${@com.qiandi.table.BillingMethodTable@addAdminUserId} = au.${@com.qiandi.table.AdminUserTable@id}
+          left join ${@com.qiandi.table.MenberUserTable@tableName} mu on
+           bm.${@com.qiandi.table.BillingMethodTable@menberUserId} = mu.${@com.qiandi.table.MenberUserTable@id}
+           left join ${@com.qiandi.table.QianShangUserTable@tableName} qu on
+           mu.${@com.qiandi.table.MenberUserTable@qianShangUserId} = qu.${@com.qiandi.table.QianShangUserTable@id}
+           left join ${@com.qiandi.table.MenberUserSettingTable@tableName} ms on
+           mu.${@com.qiandi.table.MenberUserTable@id} = ms.${@com.qiandi.table.MenberUserSettingTable@menberUserId}
+        where bm.${@com.qiandi.table.BillingMethodTable@isDeleted}=false
+    and bm.${@com.qiandi.table.BillingMethodTable@id} in
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</select>
+</mapper>

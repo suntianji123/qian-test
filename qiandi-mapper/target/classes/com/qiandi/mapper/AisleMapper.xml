@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.AisleMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Aisle">
+     ${@com.qiandi.table.AisleTable@insertSQL}
+      (#{id},#{name},#{isOn},#{manageAddress},#{accountName},
+      #{password},#{company},#{businessLicense},#{contact},
+      #{identity},#{phoneNum},#{qqNum},#{weiXinNum},
+      #{email},#{province},#{city},#{registerTime},
+      #{registerMoney},#{spNum},#{number},#{supportOperator},
+      #{price},#{billingMethod},
+      #{paymentMethod},#{isSupportReport},#{recivedFailRange},#{recivedFailReturnTime},
+      #{addAdminUserId},#{createTime}
+      );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Aisle">
+        update ${@com.qiandi.table.AisleTable@tableName} 
+        set 
+        ${@com.qiandi.table.AisleTable@name} =#{name},
+         ${@com.qiandi.table.AisleTable@isOn} =#{isOn},
+        ${@com.qiandi.table.AisleTable@accountName} =#{accountName},
+        ${@com.qiandi.table.AisleTable@manageAddress} =#{manageAddress},
+        ${@com.qiandi.table.AisleTable@password} =#{password},
+        ${@com.qiandi.table.AisleTable@company} =#{company},
+        ${@com.qiandi.table.AisleTable@businessLicense} =#{businessLicense},
+        ${@com.qiandi.table.AisleTable@contact} =#{contact},
+        ${@com.qiandi.table.AisleTable@identity} =#{identity},
+        ${@com.qiandi.table.AisleTable@phoneNum} =#{phoneNum},
+        ${@com.qiandi.table.AisleTable@qqNum} =#{qqNum},
+        ${@com.qiandi.table.AisleTable@weiXinNum} =#{weiXinNum},
+        ${@com.qiandi.table.AisleTable@email} =#{email},
+        ${@com.qiandi.table.AisleTable@province} =#{province},
+        ${@com.qiandi.table.AisleTable@city} =#{city},
+        ${@com.qiandi.table.AisleTable@registerTime} =#{registerTime},
+        ${@com.qiandi.table.AisleTable@registerMoney} =#{registerMoney},
+        ${@com.qiandi.table.AisleTable@spNum} =#{spNum},
+        ${@com.qiandi.table.AisleTable@number} =#{number},
+        ${@com.qiandi.table.AisleTable@supportOperator} =#{supportOperator},
+        ${@com.qiandi.table.AisleTable@price} =#{price},
+        ${@com.qiandi.table.AisleTable@billingMethod} =#{billingMethod},
+        ${@com.qiandi.table.AisleTable@paymentMethod} =#{paymentMethod},
+        ${@com.qiandi.table.AisleTable@isSupportReport} =#{isSupportReport},
+        ${@com.qiandi.table.AisleTable@recivedFailRange} =#{recivedFailRange},
+        ${@com.qiandi.table.AisleTable@recivedFailReturnTime} =#{recivedFailReturnTime},
+         ${@com.qiandi.table.AisleTable@createTime} =#{createTime},
+          ${@com.qiandi.table.AisleTable@addAdminUserId} =#{addAdminUserId}
+        where  ${@com.qiandi.table.AisleTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.AisleTable@tableName} set ${@com.qiandi.table.AisleTable@isDeleted}=true
+        where ${@com.qiandi.table.AisleTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Aisle" resultType="Aisle">
+      	${@com.qiandi.table.AisleTable@selectSQL}
+      	<if test="id!=null"> and a.${@com.qiandi.table.AisleTable@id} = #{id}</if>
+      	<if test="name!=null"> and a.${@com.qiandi.table.AisleTable@name} = #{name}</if>
+      	<if test="isOn!=null"> and a.${@com.qiandi.table.AisleTable@isOn} = #{isOn}</if>
+      	<if test="supportOperator!=null"> and a.${@com.qiandi.table.AisleTable@supportOperator} &gt;= #{supportOperator}</if>
+    </select>
+    
+    <select id="selectData" parameterType="Map" resultType="AisleData">
+    	 ${@com.qiandi.table.AisleTable@selectSQL_admin}
+    	 <if test="name!=null"> and a.${@com.qiandi.table.AisleTable@name} like "%"#{name}"%"</if>
+    	 <if test="company!=null"> and a.${@com.qiandi.table.AisleTable@company} like "%"#{company}"%"</if>
+    	 <if test="contact!=null"> and a.${@com.qiandi.table.AisleTable@contact} like "%"#{contact}"%"</if>
+    	 <if test="phoneNum!=null"> and a.${@com.qiandi.table.AisleTable@phoneNum} = #{phoneNum}</if>
+    	 <if test="weiXinNum!=null"> and a.${@com.qiandi.table.AisleTable@weiXinNum} = #{weiXinNum}</if>
+    	 <if test="qqNum!=null"> and a.${@com.qiandi.table.AisleTable@qqNum} = #{qqNum}</if>
+    	 <if test="email!=null"> and a.${@com.qiandi.table.AisleTable@email} = #{email}</if>
+    	 <if test="province!=null"> and a.${@com.qiandi.table.AisleTable@province} like "%"#{province}"%"</if>
+    	 <if test="city!=null"> and a.${@com.qiandi.table.AisleTable@city} like "%"#{city}"%"</if>
+    	 <if test="spNum!=null"> and a.${@com.qiandi.table.AisleTable@spNum} = #{spNum}</if>
+    	 <if test="number!=null"> and a.${@com.qiandi.table.AisleTable@number} = #{number}</if>
+    	 <if test="addAdminUserName!=null"> and au.${@com.qiandi.table.AisleTable@addAdminUserName} like "%"#{addAdminUserName}"%"</if>
+    	 <if test="billingMethod!=null"> and a.${@com.qiandi.table.AisleTable@billingMethod} = #{billingMethod}</if>
+    	 <if test="paymentMethod!=null"> and a.${@com.qiandi.table.AisleTable@paymentMethod} = #{paymentMethod}</if>
+    	 <if test="supportOperator!=null"> and a.${@com.qiandi.table.AisleTable@supportOperator} = #{supportOperator}</if>
+    	 <if test="isSupportReport!=null"> and a.${@com.qiandi.table.AisleTable@isSupportReport} = #{isSupportReport}</if>
+    	 <if test="isOn!=null"> and a.${@com.qiandi.table.AisleTable@isOn} = #{isOn}</if>
+    	 <if test="recivedFailRange!=null"> and a.${@com.qiandi.table.AisleTable@recivedFailRange} = #{recivedFailRange}</if>
+   	  		<if test="beginTime!=null">and a.${@com.qiandi.table.AisleTable@createTime} &gt;= #{beginTime}</if>
+   		 <if test="endTime!=null">and a.${@com.qiandi.table.AisleTable@createTime} &lt;= #{endTime}</if>
+   		 <if test="smsTypeId!=null">
+   		 	and ${@com.qiandi.table.AisleTable@id} in
+   		 	(${@com.qiandi.table.AisleTable@selectSMSTypeIdNotNullSQL}  #{smsTypeId})
+   		 </if>
+    	  ${@com.qiandi.table.AisleTable@selectOrderBySQL}
+    </select>
+    
+    	<update id="deleteByArray">
+		 <!-- 批量删除 -->
+	        ${@com.qiandi.table.AisleTable@deleteByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>    
+    	
+    	
+    	<select id="selectByArray" resultType="AisleData">
+		 <!-- 批量选择 -->
+	         ${@com.qiandi.table.AisleTable@selectSQL_admin} 
+	         and a.${@com.qiandi.table.AisleTable@id} in 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.AisleTable@selectOrderBySQL}
+    	</select>    
+    	
+    	<select id="selectIdAndName" parameterType="Integer" resultType="Aisle">
+    		${@com.qiandi.table.AisleTable@selectIdAndNameSQL} #{type} 
+    		and ${@com.qiandi.table.AisleTable@isOn} = false
+    	
+    	</select>
+    	
+    	<select id="selectItemForRecharge" parameterType="String" resultType="Map">
+    		${@com.qiandi.table.AisleTable@selectItemForRechargeSQL} #{name}
+    	</select>
+    
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.MenberUserSettingMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="MenberUserSetting">
+       insert into ${@com.qiandi.table.MenberUserSettingTable@tableName}(
+       ${@com.qiandi.table.MenberUserSettingTable@id},
+       ${@com.qiandi.table.MenberUserSettingTable@menberUserId},
+       ${@com.qiandi.table.MenberUserSettingTable@yiDongAisleId},
+       ${@com.qiandi.table.MenberUserSettingTable@lianTongAisleId},
+        ${@com.qiandi.table.MenberUserSettingTable@dianXingAisleId},
+       ${@com.qiandi.table.MenberUserSettingTable@smsBlance},
+       ${@com.qiandi.table.MenberUserSettingTable@totalRechargeCount},
+       ${@com.qiandi.table.MenberUserSettingTable@count},
+       ${@com.qiandi.table.MenberUserSettingTable@address},
+       ${@com.qiandi.table.MenberUserSettingTable@lastLoginTime},
+       ${@com.qiandi.table.MenberUserSettingTable@accountStatus},
+       ${@com.qiandi.table.MenberUserSettingTable@channelId},
+ 		${@com.qiandi.table.MenberUserSettingTable@minRecharge},
+      ${@com.qiandi.table.MenberUserSettingTable@phoneOperator},
+       ${@com.qiandi.table.MenberUserSettingTable@expansionNum},
+       ${@com.qiandi.table.MenberUserSettingTable@isSerious},
+       ${@com.qiandi.table.MenberUserSettingTable@billingMethod},
+       ${@com.qiandi.table.MenberUserSettingTable@accountPeriod},
+       ${@com.qiandi.table.MenberUserSettingTable@availableQuota},
+       ${@com.qiandi.table.MenberUserSettingTable@quota},
+       ${@com.qiandi.table.MenberUserSettingTable@smsType}) 
+       values (#{id},#{menberUserId},#{yiDongAisleId},#{lianTongAisleId},#{dianXingAisleId},#{smsBlance},
+       #{totalRechargeCount},#{count},#{address},#{lastLoginTime},#{accountStatus},
+       #{channelId},#{minRecharge},#{phoneOperator},#{expansionNum},#{isSerious},#{billingMethod},
+        #{accountPeriod},#{availableQuota},#{quota},
+       #{smsType},
+      
+       );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="MenberUserSetting">
+    update ${@com.qiandi.table.MenberUserSettingTable@tableName} set
+         ${@com.qiandi.table.MenberUserSettingTable@id} = #{id},
+       ${@com.qiandi.table.MenberUserSettingTable@menberUserId}= #{menberUserId},
+       ${@com.qiandi.table.MenberUserSettingTable@yiDongAisleId}= #{yiDongAisleId},
+       ${@com.qiandi.table.MenberUserSettingTable@lianTongAisleId}= #{lianTongAisleId},
+        ${@com.qiandi.table.MenberUserSettingTable@dianXingAisleId}= #{dianXingAisleId},
+       ${@com.qiandi.table.MenberUserSettingTable@smsBlance}= #{smsBlance},
+       ${@com.qiandi.table.MenberUserSettingTable@totalRechargeCount}= #{totalRechargeCount},
+       ${@com.qiandi.table.MenberUserSettingTable@count}= #{count},
+       ${@com.qiandi.table.MenberUserSettingTable@address}= #{address},
+       ${@com.qiandi.table.MenberUserSettingTable@lastLoginTime}= #{lastLoginTime},
+       ${@com.qiandi.table.MenberUserSettingTable@accountStatus}= #{accountStatus},
+       ${@com.qiandi.table.MenberUserSettingTable@channelId}= #{channelId},
+ 		${@com.qiandi.table.MenberUserSettingTable@minRecharge}= #{minRecharge},
+      ${@com.qiandi.table.MenberUserSettingTable@phoneOperator}= #{phoneOperator},
+       ${@com.qiandi.table.MenberUserSettingTable@expansionNum}= #{expansionNum},
+       ${@com.qiandi.table.MenberUserSettingTable@isSerious}= #{isSerious},
+        ${@com.qiandi.table.MenberUserSettingTable@accountPeriod}= #{accountPeriod},
+         ${@com.qiandi.table.MenberUserSettingTable@availableQuota}= #{availableQuota},
+          ${@com.qiandi.table.MenberUserSettingTable@quota}= #{quota},
+       ${@com.qiandi.table.MenberUserSettingTable@billingMethod}= #{billingMethod} 
+       where  ${@com.qiandi.table.MenberUserSettingTable@isDeleted}= false and
+        ${@com.qiandi.table.MenberUserSettingTable@id}= #{id}
+        
+        
+        
+        
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="int">
+       update ${@com.qiandi.table.MenberUserSettingTable@tableName} set 
+       ${@com.qiandi.table.MenberUserSettingTable@isDeleted}=true 
+       where ${@com.qiandi.table.MenberUserSettingTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="MenberUserSetting" resultType="MenberUserSetting">
+         ${@com.qiandi.table.MenberUserSettingTable@selectSQL}
+           <if test="id!=null"> 
+           and ${@com.qiandi.table.MenberUserSettingTable@id}=#{id} </if>
+            <if test="menberUserId!=null"> 
+           and ${@com.qiandi.table.MenberUserSettingTable@menberUserId}=#{menberUserId} </if>
+    </select>
+    
+    <select id="selectAisle" parameterType="String" resultType="Map">
+    	${@com.qiandi.table.MenberUserSettingTable@selectAisleSQL} #{accountName}
+    </select>
+    
+   <select id="selectAccountNameAndName" parameterType="Map" resultType="MenberUser">
+   	${@com.qiandi.table.MenberUserSettingTable@selectAccountNameAndNameSQL} 
+   	<if test="channelId!=null">and  ms.${@com.qiandi.table.MenberUserSettingTable@channelId} = #{channelId} </if>
+   	${@com.qiandi.table.MenberUserSettingTable@selectOrderBySQL} 
+   </select>
+    
+    
+    
+</mapper>

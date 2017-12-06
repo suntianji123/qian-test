@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qiandi.mapper.BaseMapper">
+	<!-- 显示数据列表 -->
+	<select id="findAllBase" resultType="java.util.Map"
+		parameterType="java.util.HashMap">
+		select ms.price,
+		base.${@com.qiandi.table.DataBaseTable@id}  as bid,(base.${@com.qiandi.table.DataBaseTable@rechargeCount} * ms.${@com.qiandi.table.MenberUserTable@price}/100) as  rechargeCountprice,
+		(${@com.qiandi.table.DataBaseTable@consumptionCount} * ms.${@com.qiandi.table.MenberUserTable@price}/100) as  pricecount
+		,base.${@com.qiandi.table.DataBaseTable@createTime} as createTime,base.${@com.qiandi.table.DataBaseTable@rechargeCount} as rechargeCount,
+		base.${@com.qiandi.table.DataBaseTable@rechargeAmount} as rechargeAmount,base.${@com.qiandi.table.DataBaseTable@smsSubmitTotalCount}  as smsSubmitTotalCount,
+		base.${@com.qiandi.table.DataBaseTable@consumptionCount} as consumptionCount,base.${@com.qiandi.table.DataBaseTable@phoneNumCount} as phoneNumCount,
+		base.${@com.qiandi.table.DataBaseTable@reviewRejectedCount} as reviewRejectedCount,base.${@com.qiandi.table.DataBaseTable@recivedSuccessCount} as  recivedSuccessCount,
+		base.${@com.qiandi.table.DataBaseTable@recivedFailCount} as recivedFailCount,base.${@com.qiandi.table.DataBaseTable@recivedUnknownCount}  as recivedUnknownCount,
+		base.${@com.qiandi.table.DataBaseTable@recivedSuccessRate} as recivedSuccessRate,
+		base.${@com.qiandi.table.DataBaseTable@recivedUnknownRate} as recivedFailRate,base.recivedUnknownRate
+		from ${@com.qiandi.table.MenberUserTable@tableName} ms,
+		${@com.qiandi.table.DataBaseTable@tableName} base where ms.${@com.qiandi.table.MenberUserTable@id}=base.${@com.qiandi.table.DataBaseTable@mid} and
+		ms.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phone} and
+		base.${@com.qiandi.table.DataBaseTable@isDeleted}=0  
+		<if test="createTime!=null and createTime!='' ">and
+			to_days(base.${@com.qiandi.table.DataBaseTable@createTime})  <![CDATA[   >=  ]]>
+			to_days(#{createTime})
+		</if>
+		<if test=" lastLoginTime!=null and lastLoginTime!=''">and
+			to_days(base.${@com.qiandi.table.DataBaseTable@createTime}) <![CDATA[   <=  ]]>
+			to_days(#{lastLoginTime})
+		</if>
+		<if test="id!=null and id!=''"> and base.${@com.qiandi.table.DataBaseTable@id}=#{id}</if>
+		order by base.${@com.qiandi.table.DataBaseTable@createTime} DESC
+	</select>
+	<!--  查看详情-->
+	<select id="findByid" resultType="com.qiandi.pojo.DataBase">
+		select ms.price,
+		base.${@com.qiandi.table.DataBaseTable@id}  as id,(base.${@com.qiandi.table.DataBaseTable@rechargeCount} * ms.${@com.qiandi.table.MenberUserTable@price}/100) as  rechargeCountprice,
+		(${@com.qiandi.table.DataBaseTable@consumptionCount} * ms.${@com.qiandi.table.MenberUserTable@price}/100) as  pricecount
+		,base.${@com.qiandi.table.DataBaseTable@createTime} as createTime,base.${@com.qiandi.table.DataBaseTable@rechargeCount} as rechargeCount,
+		base.${@com.qiandi.table.DataBaseTable@rechargeAmount} as rechargeAmount,base.${@com.qiandi.table.DataBaseTable@smsSubmitTotalCount}  as smsSubmitTotalCount,
+		base.${@com.qiandi.table.DataBaseTable@consumptionCount} as consumptionCount,base.${@com.qiandi.table.DataBaseTable@phoneNumCount} as phoneNumCount,
+		base.${@com.qiandi.table.DataBaseTable@reviewRejectedCount} as reviewRejectedCount,base.${@com.qiandi.table.DataBaseTable@recivedSuccessCount} as  recivedSuccessCount,
+		base.${@com.qiandi.table.DataBaseTable@recivedFailCount} as recivedFailCount,base.${@com.qiandi.table.DataBaseTable@recivedUnknownCount}  as recivedUnknownCount,
+		base.${@com.qiandi.table.DataBaseTable@recivedSuccessRate} as recivedSuccessRate,
+		base.${@com.qiandi.table.DataBaseTable@recivedUnknownRate} as recivedFailRate,base.recivedUnknownRate
+		from ${@com.qiandi.table.MenberUserTable@tableName} ms,
+		${@com.qiandi.table.DataBaseTable@tableName} base where ms.${@com.qiandi.table.MenberUserTable@id}=base.${@com.qiandi.table.DataBaseTable@mid} and
+		ms.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phone} and
+		base.${@com.qiandi.table.DataBaseTable@isDeleted}=0   and 	base.id=#{id}
+		
+		</select>
+ 	<!-- 查看合计 -->
+	<select id="findCount" resultType="java.util.Map" parameterType="java.util.HashMap">
+		select SUM(base.${@com.qiandi.table.DataBaseTable@rechargeCount}) as rechargeCount
+		,SUM(base.${@com.qiandi.table.DataBaseTable@rechargeCount} * ms.${@com.qiandi.table.MenberUserTable@price}/100) rechargeCountprice
+		,SUM(${@com.qiandi.table.DataBaseTable@consumptionCount}) consumptionCount,
+		SUM(${@com.qiandi.table.DataBaseTable@consumptionCount} * ms.${@com.qiandi.table.MenberUserTable@price}/100) pricecount
+		,SUM(base.${@com.qiandi.table.DataBaseTable@recivedSuccessCount}) recivedSuccessCount ,SUM(base.${@com.qiandi.table.DataBaseTable@phoneNumCount})
+		phoneNumCount,
+		sum(base.${@com.qiandi.table.DataBaseTable@reviewRejectedCount}) reviewRejectedCount
+		,SUM(base.${@com.qiandi.table.DataBaseTable@recivedFailCount})
+		recivedFailCount,SUM(base.${@com.qiandi.table.DataBaseTable@recivedUnknownCount}) recivedUnknownCount
+		
+		from ${@com.qiandi.table.MenberUserTable@tableName} ms,
+		${@com.qiandi.table.DataBaseTable@tableName} base  where
+		ms.${@com.qiandi.table.MenberUserTable@phoneNum}= #{phone} and base.${@com.qiandi.table.DataBaseTable@isDeleted}=0
+		and ms.${@com.qiandi.table.MenberUserTable@id}=base.${@com.qiandi.table.DataBaseTable@mid}
+		<if test="createTime!=null and createTime!='' ">and
+			to_days(base.${@com.qiandi.table.DataBaseTable@createTime})  <![CDATA[   >=  ]]>
+			to_days(#{createTime})
+		</if>
+		<if test=" lastLoginTime!=null and lastLoginTime!=''">and
+			to_days(base.${@com.qiandi.table.DataBaseTable@createTime}) <![CDATA[   <=  ]]>
+			to_days(#{lastLoginTime})
+		</if>
+	</select>
+</mapper>

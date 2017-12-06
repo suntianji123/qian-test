@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.TransferRecordMapper">
+    
+    <insert id="insert" parameterType="TransferRecord">
+        	${@com.qiandi.table.TransferRecordTable@SQL1} 
+	        #{inManberUserId}, #{outManberUserId},#{type},#{smsCount},
+	        #{surplusMessage},#{description},#{createTime}
+        )
+       
+    </insert>
+
+    <update id="update" parameterType="TransferRecord">
+    		${@com.qiandi.table.TransferRecordTable@SQL2} 
+            ${@com.qiandi.table.TransferRecordTable@inManberUserId}=#{inManberUserId},
+            ${@com.qiandi.table.TransferRecordTable@outManberUserId}=#{outManberUserId},
+            ${@com.qiandi.table.TransferRecordTable@type}=#{type},
+            ${@com.qiandi.table.TransferRecordTable@smsCount}=#{smsCount},
+            ${@com.qiandi.table.TransferRecordTable@description}=#{description},
+            ${@com.qiandi.table.TransferRecordTable@createTime}=#{createTime}
+        where ${@com.qiandi.table.TransferRecordTable@id}=#{id}
+    </update>
+    
+    
+    <delete id="delete" parameterType="Integer">
+    		${@com.qiandi.table.TransferRecordTable@SQL3} #{id}
+    </delete>
+    
+    <select id="select" parameterType="TransferRecord" resultType="TransferRecord">
+    		${@com.qiandi.table.TransferRecordTable@SQL4} 
+           <if test="id!=null"> and ${@com.qiandi.table.TransferRecordTable@id=#{id} </if>
+           <if test="inManberUserId!=null "> and ${@com.qiandi.table.TransferRecordTable@inManberUserId}=#{inManberUserId} </if>
+           <if test="outManberUserId!=null"> and ${@com.qiandi.table.TransferRecordTable@outManberUserId}=#{outManberUserId} </if>
+           <if test="type!=null"> and ${@com.qiandi.table.TransferRecordTable@type}=#{type} </if>
+    </select>
+    
+    <!-- 自定义联合查询方法 -->
+    <select id="customSelect" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        	 ${@com.qiandi.table.TransferRecordTable@SQL} 
+           <if test="recordId!=null and recordId!='' and recordId != 'undefined'"> and a.${@com.qiandi.table.TransferRecordTable@id}=#{recordId} </if>
+           <if test="inphonenum!=null and inphonenum!='' and inphonenum != 'undefined'"> and b.${@com.qiandi.table.MenberUserTable@phonenum}  like "%"#{inphonenum}"%" </if>
+           <if test="type!=null and type!='' and type != 'undefined'"> and a.${@com.qiandi.table.TransferRecordTable@type}=#{type} </if>
+           <if test="startTime!=null and startTime!='' and startTime != 'undefined'"> and to_days(a.${@com.qiandi.table.TransferRecordTable@createTime}) <![CDATA[   >=  ]]> to_days(#{startTime}) </if>
+           <if test="endTime!=null and endTime!='' and endTime != 'undefined'"> and to_days(a.${@com.qiandi.table.TransferRecordTable@createTime}) <![CDATA[   <=  ]]>to_days(#{endTime}) </if>
+    </select>
+    
+    <select id="selectStatistics" resultType="java.util.HashMap" >
+    		${@com.qiandi.table.TransferRecordTable@SQL5} 
+    </select>
+    
+    
+</mapper>

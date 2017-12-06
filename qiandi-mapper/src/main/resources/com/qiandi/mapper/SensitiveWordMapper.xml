@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.SensitiveWordMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="SensitiveWord">
+       ${@com.qiandi.table.SensitiveWordTable@insertSQL}
+       (#{id},#{name},#{createTime},#{addAdminUserId});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="SensitiveWord">
+        update ${@com.qiandi.table.SensitiveWordTable@tableName} 
+        set 
+        ${@com.qiandi.table.SensitiveWordTable@name} =#{name},
+        ${@com.qiandi.table.SensitiveWordTable@createTime} =#{createTime},
+        ${@com.qiandi.table.SensitiveWordTable@addAdminUserId} =#{addAdminUserId}
+        where  ${@com.qiandi.table.SensitiveWordTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.SensitiveWordTable@tableName} set ${@com.qiandi.table.SensitiveWordTable@isDeleted}=true
+        where ${@com.qiandi.table.SensitiveWordTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="SensitiveWord" resultType="SensitiveWord">
+         ${@com.qiandi.table.SensitiveWordTable@selectSQL}
+         <if test="id!=null"> and  ${@com.qiandi.table.SensitiveWordTable@id} = #{id}</if>
+          <if test="name!=null"> and  ${@com.qiandi.table.SensitiveWordTable@name} = #{name}</if>
+    </select>
+    
+</mapper>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.ReceiptAccountMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="ReceiptAccount">
+       insert into ${@com.qiandi.table.ReceiptAccountTable@tableName}
+        (
+        ${@com.qiandi.table.ReceiptAccountTable@id},
+        ${@com.qiandi.table.ReceiptAccountTable@accountNum},
+        ${@com.qiandi.table.ReceiptAccountTable@account},
+        ${@com.qiandi.table.ReceiptAccountTable@openBank},
+        ${@com.qiandi.table.ReceiptAccountTable@serialNum},
+        ${@com.qiandi.table.ReceiptAccountTable@accountType},
+        )
+       values (#{id},##{accountNum},#{account},#{openBank},#{serialNum},#{accountType});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="ReceiptAccount">
+        update ${@com.qiandi.table.ReceiptAccountTable@tableName}
+        set ${@com.qiandi.table.ReceiptAccountTable@accountNum}=#{accountNum},${@com.qiandi.table.ReceiptAccountTable@account}=#{account},${@com.qiandi.table.ReceiptAccountTable@openBank}=#{openBank},${@com.qiandi.table.ReceiptAccountTable@serialNum}=#{serialNum},
+        	${@com.qiandi.table.ReceiptAccountTable@accountType}=#{accountType}
+        where  ${@com.qiandi.table.ReceiptAccountTable@id}=#{id}
+    </update>
+   
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.ReceiptAccountTable@tableName} set ${@com.qiandi.table.ReceiptAccountTable@isDeleted}=true where ${@com.qiandi.table.ReceiptAccountTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="ReceiptAccount" resultType="ReceiptAccount">
+        select 
+        ${@com.qiandi.table.ReceiptAccountTable@id} as id,
+        ${@com.qiandi.table.ReceiptAccountTable@accountNum} as accountNum,
+        ${@com.qiandi.table.ReceiptAccountTable@account} as account,
+        ${@com.qiandi.table.ReceiptAccountTable@openBank} as openBank,
+        ${@com.qiandi.table.ReceiptAccountTable@serialNum} as serialNum,
+        ${@com.qiandi.table.ReceiptAccountTable@accountType} as accountType
+        from ${@com.qiandi.table.ReceiptAccountTable@tableName}
+        where ${@com.qiandi.table.ReceiptAccountTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.ReceiptAccountTable@id}=#{id} </if>
+           <if test="accountNum!=null"> and ${@com.qiandi.table.ReceiptAccountTable@accountNum}=#{accountNum} </if>
+           <if test="account!=null"> and ${@com.qiandi.table.ReceiptAccountTable@account}=#{account} </if>
+           <if test="openBank!=null"> and ${@com.qiandi.table.ReceiptAccountTable@openBank}=#{openBank} </if>
+           <if test="serialNum!=null"> and ${@com.qiandi.table.ReceiptAccountTable@serialNum}=#{serialNum} </if>
+    </select>
+    
+</mapper>

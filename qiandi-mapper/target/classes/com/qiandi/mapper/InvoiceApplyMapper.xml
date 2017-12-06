@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.InvoiceApplyMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="InvoiceApply">
+    	${@com.qiandi.table.InvoiceApplyTable@SQL1}
+       	 #{rechargeRecordId},#{createTime},#{issueObject},#{taxesNumber},#{invoiceNumber},
+       	 #{invoiceMoney},#{header},#{invoiceProject},#{invoiceType},#{recipient},#{provinceId},
+       	 #{cityId},#{regionId},#{detailAddress},#{phoneNum},#{publicAccount},
+       	 #{bankInformation}
+       );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="InvoiceApply">
+    ${@com.qiandi.table.InvoiceApplyTable@SQL2}
+        	${@com.qiandi.table.InvoiceApplyTable@rechargeRecordId} = #{rechargeRecordId},
+        	${@com.qiandi.table.InvoiceApplyTable@createTime} = #{createTime},
+        	${@com.qiandi.table.InvoiceApplyTable@issueObject} = #{issueObject},
+        	${@com.qiandi.table.InvoiceApplyTable@taxesNumber} = #{taxesNumber},
+        	${@com.qiandi.table.InvoiceApplyTable@invoiceNumber} = #{invoiceNumber},
+        	${@com.qiandi.table.InvoiceApplyTable@invoiceMoney} = #{invoiceMoney},
+       	 	${@com.qiandi.table.InvoiceApplyTable@header} = #{header},
+       	 	${@com.qiandi.table.InvoiceApplyTable@invoiceProject} = #{invoiceProject},
+            ${@com.qiandi.table.InvoiceApplyTable@invoiceType} = #{invoiceType},
+            ${@com.qiandi.table.InvoiceApplyTable@recipient} = #{recipient},
+        	${@com.qiandi.table.InvoiceApplyTable@provinceId} = #{provinceId},
+        	${@com.qiandi.table.InvoiceApplyTable@cityId} = #{cityId},
+        	${@com.qiandi.table.InvoiceApplyTable@regionId} = #{regionId},
+        	${@com.qiandi.table.InvoiceApplyTable@detailAddress} = #{detailAddress},
+        	${@com.qiandi.table.InvoiceApplyTable@phoneNum} = #{phoneNum},
+        	${@com.qiandi.table.InvoiceApplyTable@publicAccount} = #{publicAccount},
+        	${@com.qiandi.table.InvoiceApplyTable@bankInformation} = #{bankInformation}
+        where  ${@com.qiandi.table.InvoiceApplyTable@id} = #{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="Integer">
+    ${@com.qiandi.table.InvoiceApplyTable@SQL3} #{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="InvoiceApply" resultType="InvoiceApply">
+    		${@com.qiandi.table.InvoiceApplyTable@SQL}
+        <if test="id!=null"> and ${@com.qiandi.table.InvoiceApplyTable@id} = #{id} </if>
+    </select>
+    
+    <!-- 自定义联合查询方法 -->
+    <select id="customSelect" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+       		 ${@com.qiandi.table.InvoiceApplyTable@SQL}
+           <if test="recordId !=null and recordId !='' and recordId != 'undefined'"> and ${@com.qiandi.table.InvoiceApplyTable@id}=#{recordId} </if>
+           <if test="startTime !=null and startTime !='' and startTime!= 'undefined'"> and to_days(${@com.qiandi.table.InvoiceApplyTable@createTime}) <![CDATA[   >=  ]]> to_days(#{startTime}) </if>
+           <if test="endTime !=null and endTime !='' and endTime != 'undefined'"> and to_days(${@com.qiandi.table.InvoiceApplyTable@createTime}) <![CDATA[   <=  ]]> to_days(#{endTime}) </if>
+           <if test="type !=null and type!='' and type != 'undefined'"> and ${@com.qiandi.table.InvoiceApplyTable@invoiceType}=#{type} </if>
+           <if test="signature !=null and signature!='' and signature != 'undefined'"> and ${@com.qiandi.table.InvoiceApplyTable@header} like "%"#{signature}"%"</if>
+           <if test="identification !=null and identification !='' and identification != 'undefined'"> and ${@com.qiandi.table.InvoiceApplyTable@taxesNumber} like "%"#{identification}"%"</if>
+    </select>
+    
+</mapper>

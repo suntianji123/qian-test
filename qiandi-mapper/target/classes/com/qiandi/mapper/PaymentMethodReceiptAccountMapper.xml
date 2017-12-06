@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.PaymentMethodReceiptAccountMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="PaymentMethodReceiptAccount">
+       insert into t_PaymentMethodReceiptAccounts(orderId,receiptAccountId,imgPath) 
+       values (#{orderId},#{receiptAccountId},imgPath);
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="PaymentMethodReceiptAccount">
+        update t_PaymentMethodReceiptAccounts 
+        set orderId=#{orderId},receiptAccountId=#{receiptAccountId},imgPath=#{imgPath}
+        where  id=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update t_PaymentMethodReceiptAccounts set isDeleted=true where id=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="PaymentMethodReceiptAccount" resultType="PaymentMethodReceiptAccount">
+        select * from t_PaymentMethodReceiptAccounts
+        where isDeleted=false
+           <if test="id!=null"> and id=#{id} </if>
+           <if test="imgPath!=null"> and imgPath=#{imgPath} </if>
+           <if test="name!=null"> and receiptAccountId=#{receiptAccountId} </if>
+    </select>
+    
+</mapper>

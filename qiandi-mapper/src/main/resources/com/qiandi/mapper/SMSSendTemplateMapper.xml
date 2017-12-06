@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.SMSSendTemplateMapper">
+    
+    <insert id="insert" parameterType="SMSSendTemplate">
+        insert into ${@com.qiandi.table.SMSSendTemplateTable@tableName}(
+        ${@com.qiandi.table.SMSSendTemplateTable@id},
+        ${@com.qiandi.table.SMSSendTemplateTable@menberUserId},
+        ${@com.qiandi.table.SMSSendTemplateTable@totalCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@totalPriceCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@sendMode},
+        ${@com.qiandi.table.SMSSendTemplateTable@smsType},
+        ${@com.qiandi.table.SMSSendTemplateTable@recivedSuccessCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@recivedFailCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@recivedUnknownCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@yiDongCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@lianTongCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@dianXingCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@yiDongPriceCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@lianTongPriceCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@dianXingPriceCount},
+        ${@com.qiandi.table.SMSSendTemplateTable@totalPayCount}
+        ) 
+        values(#{id},#{menberUserId},#{totalCount},
+        #{totalPriceCount},#{sendMode},#{smsType},#{recivedSuccessCount},#{recivedFailCount},
+        #{recivedUnknownCount},#{yiDongCount},#{lianTongCount},#{dianXingCount},#{yiDongPriceCount},
+        #{lianTongPriceCount},#{dianXingPriceCount},#{totalPayCount})
+    </insert>
+    
+    <!-- 插入发送短信数据 -->
+	<insert id="insertSendData" parameterType="SMSSendTemplate">
+		insert into ${@com.qiandi.table.SMSSendTemplateTable@tableName}(
+		${@com.qiandi.table.SMSSendTemplateTable@id},
+		${@com.qiandi.table.SMSSendTemplateTable@menberUserId},
+		${@com.qiandi.table.SMSSendTemplateTable@content},
+		${@com.qiandi.table.SMSSendTemplateTable@length},
+		${@com.qiandi.table.SMSSendTemplateTable@segment},
+		${@com.qiandi.table.SMSSendTemplateTable@totalCount},
+		${@com.qiandi.table.SMSSendTemplateTable@totalPayCount},
+		${@com.qiandi.table.SMSSendTemplateTable@totalPriceCount},
+		${@com.qiandi.table.SMSSendTemplateTable@submitTime},
+		${@com.qiandi.table.SMSSendTemplateTable@sendMode},
+		${@com.qiandi.table.SMSSendTemplateTable@sendTime},
+		${@com.qiandi.table.SMSSendTemplateTable@sendStatus},
+		${@com.qiandi.table.SMSSendTemplateTable@smsType},
+		${@com.qiandi.table.SMSSendTemplateTable@yiDongCount},
+		${@com.qiandi.table.SMSSendTemplateTable@lianTongCount},
+		${@com.qiandi.table.SMSSendTemplateTable@dianXingCount},
+		${@com.qiandi.table.SMSSendTemplateTable@yiDongPriceCount},
+		${@com.qiandi.table.SMSSendTemplateTable@lianTongPriceCount},
+		${@com.qiandi.table.SMSSendTemplateTable@dianXingPriceCount}
+		) 
+		values(#{id},#{menberUserId},#{content},#{length},#{segment},#{totalCount},#{totalPayCount},
+		#{totalPriceCount},#{submitTime},#{sendMode},#{sendTime},#{sendStatus},#{smsType},
+		#{yiDongCount},#{lianTongCount},#{dianXingCount},#{yiDongPriceCount},#{lianTongPriceCount},
+		#{dianXingPriceCount})
+	</insert>    
+	
+    <update id="update" parameterType="SMSSendTemplate">
+        
+    </update>
+    
+    <update id="updateReportData" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update ${@com.qiandi.table.SMSSendTemplateTable@tableName}
+	        <set>
+	        	<if test="item.recivedStatus==0">
+	        		${@com.qiandi.table.SMSSendTemplateTable@recivedUnknownCount} = #{item.recivedStatusCount}
+	        	</if>
+	        	<if test="item.recivedStatus==1">
+	        		${@com.qiandi.table.SMSSendTemplateTable@recivedSuccessCount} = #{item.recivedStatusCount}
+	        	</if>
+	        	<if test="item.recivedStatus==2">
+	        		${@com.qiandi.table.SMSSendTemplateTable@recivedFailCount} = #{item.recivedStatusCount}
+	        	</if>
+	        </set>
+    	</foreach>    
+    </update>
+    
+    
+    <delete id="delete" parameterType="long">
+        update ${@com.qiandi.table.SMSSendTemplateTable@tableName} set
+         ${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=true
+          where ${@com.qiandi.table.SMSSendTemplateTable@id}=#{id}
+    </delete>
+    
+    <select id="select" parameterType="SMSSendTemplate" resultType="SMSSendTemplate">
+        select 
+        ${@com.qiandi.table.SMSSendTemplateTable@id} as id,
+		${@com.qiandi.table.SMSSendTemplateTable@menberUserId} as menberUserId,
+		${@com.qiandi.table.SMSSendTemplateTable@content} as content,
+		${@com.qiandi.table.SMSSendTemplateTable@length} as length,
+		${@com.qiandi.table.SMSSendTemplateTable@segment} as segment,
+		${@com.qiandi.table.SMSSendTemplateTable@totalCount} as totalCount,
+		${@com.qiandi.table.SMSSendTemplateTable@totalPayCount} as totalPayCount,
+		${@com.qiandi.table.SMSSendTemplateTable@totalPriceCount} as totalPriceCount,
+		${@com.qiandi.table.SMSSendTemplateTable@submitTime} as submitTime,
+		${@com.qiandi.table.SMSSendTemplateTable@sendMode} as sendMode,
+		${@com.qiandi.table.SMSSendTemplateTable@sendTime} as sendTime,
+		${@com.qiandi.table.SMSSendTemplateTable@sendStatus} as sendStatus,
+		${@com.qiandi.table.SMSSendTemplateTable@smsType} as smsType,
+		${@com.qiandi.table.SMSSendTemplateTable@yiDongCount} as yiDongCount,
+		${@com.qiandi.table.SMSSendTemplateTable@lianTongCount} as lianTongCount,
+		${@com.qiandi.table.SMSSendTemplateTable@dianXingCount} as dianXingCount,
+		${@com.qiandi.table.SMSSendTemplateTable@yiDongPriceCount} as yiDongPriceCount,
+		${@com.qiandi.table.SMSSendTemplateTable@lianTongPriceCount} as lianTongPriceCount,
+		${@com.qiandi.table.SMSSendTemplateTable@dianXingPriceCount} as dianXingPriceCount
+         from ${@com.qiandi.table.SMSSendTemplateTable@tableName}
+        where ${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.SMSSendTemplateTable@id}=#{id} </if>
+    </select>
+    
+    <select id="loadData" parameterType="long" resultType="Map">
+           
+    </select>
+    
+    
+    
+</mapper>

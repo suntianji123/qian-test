@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.InvoiceReviewMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="InvoiceReview">
+    	${@com.qiandi.table.InvoiceReviewTable@SQL1}
+       	  #{id},#{rechargeRecordId},
+       	  #{createTime},#{applyTime},
+       	  #{reviewTime},#{reviewResult},
+       	  #{qianShangUserId},#{invoiceStatus},
+       	  #{invoiceNum},#{invoiceUser},
+       	  #{invoiceNumTime},#{isDeleted}
+       );
+    </insert>
+
+		<!-- 修改方法 -->
+    <update id="update" parameterType="InvoiceReview">
+    		${@com.qiandi.table.InvoiceReviewTable@SQL2}
+        		${@com.qiandi.table.InvoiceReviewTable@rechargeRecordId} = #{rechargeRecordId},
+		   	  	${@com.qiandi.table.InvoiceReviewTable@createTime} = #{createTime},
+		   	  	${@com.qiandi.table.InvoiceReviewTable@applyTime} = #{applyTime},
+		   	 	  ${@com.qiandi.table.InvoiceReviewTable@reviewTime} = #{reviewTime},
+		   	 	  ${@com.qiandi.table.InvoiceReviewTable@reviewResult} = #{reviewResult},
+		   	  	${@com.qiandi.table.InvoiceReviewTable@qianShangUserId} = #{qianShangUserId},
+		   	  	${@com.qiandi.table.InvoiceReviewTable@invoiceStatus} = #{invoiceStatus},
+		   	  	${@com.qiandi.table.InvoiceReviewTable@invoiceNum} = #{invoiceNum},
+		   	  	${@com.qiandi.table.InvoiceReviewTable@invoiceUser} = #{invoiceUser},
+		   	  	${@com.qiandi.table.InvoiceReviewTable@invoiceNumTime} = #{invoiceNumTime},
+        where  ${@com.qiandi.table.InvoiceReviewTable@id} = #{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="Integer">
+    ${@com.qiandi.table.InvoiceReviewTable@SQL3} #{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="InvoiceReview" resultType="InvoiceReview">
+    		${@com.qiandi.table.InvoiceReviewTable@SQL4}
+        <if test="id!=null"> and id=#{id} </if>
+    </select>
+    
+    <!-- 自定义联合查询方法 -->
+    <select id="customSelect" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+       		 ${@com.qiandi.table.InvoiceReviewTable@SQL}
+           <if test="id!=null and id!='' and id != 'undefined'"> and a.id=#{id} </if>
+           <if test="startTime !=null and startTime!='' and startTime != 'undefined'"> and to_days(a.createTime) <![CDATA[   >=  ]]> to_days(#{startTime}) </if>
+           <if test="endTime !=null and endTime!='' and endTime != 'undefined'"> and to_days(a.createTime) <![CDATA[   <=  ]]> to_days(#{endTime})</if>
+           <if test="startTime2 !=null and startTime2!='' and startTime2 != 'undefined'"> and to_days(applyTime) <![CDATA[   >=  ]]> to_days(#{startTime2}) </if>
+           <if test="endTime2 !=null and endTime2!='' and endTime2 != 'undefined'"> and to_days(applyTime) <![CDATA[   <=  ]]> to_days(#{endTime2})</if>
+           <if test="startTime3 !=null and startTime3!='' and startTime3 != 'undefined'"> and  to_days(reviewTime) <![CDATA[   >=  ]]> to_days(#{startTime3}) </if>
+           <if test="endTime3 != null and endTime3 !='' and endTime3 != 'undefined'"> and to_days(reviewTime) <![CDATA[   <=  ]]> to_days(#{endTime3}) </if>
+           <if test="invoiceType !=null and invoiceType !='' and invoiceType != 'undefined'"> and b.invoicetype=#{invoiceType} </if>
+           <if test="invoiceState !=null and invoiceState !='' and invoiceState != 'undefined'"> and a.invoiceStatus=#{invoiceState} </if>
+           <if test="examineResult !=null and examineResult !='' and examineResult != 'undefined'"> and a.reviewResult=#{examineResult} </if>
+           <if test="rechargeId !=null and rechargeId !='' and rechargeId != 'undefined'"> and a.rechargeRecordId=#{rechargeId} </if>
+           <if test="outUnit !=null and outUnit !='' and outUnit != 'undefined'"> and a.id=#{outUnit} </if>   <!-- 出票单位 -->
+           <if test="applyPeople !=null and applyPeople !='' and applyPeople != 'undefined'"> and a.id=#{applyPeople} </if> <!-- 申请人 -->
+           <if test="signature !=null and signature !='' and signature != 'undefined'"> and b.header like "%"#{signature}"%" </if>
+           <if test="identification !=null and identification !='' and identification != 'undefined'"> and b.taxesNumber like "%"#{identification}"%" </if>
+           <if test="obtainPeople !=null and obtainPeople !='' and obtainPeople != 'undefined'"> and b.recipient like "%"#{obtainPeople}"%" </if>
+           <if test="invoiceNumber !=null and invoiceNumber !='' and invoiceNumber != 'undefined'"> and a.invoiceNum like "%"#{invoiceNumber}"%" </if>
+           <if test="showInvoicePeople !=null and showInvoicePeople !='' and showInvoicePeople != 'undefined'"> and a.invoiceUser=#{showInvoicePeople} </if>
+    </select>
+    
+</mapper>

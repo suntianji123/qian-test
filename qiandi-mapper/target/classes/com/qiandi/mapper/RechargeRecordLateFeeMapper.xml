@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.RechargeRecordLateFeeMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="RechargeRecordLateFee">
+    ${@com.qiandi.table.RechargeRecordLateFeeTable@insertSQL} 
+    (
+   	 #{id},#{rechargeRecordId},#{percent},#{amountPayAble},
+   	 #{status},#{lastestPayTime},#{actualPayTime},#{overdueCount},#{isPay},
+   	 #{createTime}
+    );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="RechargeRecordLateFee">
+        update ${@com.qiandi.table.RechargeRecordLateFeeTable@tableName} 
+        set 
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@rechargeRecordId} =#{rechargeRecordId},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@percent} =#{percent},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@amountPayAble} =#{amountPayAble},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@status} =#{status},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@lastestPayTime} =#{lastestPayTime},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@actualPayTime} =#{actualPayTime},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@overdueCount} =#{overdueCount},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@isPay} =#{isPay},
+        ${@com.qiandi.table.RechargeRecordLateFeeTable@createTime} =#{createTime}
+        where  ${@com.qiandi.table.RechargeRecordLateFeeTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.RechargeRecordLateFeeTable@tableName} set ${@com.qiandi.table.RechargeRecordLateFeeTable@isDeleted}=true
+        where ${@com.qiandi.table.RechargeRecordLateFeeTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="RechargeRecordLateFee" resultType="RechargeRecordLateFee">
+         ${@com.qiandi.table.RechargeRecordLateFeeTable@selectSQL}
+         <if test="id!=null">and ${@com.qiandi.table.RechargeRecordLateFeeTable@id} = #{id}</if>
+         <if test="isPay!=null">and ${@com.qiandi.table.RechargeRecordLateFeeTable@isPay} = #{isPay}</if>
+    </select>
+    
+</mapper>

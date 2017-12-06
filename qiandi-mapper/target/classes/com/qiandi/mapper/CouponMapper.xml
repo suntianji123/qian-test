@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.CouponMapper">
+    
+    <insert id="insert" parameterType="Coupon">
+        insert into T_Coupons(money,fullUsed,limitProduct,number) values(#{money},
+        #{fullUsed},#{limitProduct},#{number})
+    </insert>
+
+    <update id="update" parameterType="Coupon">
+        update T_Coupons set
+            money=#{money},
+            fullUsed=#{fullUsed},
+            limitProduct=#{limitProduct},
+            number=#{number}
+        where id=#{id}
+    </update>
+    
+    
+    <delete id="delete" parameterType="long">
+        update T_Coupons set isDeleted=true where id=#{id}
+    </delete>
+    
+    <select id="select" parameterType="Coupon" resultType="Coupon">
+        select * from T_Coupons
+        where isDeleted=false
+           <if test="id!=null"> and id=#{id} </if>
+    </select>
+    
+    <select id="selectData" parameterType="Map" resultType="CouponData">
+        
+    </select>
+    
+</mapper>

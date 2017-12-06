@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.ProvinceMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Province">
+       insert into t_provinces(id,name,isDeleted) 
+       values (#{id},#{name},#{isDeleted});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Province">
+        update t_provinces 
+        set name=#{name},isDeleted=#{isDeleted}
+        where  id=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update t_provinces set isDeleted=true where id=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Province" resultType="Province">
+        select * from t_provinces
+        where isDeleted=false
+           <if test="id!=null"> and id=#{id} </if>
+           <if test="name!=null"> and name=#{name} </if>
+    </select>
+    
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.AisleSMSTypeMapper">
+    
+    <insert id="insert" parameterType="AisleSMSType">
+        ${@com.qiandi.table.AisleSMSTypeTable@insertSQL}
+		(#{aisleId},#{smsTypeId})
+    </insert>
+
+    <update id="update" parameterType="AisleSMSType">
+        update ${@com.qiandi.table.AisleSMSTypeTable@tableName} set
+            ${@com.qiandi.table.AisleSMSTypeTable@aisleId} =#{aisleId},
+            ${@com.qiandi.table.AisleSMSTypeTable@smsTypeId} =#{smsTypeId}
+        where ${@com.qiandi.table.AisleSMSTypeTable@id} =#{id}
+    </update>
+    
+    <delete id="delete" parameterType="long">
+        delete from ${@com.qiandi.table.AisleSMSTypeTable@tableName} where
+         ${@com.qiandi.table.AisleSMSTypeTable@id} =#{id}
+    </delete>
+        
+    <delete id="deleteByFirstId" parameterType="long">
+      ${@com.qiandi.table.AisleSMSTypeTable@deleteByFirstIdSQL} #{aisId}
+    </delete>
+        
+    <delete id="deleteBySecondId" parameterType="long">
+  	${@com.qiandi.table.AisleSMSTypeTable@deleteBySecondId}  #{smsTypeId}
+    </delete>
+
+    
+    <select id="select" parameterType="AisleSMSType" resultType="AisleSMSType">
+       ${@com.qiandi.table.AisleSMSTypeTable@selectSQL} 
+       <where>
+	       <if test="id!=null"> and ${@com.qiandi.table.AisleSMSTypeTable@id} =#{id}</if>
+	       <if test="aisleId!=null"> ${@com.qiandi.table.AisleSMSTypeTable@aisleId} =#{aisleId}</if>
+	       <if test="smsTypeId!=null"> ${@com.qiandi.table.AisleSMSTypeTable@smsTypeId} =#{smsTypeId}</if>
+       </where>
+    </select>
+    
+           
+    <select id="selectFirstListBySecondId" parameterType="long" resultType="Aisle">
+       ${@com.qiandi.table.AisleSMSTypeTable@selectFirstListBySecondIdSQL}  #{smsTypeId}
+    </select> 
+    
+    <select id="selectSecondListByFirstId" parameterType="long" resultType="SMSType">
+       ${@com.qiandi.table.AisleSMSTypeTable@selectSecondListByFirstIdSQL}   #{aisleId}
+    </select>
+    
+    
+    
+    <select id="selectSendAll"  resultType="Map">
+    	${@com.qiandi.table.AisleSMSTypeTable@selectSecondAllSQL}
+    	<if test="smsTypeId!=null"> and  fs.${@com.qiandi.table.AisleSMSTypeTable@smsTypeId} = #{smsTypeId}</if>
+    </select>
+    
+    <delete id="deleteByFirstIdArray">
+		 <!-- 批量删除 -->
+	        ${@com.qiandi.table.AisleSMSTypeTable@deleteByFirstIdArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</delete>   
+    
+</mapper>

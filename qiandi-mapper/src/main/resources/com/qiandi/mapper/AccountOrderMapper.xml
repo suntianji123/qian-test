@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.AccountOrderMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="AccountOrder">
+       insert into ${@com.qiandi.table.AccountOrderTable@tableName}(
+       ${@com.qiandi.table.AccountOrderTable@id},
+       ${@com.qiandi.table.AccountOrderTable@receiptAccountId},
+       ${@com.qiandi.table.AccountOrderTable@rechargeRecordId},
+       ${@com.qiandi.table.AccountOrderTable@amountPayAble},
+       ${@com.qiandi.table.AccountOrderTable@payAccountName},
+       ${@com.qiandi.table.AccountOrderTable@payAccountNum},
+       ${@com.qiandi.table.AccountOrderTable@imgPath},
+       ${@com.qiandi.table.AccountOrderTable@result},
+        ${@com.qiandi.table.AccountOrderTable@auditAdminUserId},
+       ${@com.qiandi.table.AccountOrderTable@createTime}) 
+       values (#{id},#{receiptAccountId},#{rechargeRecordId},#{amountPayAble},#{payAccountName}
+       ,#{payAccountNum},#{imgPath},#{result},#{auditAdminUserId},#{createTime});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="AccountOrder">
+		 update ${@com.qiandi.table.AccountOrderTable@tableName} set
+        ${@com.qiandi.table.AccountOrderTable@receiptAccountId} = #{receiptAccountId},
+       ${@com.qiandi.table.AccountOrderTable@rechargeRecordId}= #{rechargeRecordId},
+       ${@com.qiandi.table.AccountOrderTable@amountPayAble} = #{amountPayAble},
+       ${@com.qiandi.table.AccountOrderTable@payAccountName} = #{payAccountName},
+       ${@com.qiandi.table.AccountOrderTable@payAccountNum} = #{payAccountNum},
+       ${@com.qiandi.table.AccountOrderTable@imgPath} = #{imgPath},
+       ${@com.qiandi.table.AccountOrderTable@result} = #{result},
+        ${@com.qiandi.table.AccountOrderTable@auditAdminUserId} = #{auditAdminUserId},
+       ${@com.qiandi.table.AccountOrderTable@createTime} = #{createTime}
+         where ${@com.qiandi.table.AccountOrderTable@id}=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="int">
+       update ${@com.qiandi.table.AccountOrderTable@tableName} set
+        ${@com.qiandi.table.AccountOrderTable@isDeleted}=true
+         where ${@com.qiandi.table.AccountOrderTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="AccountOrder" resultType="AccountOrder">
+        select 
+        ${@com.qiandi.table.AccountOrderTable@id} as id,
+        ${@com.qiandi.table.AccountOrderTable@receiptAccountId} as receiptAccountId,
+       ${@com.qiandi.table.AccountOrderTable@rechargeRecordId} as rechargeRecordId,
+       ${@com.qiandi.table.AccountOrderTable@amountPayAble} as amountPayAble,
+       ${@com.qiandi.table.AccountOrderTable@payAccountName} as payAccountName,
+       ${@com.qiandi.table.AccountOrderTable@payAccountNum} as payAccountNum,
+       ${@com.qiandi.table.AccountOrderTable@imgPath} as imgPath,
+       ${@com.qiandi.table.AccountOrderTable@result} as result,
+        ${@com.qiandi.table.AccountOrderTable@auditAdminUserId} as auditAdminUserId,
+       ${@com.qiandi.table.AccountOrderTable@createTime} as createTime
+        from ${@com.qiandi.table.AccountOrderTable@tableName}
+        where ${@com.qiandi.table.AccountOrderTable@isDeleted}=false
+           <if test="id!=null"> and 
+           ${@com.qiandi.table.AccountOrderTable@id}=#{id} </if>
+    </select>
+    
+</mapper>

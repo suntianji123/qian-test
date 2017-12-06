@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.OrderMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Order" >
+       insert into ${@com.qiandi.table.OrderTable@tableName}(
+       ${@com.qiandi.table.OrderTable@id},
+       ${@com.qiandi.table.OrderTable@totalAmountPayAble},
+       ${@com.qiandi.table.OrderTable@orderNum},
+       ${@com.qiandi.table.OrderTable@status}
+       ) 
+       values (#{id},#{totalAmountPayAble},#{orderNum},#{status});
+    </insert>
+    
+    <!-- 增加方法 -->
+    <insert id="insertAndGetId" parameterType="Order" >
+     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">  
+      SELECT LAST_INSERT_ID()
+    </selectKey>  
+       insert into ${@com.qiandi.table.OrderTable@tableName}(
+       ${@com.qiandi.table.OrderTable@id},
+       ${@com.qiandi.table.OrderTable@totalAmountPayAble},
+       ${@com.qiandi.table.OrderTable@orderNum},
+       ${@com.qiandi.table.OrderTable@status},
+       ${@com.qiandi.table.OrderTable@createTime},
+       ${@com.qiandi.table.OrderTable@billing}
+       ) 
+       values (#{id},#{totalAmountPayAble},#{orderNum},#{status},#{createTime},#{billing})
+       <!-- <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID() AS id from T_orders
+        </selectKey> -->
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Order">
+        update ${@com.qiandi.table.OrderTable@tableName}  set
+        ${@com.qiandi.table.OrderTable@paymentMethod}=#{paymentMethod},
+        ${@com.qiandi.table.OrderTable@totalAmountPayAble}= #{totalAmountPayAble},
+        ${@com.qiandi.table.OrderTable@orderNum} = #{orderNum},
+        ${@com.qiandi.table.OrderTable@status} = #{status},
+        ${@com.qiandi.table.OrderTable@billing} = #{billing},
+        ${@com.qiandi.table.OrderTable@paymentStatus} = #{paymentStatus}
+        where  ${@com.qiandi.table.OrderTable@id}=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.OrderTable@tableName} set
+        ${@com.qiandi.table.OrderTable@isDeleted}=true
+         where ${@com.qiandi.table.OrderTable@id}=#{id}
+    </update>
+    
+    
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Order" resultType="Order">
+        select 
+        ${@com.qiandi.table.OrderTable@id} as id,
+       ${@com.qiandi.table.OrderTable@totalAmountPayAble} as totalAmountPayAble,
+       ${@com.qiandi.table.OrderTable@orderNum} as orderNum,
+       ${@com.qiandi.table.OrderTable@status} as status,
+       ${@com.qiandi.table.OrderTable@createTime} as createTime,
+       ${@com.qiandi.table.OrderTable@billing} as billing
+        
+        
+        
+        
+        
+        from ${@com.qiandi.table.OrderTable@tableName}
+        where ${@com.qiandi.table.OrderTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.OrderTable@id}=#{id} </if>
+           <if test="status!=null"> and ${@com.qiandi.table.OrderTable@status}=#{status} </if>
+           <if test="orderNum!=null"> and ${@com.qiandi.table.OrderTable@orderNum}=#{orderNum} </if>
+    </select>
+    
+</mapper>

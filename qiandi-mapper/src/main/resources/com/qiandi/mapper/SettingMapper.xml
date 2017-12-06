@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.SettingMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Setting">
+       insert into ${@com.qiandi.table.SettingTable@tableName}(
+       ${@com.qiandi.table.SettingTable@id},
+       ${@com.qiandi.table.SettingTable@name},
+       ${@com.qiandi.table.SettingTable@value}
+       ) 
+       values (#{id},#{name},#{value});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Setting">
+        update ${@com.qiandi.table.SettingTable@tableName} 
+        set ${@com.qiandi.table.SettingTable@name}=#{name},
+        ${@com.qiandi.table.SettingTable@value}=#{value}
+        where  ${@com.qiandi.table.SettingTable@id}=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="int">
+       update ${@com.qiandi.table.SettingTable@tableName} set
+        ${@com.qiandi.table.SettingTable@isDeleted}=true 
+       where ${@com.qiandi.table.SettingTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Setting" resultType="Setting">
+        select 
+        ${@com.qiandi.table.SettingTable@id},
+       ${@com.qiandi.table.SettingTable@name},
+       ${@com.qiandi.table.SettingTable@value}
+         from ${@com.qiandi.table.SettingTable@tableName}
+        where ${@com.qiandi.table.SettingTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.SettingTable@id}=#{id} </if>
+           <if test="name!=null"> and ${@com.qiandi.table.SettingTable@name}=#{name} </if>
+    </select>
+    
+    <update id="updateByName" parameterType="Setting">
+    	update ${@com.qiandi.table.SettingTable@tableName} 
+    	set 
+    		${@com.qiandi.table.SettingTable@value} = #{value}
+    	where 	${@com.qiandi.table.SettingTable@name} = #{name}
+    </update>
+    
+</mapper>

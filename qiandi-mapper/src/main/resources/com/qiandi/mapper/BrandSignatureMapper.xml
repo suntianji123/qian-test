@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.BrandSignatureMapper">
+    
+    <insert id="insert" parameterType="BrandSignature">
+    ${@com.qiandi.table.BrandSignatureTable@SQL1}
+        #{originalSignature},
+        #{newSignature},
+        #{updateReason},
+        #{menberUserId},
+        #{createTime},
+        #{status},
+        #{result},
+        #{reviewTime},
+        #{rejectReason})
+    </insert>
+
+    <update id="update" parameterType="BrandSignature">
+	    		${@com.qiandi.table.BrandSignatureTable@SQL2}
+	        ${@com.qiandi.table.BrandSignatureTable@originalSignature} = #{originalSignature},
+	        ${@com.qiandi.table.BrandSignatureTable@newSignature} = #{newSignature},
+	        ${@com.qiandi.table.BrandSignatureTable@updateReason} = #{updateReason},
+	        ${@com.qiandi.table.BrandSignatureTable@menberUserId} = #{menberUserId},
+	        ${@com.qiandi.table.BrandSignatureTable@createTime} = #{createTime},
+	        ${@com.qiandi.table.BrandSignatureTable@status} = #{status},
+	        ${@com.qiandi.table.BrandSignatureTable@result} = #{result},
+	        ${@com.qiandi.table.BrandSignatureTable@reviewTime} = #{reviewTime},
+	        ${@com.qiandi.table.BrandSignatureTable@rejectReason} = #{rejectReason}
+        where ${@com.qiandi.table.BrandSignatureTable@id} = #{id}
+    </update>
+    
+    
+    <delete id="delete" parameterType="long">
+    		${@com.qiandi.table.BrandSignatureTable@SQL3} #{id}
+    </delete>
+    
+    <select id="select" parameterType="BrandSignature" resultType="BrandSignature">
+   			 ${@com.qiandi.table.BrandSignatureTable@SQL4}
+         <if test="id!=null"> and ${@com.qiandi.table.BrandSignatureTable@id} = #{id} </if>
+         <if test="menberUserId!=null"> and ${@com.qiandi.table.BrandSignatureTable@menberUserId} = #{menberUserId} </if>
+    </select>
+    
+    
+     <!-- 自定义联合查询方法 -->
+    <select id="customSelect" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+        	 ${@com.qiandi.table.BrandSignatureTable@SQL}
+           <if test="recordId!=null and recordId!='' and recordId != 'undefined'"> and id=#{recordId} </if>
+           <if test="result!=null and result!='' and result != 'undefined'"> and result=#{result} </if>
+           <if test="applyStartTime!=null and applyStartTime!='' and applyStartTime!= 'undefined'"> and to_days(createTime) <![CDATA[   >=  ]]> to_days(#{applyStartTime}) </if>
+           <if test="applyEndTime!=null and applyEndTime!='' and applyEndTime != 'undefined'"> and to_days(createTime) <![CDATA[   <=  ]]> to_days(#{applyEndTime}) </if>
+           <if test="examineStartTime!=null and examineStartTime!='' and examineStartTime != 'undefined'"> and to_days(reviewTime) <![CDATA[   >=  ]]> to_days(#{examineStartTime}) </if>
+           <if test="examineEndTime!=null and examineEndTime!='' and examineEndTime != 'undefined'"> and to_days(reviewTime) <![CDATA[   <=  ]]> to_days(#{examineEndTime}) </if>
+    </select>
+
+     <!-- 自定义查询最新品牌方法 -->
+    <select id="logoSelect"  resultType="BrandSignature">
+    		${@com.qiandi.table.BrandSignatureTable@SQL5}
+    </select>
+    
+</mapper>

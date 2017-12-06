@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.MenberUserSettingChannelAisleHistoryMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="MenberUserSettingChannelAisleHistory">
+      ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@insertSQL}
+       (
+       #{id},#{type},#{channelId},#{menberUserSettingId},
+       #{yiDongAisleId},#{lianTongAisleId},#{dianXingAisleId},#{addAdminUserId},
+       #{createTime}
+       );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="MenberUserSettingChannelAisleHistory">
+        update ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@tableName} 
+        set 
+        ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@name} =#{name},
+        ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@parentId} =#{parentId},
+        ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@level} =#{level}
+        where  ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@tableName} set ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@isDeleted}=true
+        where ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="MenberUserSettingChannelAisleHistory" resultType="MenberUserSettingChannelAisleHistory">
+        select 
+        ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@id} as id,
+       ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@name} as name,
+       ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@parentId} as parentId,
+       ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@level} as level
+         from ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@tableName}
+        where ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{name})"> and ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@name}=#{name} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{parentId})"> and ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@parentId}=#{parentId} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{level})"> and ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@level}=#{level} </if>
+    </select>
+    
+    <select id="selectData" parameterType="Map" resultType="MenberUserSettingChannelAisleHistoryData">
+    	 ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@selectSQL_admin}
+    	 <if test="id!=null"> and mca.${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@id} = #{id}</if>
+    	 <if test="yiDongAisleId!=null"> and mca.${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@yiDongAisleId} = #{yiDongAisleId}</if>
+    	 <if test="lianTongAisleId!=null"> and mca.${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@lianTongAisleId} = #{lianTongAisleId}</if>
+    	 <if test="dianXingAisleId!=null"> and mca.${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@dianXingAisleId} = #{dianXingAisleId}</if>
+    	 <if test="type==false and name!=null"> and mu.${@com.qiandi.table.MenberUserTable@accountName} = #{name}</if>
+    	 <if test="type==true and name!=null"> and c.${@com.qiandi.table.ChannelTable@name} like "%"#{name}"%"</if>
+    	 <if test="type!=null"> and mca.${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@type} = #{type}</if>
+    	 <if test="beginTime!=null">and mca.${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@createTime} &gt;= #{beginTime}</if>
+   	 	<if test="endTime!=null">and mca.${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@createTime} &lt;= #{endTime}</if>
+    	 ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@selectOrderBySQL}
+    </select>
+    
+     		 <!-- 批量删除 -->
+    	<update id="deleteByArray" >
+	        ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@deleteByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	<select id="selectByArray" parameterType="Map"  resultType="MenberUserSettingChannelAisleHistoryData" >
+    		${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@selectSQL_admin}
+	        ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			 ${@com.qiandi.table.MenberUserSettingChannelAisleHistoryTable@selectOrderBySQL}
+    	</select>
+    
+</mapper>

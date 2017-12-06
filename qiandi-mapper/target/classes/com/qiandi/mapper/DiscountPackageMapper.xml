@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.DiscountPackageMapper">
+    
+    <insert id="insert" parameterType="DiscountPackage">
+    ${@com.qiandi.table.DiscountPackageTable@insertSQL} 
+    (#{id},#{price},#{totalCount},#{createTime},#{isShelved});
+    </insert>
+
+    <update id="update" parameterType="DiscountPackage">
+        ${@com.qiandi.table.DiscountPackageTable@updateSQL_tableName} 
+        ${@com.qiandi.table.DiscountPackageTable@updateSQL_price} #{price}, 
+        ${@com.qiandi.table.DiscountPackageTable@updateSQL_totalCount} #{totalCount}, 
+        ${@com.qiandi.table.DiscountPackageTable@updateSQL_createTime} #{createTime}, 
+        ${@com.qiandi.table.DiscountPackageTable@updateSQL_isShelved} #{isShelved}
+        ${@com.qiandi.table.DiscountPackageTable@updateSQL_where}
+         ${@com.qiandi.table.DiscountPackageTable@updateSQL_id} #{id}
+    </update>
+    
+    
+    <update id="delete" parameterType="long">
+       ${@com.qiandi.table.DiscountPackageTable@deleteSQL}  #{id}
+    </update>
+    
+    <!-- 批量删除 -->
+    <update id="deleteByArray" >
+	      ${@com.qiandi.table.DiscountPackageTable@deleteByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	<update id="updateShelved" parameterType="Map">
+       ${@com.qiandi.table.DiscountPackageTable@updateShelvedSQL_start}  #{isShelved} 
+       ${@com.qiandi.table.DiscountPackageTable@updateShelvedSQL_end}  #{id}
+    </update>
+    
+    <!-- 批量上架 -->
+    <update id="updateShelvedTrueByArray" >
+	      ${@com.qiandi.table.DiscountPackageTable@updateShelvedByArrayTrueSQL}
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	<!-- 批量上架 -->
+    <update id="updateShelvedFalseByArray" >
+	     ${@com.qiandi.table.DiscountPackageTable@updateShelvedByArrayFalseSQL}
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    
+    <select id="select" parameterType="DiscountPackage" resultType="DiscountPackage">
+        ${@com.qiandi.table.DiscountPackageTable@selectSQL}
+           <if test="id!=null"> ${@com.qiandi.table.DiscountPackageTable@selectSQL_id} #{id}</if>
+           <if test="isShelved!=null"> ${@com.qiandi.table.DiscountPackageTable@selectSQL_isShelved} #{isShelved}</if>
+    </select>
+    
+</mapper>

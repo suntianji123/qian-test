@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.MenberUserSettingChannelHistoryMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="MenberUserSettingChannelHistory">
+    ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@insertSQL}
+       (#{id},#{channelId},#{menberUserSettingId},#{addAdminUserId},#{createTime});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="MenberUserSettingChannelHistory">
+        update ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@tableName} 
+        set 
+        ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@name} =#{name},
+        ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@parentId} =#{parentId},
+        ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@level} =#{level}
+        where  ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@tableName} set ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@isDeleted}=true
+        where ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="MenberUserSettingChannelHistory" resultType="MenberUserSettingChannelHistory">
+       
+    </select>
+    
+    <select id="selectData" parameterType="Map" resultType="MenberUserSettingChannelHistoryData">
+    	${@com.qiandi.table.MenberUserSettingChannelHistoryTable@selectSQL_admin} 
+    	<if test="id!=null">and mc.${@com.qiandi.table.MenberUserSettingChannelHistoryTable@id} = #{id} </if>
+    	<if test="menberUserAccountName!=null">and mu.${@com.qiandi.table.MenberUserTable@accountName} = #{menberUserAccountName} </if>
+    	<if test="channelId!=null">and c.${@com.qiandi.table.ChannelTable@id} =  #{channelId} </if>
+    	<if test="addAdminUserName!=null">and au.${@com.qiandi.table.AdminUserTable@name} = #{addAdminUserName} </if>
+	    <if test="beginTime!=null">and mc.${@com.qiandi.table.ChannelTable@createTime} &gt;= #{beginTime}</if>
+	   	 <if test="endTime!=null">and mc.${@com.qiandi.table.ChannelTable@createTime} &lt;= #{endTime}</if>
+	   	 ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@selectOrderBySQL}
+    </select>
+    
+    <update id="deleteByArray">
+	    ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@deleteByArraySQL}
+	    <foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+		</foreach>
+    </update>
+    
+    <select id="selectByArray" resultType="MenberUserSettingChannelHistoryData">
+    	${@com.qiandi.table.MenberUserSettingChannelHistoryTable@selectSQL_admin} 
+    	${@com.qiandi.table.MenberUserSettingChannelHistoryTable@selectByArraySQL} 
+    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+		</foreach>
+		 ${@com.qiandi.table.MenberUserSettingChannelHistoryTable@selectOrderBySQL}
+    </select>
+    
+    
+</mapper>

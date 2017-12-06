@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.RepaymentMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Repayment">
+       ${@com.qiandi.table.RepaymentTable@insertSQL} 
+       (
+       #{id},#{rechargeRecordId},#{lastestRepaymentTime},#{actualRepaymentTime},
+       #{remainingRepaymentCount},#{repaymentResult},#{remainingLateFeeCount},#{havingLateFeeCount},
+       #{totalLateFeeCount},#{overdueCount},#{percent},#{percentOne},#{percentTwo},#{percentThree},
+       #{percentFour},#{waitAuditLateFeeCount},#{waitAuditRepaymentCount}
+       
+       );
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Repayment">
+        update ${@com.qiandi.table.RepaymentTable@tableName} 
+        set 
+        ${@com.qiandi.table.RepaymentTable@rechargeRecordId} =#{rechargeRecordId},
+        ${@com.qiandi.table.RepaymentTable@lastestRepaymentTime} =#{lastestRepaymentTime},
+         ${@com.qiandi.table.RepaymentTable@actualRepaymentTime} =#{actualRepaymentTime},
+        ${@com.qiandi.table.RepaymentTable@remainingRepaymentCount} =#{remainingRepaymentCount},
+         ${@com.qiandi.table.RepaymentTable@repaymentResult} =#{repaymentResult},
+        ${@com.qiandi.table.RepaymentTable@remainingLateFeeCount} =#{remainingLateFeeCount},
+         ${@com.qiandi.table.RepaymentTable@havingLateFeeCount} =#{havingLateFeeCount},
+        ${@com.qiandi.table.RepaymentTable@totalLateFeeCount} =#{totalLateFeeCount},
+         ${@com.qiandi.table.RepaymentTable@overdueCount} =#{overdueCount},
+          ${@com.qiandi.table.RepaymentTable@percentOne} =#{percentOne},
+           ${@com.qiandi.table.RepaymentTable@percentTwo} =#{percentTwo},
+            ${@com.qiandi.table.RepaymentTable@percentThree} =#{percentThree},
+             ${@com.qiandi.table.RepaymentTable@percentFour} =#{percentFour},
+             ${@com.qiandi.table.RepaymentTable@waitAuditLateFeeCount} =#{waitAuditLateFeeCount},
+             ${@com.qiandi.table.RepaymentTable@waitAuditRepaymentCount} =#{waitAuditRepaymentCount},
+        ${@com.qiandi.table.RepaymentTable@percent} =#{percent}
+        where  ${@com.qiandi.table.RepaymentTable@id} =#{id} and
+        ${@com.qiandi.table.RepaymentTable@isDeleted} =false
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.RepaymentTable@tableName} set ${@com.qiandi.table.RepaymentTable@isDeleted}=true
+        where ${@com.qiandi.table.RepaymentTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Repayment" resultType="Repayment">
+        ${@com.qiandi.table.RepaymentTable@selectSQL}
+           <if test="id!=null"> and ${@com.qiandi.table.RepaymentTable@id}=#{id} </if>
+           <if test="repaymentResult!=null"> and ${@com.qiandi.table.RepaymentTable@repaymentResult}=#{repaymentResult} </if>
+    </select>
+    
+</mapper>

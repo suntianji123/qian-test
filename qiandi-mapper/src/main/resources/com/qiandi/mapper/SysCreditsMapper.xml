@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.SysCreditsMapper">
+	<select id="select" resultType="SysCredits" parameterType="SysCredits">
+		<!-- 带审核记录 -->
+		${@com.qiandi.table.SysCreditsTable@seclect_admin}
+		<if test="id!=null and id!=''">${@com.qiandi.table.SysCreditsTable@select_id} like
+			concat('%',#{id},'%')</if>
+			<if test="menberUserId!=null">
+				and ${@com.qiandi.table.SysCreditsTable@menberUserId} = #{menberUserId}
+			</if>
+		<if test="accountName!=null and accountName!=''">${@com.qiandi.table.SysCreditsTable@select_accountName}
+			like
+			concat('%',#{accountName},'%')</if>
+		<if test="beginTime!=null and endTime!=null">${@com.qiandi.table.SysCreditsTable@selectBeginTimeNotNullSQL_admin}
+			between #{beginTime}
+			and #{endTime}
+		</if>
+		<if test="qsname!=null and qsname!=''">${@com.qiandi.table.SysCreditsTable@select_name} like
+			concat('%',#{qsname},'%')</if>
+		${@com.qiandi.table.SysCreditsTable@selectOrderBySQL_admin}
+	</select>
+
+	<!-- 批量查询 -->
+	<select id="selectAll" resultType="SysCredits">
+		${@com.qiandi.table.SysCreditsTable@seclect_admin}
+		<foreach collection="id" close=")" open="(" separator=","
+			item="item">
+			#{item}
+		</foreach>
+	</select>
+	<!-- 审核失败 -->
+	<update id="failure">
+		${@com.qiandi.table.SysCreditsTable@seclect_failure} #{reviewTime} and
+		${@com.qiandi.table.SysCreditsTable@Auditresults} =#{Auditresults}
+		where ${@com.qiandi.table.SysCreditsTable@id} in
+		<foreach collection="id" close=")" open="(" separator=","
+			item="item">
+			#{item}
+		</foreach>
+	</update>
+
+	<!-- 审核通过 -->
+	<update id="pass">
+		${@com.qiandi.table.SysCreditsTable@seclect_pass} #{reviewTime}
+		where
+		${@com.qiandi.table.SysCreditsTable@id} in
+		<foreach collection="id" close=")" open="(" separator=","
+			item="item">
+			#{item}
+		</foreach>
+	</update>
+	<!-- 授信额度审批记录 -->
+	<select id="recording" resultType="SysCredits" parameterType="SysCredits">
+		${@com.qiandi.table.SysCreditsTable@seclect_recording}
+		<if test="id!=null and id!=''">${@com.qiandi.table.SysCreditsTable@select_id} like
+			concat('%',#{id},'%')</if>
+		<if test="accountName!=null and accountName!=''">${@com.qiandi.table.SysCreditsTable@select_accountName}
+			like
+			concat('%',#{accountName},'%')</if>
+		<if test="beginTime!=null and endTime!=null">${@com.qiandi.table.SysCreditsTable@selectBeginTimeNotNullSQL_admin}
+			between #{beginTime}
+			and #{endTime}
+		</if>
+		<if test="qsname!=null and qsname!=''">${@com.qiandi.table.SysCreditsTable@select_name} like
+			concat('%',#{qsname},'%')</if>
+		<if test="beginaccountPeriod!=null and endaccountPeriod!=null">${@com.qiandi.table.SysCreditsTable@select_accountPeriod}
+			between #{beginaccountPeriod}
+			and #{endaccountPeriod}
+		</if>
+		<if test="status!=null and status!=''">${@com.qiandi.table.SysCreditsTable@select_reviewStatus}
+			#{status}
+		</if>
+		<if test="aname!=null and aname!=''">${@com.qiandi.table.SysCreditsTable@select_aname} like
+			concat('%',#{aname},'%')</if>
+		<if test="beginreviewTime!=null and endreviewTime!=null"> ${@com.qiandi.table.SysCreditsTable@select_reviewTime}
+			between #{beginreviewTime}
+			and #{endreviewTime}
+		</if>
+		${@com.qiandi.table.SysCreditsTable@select_admin}
+	</select>
+	<!-- 授信额度审批记录(删除) -->
+	<delete id="del">
+		${@com.qiandi.table.SysCreditsTable@seclect_del}
+		<foreach collection="id" close=")" open="(" separator=","
+			item="item">
+			#{item}
+		</foreach>
+	</delete>
+	<!-- 授信额度审批记录(批量查询) -->
+	<select id="recordingAll" resultType="SysCredits">
+		${@com.qiandi.table.SysCreditsTable@seclect_recording}
+		${@com.qiandi.table.SysCreditsTable@select_id} in
+		<foreach collection="id" close=")" open="(" separator=","
+			item="item">
+			#{item}
+		</foreach>
+	</select>
+	<!-- 授信设置 -->
+	<select id="credit" resultType="SysCredits">
+		${@com.qiandi.table.SysCreditsTable@select_credit} #{accountName}
+	</select>
+	<insert id="add">
+		${@com.qiandi.table.SysCreditsTable@add}
+		#{cid},#{id},#{quota},#{accountPeriod},#{applyTime},
+		#{qid},#{reviewStatus},#{founder},0)
+	</insert>
+
+	<!-- 授信设置记录查询 -->
+	<select id="creditRecording" resultType="SysCredits">
+		${@com.qiandi.table.SysCreditsTable@seclect_creditRecording}
+		<if test="accountName!=null and accountName!=''">${@com.qiandi.table.SysCreditsTable@select_accountName}
+			like
+			concat('%',#{accountName},'%')</if>
+		<if test="beginTime!=null and endTime!=null">${@com.qiandi.table.SysCreditsTable@selectBeginTimeNotNullSQL_admin}
+			between #{beginTime}
+			and #{endTime}
+		</if>
+		<if test="id!=null and id!=''">${@com.qiandi.table.SysCreditsTable@select_id} like
+			concat('%',#{id},'%')</if>
+		<if test="beginaccountPeriod!=null and endaccountPeriod!=null">${@com.qiandi.table.SysCreditsTable@select_accountPeriod}
+			between #{beginaccountPeriod}
+			and #{endaccountPeriod}
+		</if>
+		<if test="qsname!=null and qsname!=''">${@com.qiandi.table.SysCreditsTable@select_qname} like
+			concat('%',#{qsname},'%')</if>
+		<if test="beginquota!=null and endquota!=null">${@com.qiandi.table.SysCreditsTable@select_quota}
+			between
+			#{beginquota}
+			and #{endquota}
+		</if>
+		${@com.qiandi.table.SysCreditsTable@select_time}
+	</select>
+
+	<!-- 授信设置记录查询批量查询 -->
+	<select id="batchquery" resultType="SysCredits">
+		${@com.qiandi.table.SysCreditsTable@seclect_creditRecording}
+		${@com.qiandi.table.SysCreditsTable@select_id} in
+		<foreach collection="id" close=")" open="(" separator=","
+			item="item">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

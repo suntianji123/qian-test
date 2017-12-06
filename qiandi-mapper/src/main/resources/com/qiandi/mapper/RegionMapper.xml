@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.RegionMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="Region">
+       insert into t_regions(cityId,name,isDeleted) 
+       values (#{cityId},#{name},#{isDeleted});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="Region">
+        update t_regions 
+        set name=#{name},cityId=#{cityId}
+        where  id=#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update t_regions set isDeleted=true where id=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="Region" resultType="Region">
+        select * from t_regions
+        where isDeleted=false
+           <if test="id!=null"> and id=#{id} </if>
+           <if test="name!=null"> and name=#{name} </if>
+           <if test="cityId!=null"> and cityId=#{cityId} </if>
+            <if test="provinceId!=null"> and provinceId=#{provinceId} </if>
+    </select>
+    
+</mapper>

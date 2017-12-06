@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.QianShangUserMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="QianShangUser">
+			  ${@com.qiandi.table.QianShangUserTable@insertSQL} 
+			 (
+				#{id},#{leaderId},#{managerId},#{addQianShangUserId},
+				#{addAdminUserId},#{level},#{accountName},#{phoneNum},
+				#{name},#{password},#{passwordSalt},#{position},
+				#{department},#{email},#{weiXinNum},#{qqNum},
+				#{createTime},#{price}
+			);
+    </insert>
+    
+	 <!-- 修改方法 -->
+    <update id="update" parameterType="QianShangUser">
+        update ${@com.qiandi.table.QianShangUserTable@tableName}
+        set 
+        	 ${@com.qiandi.table.QianShangUserTable@leaderId} = #{leaderId},
+       	 	 ${@com.qiandi.table.QianShangUserTable@managerId} = #{managerId},
+       	   	 ${@com.qiandi.table.QianShangUserTable@addQianShangUserId} = #{addQianShangUserId},
+      	     ${@com.qiandi.table.QianShangUserTable@addAdminUserId} = #{addAdminUserId},
+      	     ${@com.qiandi.table.QianShangUserTable@level} = #{level},
+      	     ${@com.qiandi.table.QianShangUserTable@accountName} = #{accountName},
+      	     ${@com.qiandi.table.QianShangUserTable@phoneNum} = #{phoneNum},
+      	     ${@com.qiandi.table.QianShangUserTable@name} = #{name},
+      	     ${@com.qiandi.table.QianShangUserTable@password} = #{password},
+      	     ${@com.qiandi.table.QianShangUserTable@passwordSalt} = #{passwordSalt},
+      	     ${@com.qiandi.table.QianShangUserTable@position} = #{position},
+      	     ${@com.qiandi.table.QianShangUserTable@department} = #{department},
+      	     ${@com.qiandi.table.QianShangUserTable@email} = #{email},
+     		 ${@com.qiandi.table.QianShangUserTable@weiXinNum} = #{weiXinNum},
+       	 	 ${@com.qiandi.table.QianShangUserTable@qqNum} = #{qqNum},
+       	   	 ${@com.qiandi.table.QianShangUserTable@createTime} = #{createTime},
+      	     ${@com.qiandi.table.QianShangUserTable@price} = #{price} 
+      	  where     ${@com.qiandi.table.QianShangUserTable@id} = #{id} 
+      	   
+        
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="int">
+       update t_qianshangusers set isDeleted=true where id=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="QianShangUser" resultType="QianShangUser">
+       ${@com.qiandi.table.QianShangUserTable@selectSQL}
+       <if test="id!=null">and  ${@com.qiandi.table.QianShangUserTable@id} = #{id}</if>
+       <if test="phoneNum!=null">and  ${@com.qiandi.table.QianShangUserTable@phoneNum} = #{phoneNum}</if>
+       <if test="managerId!=null">and  ${@com.qiandi.table.QianShangUserTable@managerId} = #{managerId}</if>
+       
+    </select>
+    
+    <select id="selectPriceById" parameterType="int" resultType="Double">
+    	select price from t_qianShangUsers where id = #{id} and isDeleted = false;
+    </select>
+    
+    <!-- 选择操作员 -->
+    <select id="selectManagerData" parameterType="Map" resultType="QianShangUserManagerData">
+    	${@com.qiandi.table.QianShangUserTable@selectManagerSQL_admin} 
+    	<if test="id!=null">${@com.qiandi.table.QianShangUserTable@selectIdNotNullSQL_admin} #{id}</if>
+    	<if test="accountName!=null">${@com.qiandi.table.QianShangUserTable@selectAccountNameNotNullSQL_admin} #{accountName}</if>
+    	<if test="name!=null">${@com.qiandi.table.QianShangUserTable@selectNameNotNullSQL_admin} "%"#{name}"%" </if>
+    	<if test="phoneNum!=null">${@com.qiandi.table.QianShangUserTable@selectPhoneNumNotNullSQL_admin}  #{phoneNum}</if>
+    	<if test="managerName!=null">${@com.qiandi.table.QianShangUserTable@selectManagerNameNotNullSQL_admin}  "%"#{managerName} "%"</if>
+    	<if test="beginTime!=null and endTime!= null">
+            and ${@com.qiandi.table.QianShangUserTable@selectBeginTimeNotNullSQL_admin}  #{beginTime} 
+           	and ${@com.qiandi.table.QianShangUserTable@selectEndTimeNotNullSQL_admin}  #{endTime} 
+            </if>
+    	${@com.qiandi.table.QianShangUserTable@selectOrderBySQL_admin} 
+    </select> 
+    
+    		 <!-- 批量选择 -->
+   	 <select id="selectByArray" resultType="QianShangUserManagerData">
+	        ${@com.qiandi.table.QianShangUserTable@selectManagerSQL_admin} 
+	        ${@com.qiandi.table.QianShangUserTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.QianShangUserTable@selectOrderBySQL_admin} 
+    	</select>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.PermissionMapper">
+    
+    <insert id="insert" parameterType="Permission">
+        insert into ${@com.qiandi.table.PermissionTable@tableName}(
+        ${@com.qiandi.table.PermissionTable@type},
+        ${@com.qiandi.table.PermissionTable@path},
+        ${@com.qiandi.table.PermissionTable@description}) values(#{type},#{path},#{description})
+    </insert>
+
+    <update id="update" parameterType="Permission">
+        update ${@com.qiandi.table.PermissionTable@tableName} set
+        	${@com.qiandi.table.PermissionTable@type}=#{type},
+            ${@com.qiandi.table.PermissionTable@path}=#{path},
+            ${@com.qiandi.table.PermissionTable@description}=#{description}
+        where  ${@com.qiandi.table.PermissionTable@id}=#{id}
+    </update>
+    
+    <delete id="delete" parameterType="long">
+        update ${@com.qiandi.table.PermissionTable@tableName} set 
+        ${@com.qiandi.table.PermissionTable@isDeleted}=true where
+         ${@com.qiandi.table.PermissionTable@id}=#{id}
+    </delete>
+
+    
+    <select id="select" parameterType="Permission" resultType="Permission">
+        select 
+        	 ${@com.qiandi.table.PermissionTable@id} as id,
+        	 ${@com.qiandi.table.PermissionTable@type} as type,
+        	 ${@com.qiandi.table.PermissionTable@path} as path,
+        	 ${@com.qiandi.table.PermissionTable@description} as description
+        from ${@com.qiandi.table.PermissionTable@tableName}
+        where  ${@com.qiandi.table.PermissionTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.PermissionTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{type})">and ${@com.qiandi.table.PermissionTable@type}=#{type}</if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{path})"> and ${@com.qiandi.table.PermissionTable@path}=#{path} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{description})"> and ${@com.qiandi.table.PermissionTable@description} like #{description} </if>
+    </select>
+    
+</mapper>

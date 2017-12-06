@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.SMSTypeMapper">
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="SMSType">
+       insert into ${@com.qiandi.table.SMSTypeTable@tableName}(
+       ${@com.qiandi.table.SMSTypeTable@id},
+       ${@com.qiandi.table.SMSTypeTable@name},
+       ${@com.qiandi.table.SMSTypeTable@createTime},
+       ${@com.qiandi.table.SMSTypeTable@addAdminUserId}
+       ) 
+       values (#{id},#{name},#{createTime},#{addAdminUserId});
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="SMSType">
+        update ${@com.qiandi.table.SMSTypeTable@tableName} 
+        set 
+        ${@com.qiandi.table.SMSTypeTable@name} =#{name},
+        ${@com.qiandi.table.SMSTypeTable@createTime} =#{createTime},
+        ${@com.qiandi.table.SMSTypeTable@addAdminUserId} =#{addAdminUserId}
+        where  ${@com.qiandi.table.SMSTypeTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.SMSTypeTable@tableName} set ${@com.qiandi.table.SMSTypeTable@isDeleted}=true
+        where ${@com.qiandi.table.SMSTypeTable@id}=#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="SMSType" resultType="SMSType">
+        select 
+        ${@com.qiandi.table.SMSTypeTable@id} as id,
+       ${@com.qiandi.table.SMSTypeTable@name} as name,
+       ${@com.qiandi.table.SMSTypeTable@createTime} as createTime,
+       ${@com.qiandi.table.SMSTypeTable@addAdminUserId} as addAdminUserId
+         from ${@com.qiandi.table.SMSTypeTable@tableName}
+        where ${@com.qiandi.table.SMSTypeTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.SMSTypeTable@id}=#{id}</if>
+           <if test="name!=null"> and ${@com.qiandi.table.SMSTypeTable@name}=#{name} </if>
+    </select>
+    
+     <!-- 查询方法 -->
+    <select id="selectData" parameterType="Map" resultType="SMSTypeData">
+        select 
+        st.${@com.qiandi.table.SMSTypeTable@id} as id,
+       st.${@com.qiandi.table.SMSTypeTable@name} as name,
+       st.${@com.qiandi.table.SMSTypeTable@createTime} as createTime,
+       au.${@com.qiandi.table.SMSTypeTable@name} as addAdminUserName
+         from ${@com.qiandi.table.SMSTypeTable@tableName} st
+         left join ${@com.qiandi.table.AdminUserTable@tableName} au on
+         st.${@com.qiandi.table.SMSTypeTable@addAdminUserId} = au.${@com.qiandi.table.AdminUserTable@id}
+        where st.${@com.qiandi.table.SMSTypeTable@isDeleted}=false
+           <if test="id!=null"> and st.${@com.qiandi.table.SMSTypeTable@id}=#{id}</if>
+           <if test="name!=null"> and st.${@com.qiandi.table.SMSTypeTable@name}=#{name} </if>
+           <if test="beginTime!=null and endTime!= null">
+            and st.${@com.qiandi.table.SMSTypeTable@createTime}  &gt;= #{beginTime} 
+           	and st.${@com.qiandi.table.SMSTypeTable@createTime}  &lt;= #{endTime} 
+            </if>
+            order by st.${@com.qiandi.table.SMSTypeTable@createTime} desc
+    </select>
+    
+    <!-- 批量删除 -->
+    <update id="deleteByArray" >
+	       update ${@com.qiandi.table.SMSTypeTable@tableName} set
+	        ${@com.qiandi.table.SMSTypeTable@isDeleted} = true 
+	        where ${@com.qiandi.table.SMSTypeTable@id} in 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	
+    	<!-- 批量查找 -->
+    <select id="selectByArray" resultType="SMSTypeData">
+	        select 
+        st.${@com.qiandi.table.SMSTypeTable@id} as id,
+       st.${@com.qiandi.table.SMSTypeTable@name} as name,
+       st.${@com.qiandi.table.SMSTypeTable@createTime} as createTime,
+       au.${@com.qiandi.table.SMSTypeTable@name} as addAdminUserName
+         from ${@com.qiandi.table.SMSTypeTable@tableName} st
+         left join ${@com.qiandi.table.AdminUserTable@tableName} au on
+         st.${@com.qiandi.table.SMSTypeTable@addAdminUserId} = au.${@com.qiandi.table.AdminUserTable@id}
+        where st.${@com.qiandi.table.SMSTypeTable@isDeleted}=false and  st.${@com.qiandi.table.SMSTypeTable@id} in
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</select>
+</mapper>

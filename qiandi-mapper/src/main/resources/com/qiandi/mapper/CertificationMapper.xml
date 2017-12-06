@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.CertificationMapper">
+    
+    <insert id="insert" parameterType="Certification">
+        insert into T_Certificatons(menberUserId,submitTime,qianShangUserId,reviewTime,status) values(#{menberUserId},
+        #{submitTime},#{qianShangUserId},#{reviewTime},#{status})
+    </insert>
+
+    <update id="update" parameterType="Certification">
+        update T_Certificatons set
+            menberUserId=#{menberUserId},
+            submitTime=#{submitTime},
+            qianShangUserId=#{qianShangUserId},
+            reviewTime=#{reviewTime},
+            status=#{status}
+        where id=#{id}
+    </update>
+    
+    
+    <delete id="delete" parameterType="long">
+        update T_Certificatons set isDeleted=true where id=#{id}
+    </delete>
+    
+    <select id="select" parameterType="Certification" resultType="Certification">
+        select * from T_Certificatons
+        where isDeleted=false
+           <if test="id!=null"> and id=#{id} </if>
+    </select>
+    
+</mapper>

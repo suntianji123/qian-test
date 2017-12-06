@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.OrderItemMapper">
+
+    
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="OrderItem">
+		insert into ${@com.qiandi.table.OrderItemTable@tableName}(
+		${@com.qiandi.table.OrderItemTable@id},
+		${@com.qiandi.table.OrderItemTable@orderId},
+		${@com.qiandi.table.OrderItemTable@price},
+		${@com.qiandi.table.OrderItemTable@menberUserId},
+		${@com.qiandi.table.OrderItemTable@rechargeType},
+		${@com.qiandi.table.OrderItemTable@rechargeStatus},
+		${@com.qiandi.table.OrderItemTable@createTime},
+		${@com.qiandi.table.OrderItemTable@paymentMethod},
+		${@com.qiandi.table.OrderItemTable@paymentStatus},
+		${@com.qiandi.table.OrderItemTable@amountPayAble},
+		${@com.qiandi.table.OrderItemTable@productType},
+		${@com.qiandi.table.OrderItemTable@subTotal},
+		${@com.qiandi.table.OrderItemTable@billing})
+		values(#{id},#{orderId},#{price},#{menberUserId},#{rechargeType},#{rechargeStatus},
+		#{createTime},#{paymentMethod},#{paymentStatus},#{amountPayAble},#{productType},#{subTotal},
+		#{billing})
+			
+    </insert>
+    
+    <!-- 添加到购物车 -->
+    <insert id="insertToCart" parameterType="OrderItem">
+    	insert into ${@com.qiandi.table.OrderItemTable@tableName}(
+    	${@com.qiandi.table.OrderItemTable@id},
+    	${@com.qiandi.table.OrderItemTable@menberUserId},
+    	${@com.qiandi.table.OrderItemTable@rechargeType},
+    	${@com.qiandi.table.OrderItemTable@rechargeStatus},
+    	${@com.qiandi.table.OrderItemTable@paymentMethod},
+    	${@com.qiandi.table.OrderItemTable@paymentStatus},
+    	${@com.qiandi.table.OrderItemTable@billing},
+    	${@com.qiandi.table.OrderItemTable@productType},
+    	${@com.qiandi.table.OrderItemTable@amountPayAble},
+    	${@com.qiandi.table.OrderItemTable@subTotal},
+    	${@com.qiandi.table.OrderItemTable@price},
+    	${@com.qiandi.table.OrderItemTable@createTime}) 
+    	values(#{id},#{menberUserId},#{rechargeType},#{rechargeStatus},#{paymentMethod},
+    	#{paymentStatus},#{billing},#{productType},#{amountPayAble},#{subTotal},#{price},#{createTime})
+    </insert>
+    
+	 <!-- 修改方法 -->
+    <update id="update" parameterType="OrderItem">
+      update
+       ${@com.qiandi.table.OrderItemTable@tableName} set 
+      ${@com.qiandi.table.OrderItemTable@amountPayAble} = #{amountPayAble},
+      ${@com.qiandi.table.OrderItemTable@subTotal} = #{subTotal}
+      where ${@com.qiandi.table.OrderItemTable@id} = #{id}  and
+       ${@com.qiandi.table.OrderItemTable@isDeleted} = false
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="long">
+       update ${@com.qiandi.table.OrderItemTable@tableName} set 
+       ${@com.qiandi.table.OrderItemTable@isDeleted}=true
+        where  ${@com.qiandi.table.OrderItemTable@id}=#{id}
+    </update>
+     <update id="deleteAll" parameterType="java.util.List">
+       update ${@com.qiandi.table.OrderItemTable@tableName} set
+         ${@com.qiandi.table.OrderItemTable@isDeleted}= true where
+          ${@com.qiandi.table.OrderItemTable@id} in 
+    	<foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+    </update>
+    
+    <update id="updateByList" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update ${@com.qiandi.table.OrderItemTable@tableName}
+	        <set>
+	            ${@com.qiandi.table.OrderItemTable@orderId} = #{item.orderId}
+	        </set>
+	        where ${@com.qiandi.table.OrderItemTable@id} = #{item.id}
+    	</foreach>     
+    </update>
+    
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="OrderItem" resultType="OrderItem">
+        select 
+        ${@com.qiandi.table.OrderItemTable@id} as id,
+    	${@com.qiandi.table.OrderItemTable@menberUserId} as menberUserId,
+    	${@com.qiandi.table.OrderItemTable@rechargeType} as rechargeType,
+    	${@com.qiandi.table.OrderItemTable@rechargeStatus} as rechargeStatus,
+    	${@com.qiandi.table.OrderItemTable@paymentMethod} as paymentMethod,
+    	${@com.qiandi.table.OrderItemTable@paymentStatus} as paymentStatus,
+    	${@com.qiandi.table.OrderItemTable@billing} as billing,
+    	${@com.qiandi.table.OrderItemTable@productType} as productType,
+    	${@com.qiandi.table.OrderItemTable@createTime} as createTime,
+    	${@com.qiandi.table.OrderItemTable@amountPayAble} as amountPayAble,
+    	${@com.qiandi.table.OrderItemTable@subTotal} as subTotal,
+    	${@com.qiandi.table.OrderItemTable@price} as price,
+    	${@com.qiandi.table.OrderItemTable@createTime} as createTime
+        from ${@com.qiandi.table.OrderItemTable@tableName}
+        where ${@com.qiandi.table.OrderItemTable@isDeleted}=false
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and ${@com.qiandi.table.OrderItemTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{menberUserId})"> and ${@com.qiandi.table.OrderItemTable@menberUserId}=#{menberUserId} </if>
+    </select>
+    
+     <!-- 查询订单总数方法 -->
+    <select id="selectOrderItemTotalCount" parameterType="long" resultType="Integer">
+        select count(*) from ${@com.qiandi.table.OrderItemTable@tableName}
+        where ${@com.qiandi.table.OrderItemTable@isDeleted}=false and ${@com.qiandi.table.OrderItemTable@orderId}  = 0
+           and ${@com.qiandi.table.OrderItemTable@menberUserId} = #{menberUserId}
+    </select>
+    
+    <!-- 查询方法 -->
+    <select id="selectGroupByPrice" parameterType="OrderItem" resultType="map">
+       select
+		        sum(oi.amountPayAble) as paymentValue,
+		        oi.price as price ,
+		        o.paymentMethod as paymentMethod,
+		        o.createTime as minRepaymentTime,
+		        o.billing as billing,
+		        now() as actualRepaymentTime,
+	        	o.paymentStatus as repaymentStatus,
+		        sum(oi.subTotal) as rechargeCount,
+		        o.id as orderId
+		        from ${@com.qiandi.table.OrderItemTable@tableName} oi
+		        left join ${@com.qiandi.table.OrderTable@tableName} o on o.id = oi.orderId
+      		 where oi.isDeleted = false and oi.orderId = #{orderId} group by oi.price
+    </select>
+    
+    <!-- 查询方法 -->
+    <select id="selectByList" parameterType="OrderItem" resultType="map">
+			select
+		        oi.${@com.qiandi.table.OrderItemTable@amountPayAble} as paymentValue,
+		        oi.${@com.qiandi.table.OrderItemTable@price} as price ,
+		        o.${@com.qiandi.table.OrderTable@createTime} as minRepaymentTime,
+		        now() as actualRepaymentTime,
+		        oi.${@com.qiandi.table.OrderItemTable@subTotal} as rechargeCount,
+		        oi.${@com.qiandi.table.OrderItemTable@billing} as billing,
+		        o.${@com.qiandi.table.OrderTable@paymentStatus} as repaymentStatus,
+		        o.${@com.qiandi.table.OrderTable@id} as orderId
+		        from ${@com.qiandi.table.OrderItemTable@tableName} oi
+		        left join ${@com.qiandi.table.OrderTable@tableName} o on 
+		        o.${@com.qiandi.table.OrderTable@id} = oi.${@com.qiandi.table.OrderItemTable@orderId}
+      		 where oi.${@com.qiandi.table.OrderItemTable@isDeleted} = false
+      		  and oi.${@com.qiandi.table.OrderItemTable@orderId} = #{orderId} 
+        
+    </select>
+    
+    
+    <select id="search" parameterType="map" resultType="OrderItem">
+        select
+        	${@com.qiandi.table.OrderItemTable@id} as id,
+        	${@com.qiandi.table.OrderItemTable@orderId} as orderId,
+        	${@com.qiandi.table.OrderItemTable@menberUserId} as menberUserId,
+        	${@com.qiandi.table.OrderItemTable@price} as price,
+        	${@com.qiandi.table.OrderItemTable@rechargeType} as rechargeType,
+        	${@com.qiandi.table.OrderItemTable@rechargeStatus} as rechargeStatus,
+        	${@com.qiandi.table.OrderItemTable@createTime} as createTime,
+        	${@com.qiandi.table.OrderItemTable@paymentMethod} as paymentMethod,
+        	${@com.qiandi.table.OrderItemTable@paymentStatus} as paymentStatus,
+        	${@com.qiandi.table.OrderItemTable@amountPayAble} as amountPayAble,
+        	${@com.qiandi.table.OrderItemTable@productType} as productType,
+        	${@com.qiandi.table.OrderItemTable@subTotal} as subTotal,
+        	${@com.qiandi.table.OrderItemTable@billing} as billing
+        from ${@com.qiandi.table.OrderItemTable@tableName}
+        where ${@com.qiandi.table.OrderItemTable@isDeleted}=false  and 
+        ${@com.qiandi.table.OrderItemTable@orderId} = 0
+            <if test="beginTime!=null">and createTime &gt;= #{beginTime}</if>
+            <if test="endTime!=null">and createTime &lt;= #{endTime}</if> -->
+            <if test="today!=null">and date_format(createTime,'%Y-%m-%d') = date_format(#{today},'%Y-%m-%d')</if>
+            <if test="yesterday!=null">and date_format(createTime,'%Y-%m-%d')= date_format(#{yesterday},'%Y-%m-%d')</if> 
+            <if test="menberUser!=null">
+            and ${@com.qiandi.table.OrderItemTable@menberUserId} = #{menberUserId}</if>
+            order by ${@com.qiandi.table.OrderItemTable@createTime} desc
+    </select>
+    
+     <select id="selectOrderItemList" parameterType="Integer" resultType="OrderItem">
+        select 
+        
+        ${@com.qiandi.table.OrderItemTable@id} as id,
+        	${@com.qiandi.table.OrderItemTable@orderId} as orderId,
+        	${@com.qiandi.table.OrderItemTable@menberUserId} as menberUserId,
+        	${@com.qiandi.table.OrderItemTable@price} as price,
+        	${@com.qiandi.table.OrderItemTable@rechargeType} as rechargeType,
+        	${@com.qiandi.table.OrderItemTable@rechargeStatus} as rechargeStatus,
+        	${@com.qiandi.table.OrderItemTable@createTime} as createTime,
+        	${@com.qiandi.table.OrderItemTable@paymentMethod} as paymentMethod,
+        	${@com.qiandi.table.OrderItemTable@paymentStatus} as paymentStatus,
+        	${@com.qiandi.table.OrderItemTable@amountPayAble} as amountPayAble,
+        	${@com.qiandi.table.OrderItemTable@productType} as productType,
+        	${@com.qiandi.table.OrderItemTable@subTotal} as subTotal,
+        	${@com.qiandi.table.OrderItemTable@billing} as billing
+        
+        
+        from ${@com.qiandi.table.OrderItemTable@tableName}
+        where ${@com.qiandi.table.OrderItemTable@isDeleted} = false 
+        and ${@com.qiandi.table.OrderItemTable@orderId} = 0 
+        and ${@com.qiandi.table.OrderItemTable@menberUserId} = #{menberUserId}
+         order by ${@com.qiandi.table.OrderItemTable@createTime} desc
+    </select>
+    
+    
+    <select id="settlementList" parameterType="java.util.List" resultType="OrderItem">
+    		select 
+    		${@com.qiandi.table.OrderItemTable@orderId} as orderId,
+        	${@com.qiandi.table.OrderItemTable@menberUserId} as menberUserId,
+        	${@com.qiandi.table.OrderItemTable@price} as price,
+        	${@com.qiandi.table.OrderItemTable@rechargeType} as rechargeType,
+        	${@com.qiandi.table.OrderItemTable@rechargeStatus} as rechargeStatus,
+        	${@com.qiandi.table.OrderItemTable@createTime} as createTime,
+        	${@com.qiandi.table.OrderItemTable@paymentMethod} as paymentMethod,
+        	${@com.qiandi.table.OrderItemTable@paymentStatus} as paymentStatus,
+        	${@com.qiandi.table.OrderItemTable@amountPayAble} as amountPayAble,
+        	${@com.qiandi.table.OrderItemTable@productType} as productType,
+        	${@com.qiandi.table.OrderItemTable@subTotal} as subTotal,
+        	${@com.qiandi.table.OrderItemTable@billing} as billing
+    		from ${@com.qiandi.table.OrderItemTable@tableName} 
+    		where ${@com.qiandi.table.OrderItemTable@isDeleted} = false
+    		 and ${@com.qiandi.table.OrderItemTable@id} in 
+    	<foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+		order by ${@com.qiandi.table.OrderItemTable@createTime} desc
+    </select>
+    
+    <select id="selectTotalAmountPayAble" parameterType="java.util.List" resultType="Double">
+    		select sum(${@com.qiandi.table.OrderItemTable@amountPayAble}) from 
+    		${@com.qiandi.table.OrderItemTable@tableName}
+    		 where ${@com.qiandi.table.OrderItemTable@id} in 
+    	<foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+    </select>
+    <select id="selectTotalSubTotal" parameterType="java.util.List" resultType="Integer">
+    		select sum(${@com.qiandi.table.OrderItemTable@subTotal}) from 
+    		${@com.qiandi.table.OrderItemTable@tableName} 
+    		where ${@com.qiandi.table.OrderItemTable@id} in 
+    	<foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+    </select>
+    
+    <!-- 设置订单号  -->
+    <update id="updateOrderNum" parameterType="map">
+      update ${@com.qiandi.table.OrderItemTable@tableName} set 
+      ${@com.qiandi.table.OrderItemTable@orderNum} = #{orderNum}
+      where ${@com.qiandi.table.OrderItemTable@id} in 
+      <foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+    </update>
+    
+     <update id="updateByWeiXinPay" parameterType="OrderItem">
+      update ${@com.qiandi.table.OrderItemTable@tableName} set 
+      ${@com.qiandi.table.OrderItemTable@paymentMethod} = 1,
+      ${@com.qiandi.table.OrderItemTable@paymentStatus} = 3
+      where ${@com.qiandi.table.OrderItemTable@orderId} = #{orderId}
+    </update>
+    
+     <update id="updateByAccount" parameterType="OrderItem">
+      update ${@com.qiandi.table.OrderItemTable@tableName} set 
+      ${@com.qiandi.table.OrderItemTable@paymentMethod} = #{paymentMethod},
+      ${@com.qiandi.table.OrderItemTable@paymentStatus} = 3
+      where ${@com.qiandi.table.OrderItemTable@orderId} = #{orderId}
+    </update>
+    
+    <select id="selectData" parameterType="Map" resultType="OrderItemData">
+    	${@com.qiandi.table.OrderItemTable@selectSQL_admin} 
+    	<if test="id!=null">${@com.qiandi.table.OrderItemTable@selectIdNotNullSQL_admin} #{id}</if>
+    	<if test="menberUserAccountName!=null">${@com.qiandi.table.OrderItemTable@selectMenberUserAccountNameNotNullSQL_admin} #{menberUserAccountName}</if>
+    	<if test="menberUserName!=null">${@com.qiandi.table.OrderItemTable@selectMenberUserNameNotNullSQL_admin} "%"#{menberUserName}"%" </if>
+    	<if test="menberUserPhoneNum!=null">${@com.qiandi.table.OrderItemTable@selectPhoneNumNotNullSQL_admin}  #{menberUserPhoneNum}</if>
+    	<if test="qianShangUserName!=null">${@com.qiandi.table.OrderItemTable@selectQianShangUserNameNotNullSQL_admin}  "%"#{qianShangUserName} "%"</if>
+    	<if test="beginTime!=null and endTime!= null">
+            and ${@com.qiandi.table.OrderItemTable@selectBeginTimeNotNullSQL_admin}  #{beginTime} 
+           	and ${@com.qiandi.table.OrderItemTable@selectEndTimeNotNullSQL_admin}  #{endTime} 
+            </if>
+    	${@com.qiandi.table.OrderItemTable@selectOrderBySQL_admin} 
+    
+    </select>
+    
+     <!-- 批量删除 -->
+    <update id="deleteByArray" >
+	        ${@com.qiandi.table.OrderItemTable@deleteByArraySQL}
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    		 <!-- 批量选择 -->
+    <select id="selectByArray" resultType="OrderItemData">
+	        ${@com.qiandi.table.OrderItemTable@selectSQL_admin} 
+	        ${@com.qiandi.table.OrderItemTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.OrderItemTable@selectOrderBySQL_admin} 
+    	</select>
+    
+</mapper>

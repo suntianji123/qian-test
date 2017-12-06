@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.EvaluationsReplyMapper">
+
+    <insert id="insert" parameterType="EvaluationsReply">
+        ${@com.qiandi.table.EvaluationsReplyTable@SQL1}
+        #{reply},
+        #{replyTime},
+        #{content},
+        #{evaluationTime},
+        #{evaluationId})
+    </insert>
+
+    <update id="update" parameterType="EvaluationsReply">
+        ${@com.qiandi.table.EvaluationsReplyTable@SQL2}
+        ${@com.qiandi.table.EvaluationsReplyTable@reply}=#{reply},
+        ${@com.qiandi.table.EvaluationsReplyTable@replyTime}=#{replyTime},
+        ${@com.qiandi.table.EvaluationsReplyTable@content}=#{content},
+        ${@com.qiandi.table.EvaluationsReplyTable@evaluationTime}=#{evaluationTime},
+        ${@com.qiandi.table.EvaluationsReplyTable@evaluationId}=#{evaluationId}
+        where ${@com.qiandi.table.EvaluationsReplyTable@id}=#{id}
+    </update>
+
+    <select id="select" parameterType="EvaluationsReply" resultType="EvaluationsReply">
+        ${@com.qiandi.table.EvaluationsReplyTable@SQL3}
+    </select>
+</mapper>

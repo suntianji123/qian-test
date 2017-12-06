@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.MenberUserMapper">
+
+	<select id="selectOneByPhoneNumForBillingMethod" parameterType="map" resultType="Map">
+       		 select 
+       		 		mu.${@com.qiandi.table.MenberUserTable@name} as menberUserName,
+       		 		mu.${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@id} as id,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@billingMethod} as billingMethod,
+       		 		qu.${@com.qiandi.table.QianShangUserTable@name} as qianShangUserName
+			 from ${@com.qiandi.table.MenberUserTable@tableName} mu  
+			  left join ${@com.qiandi.table.QianShangUserTable@tableName} qu on
+           mu.${@com.qiandi.table.MenberUserTable@qianShangUserId} = qu.${@com.qiandi.table.QianShangUserTable@id}
+           left join ${@com.qiandi.table.MenberUserSettingTable@tableName} ms on
+           mu.${@com.qiandi.table.MenberUserTable@id} = ms.${@com.qiandi.table.MenberUserSettingTable@menberUserId}
+	       where mu.${@com.qiandi.table.MenberUserTable@isDeleted}= false and mu.${@com.qiandi.table.MenberUserTable@phoneNum}= #{phoneNum}
+    </select>
+
+	<!-- 分页查询出结果 -->
+	 <select id="selectData" parameterType="map" resultType="Map">
+       		 select 
+       		 		mu.${@com.qiandi.table.MenberUserTable@id} as id,
+       		 		mu.${@com.qiandi.table.MenberUserTable@accountName} as accountName,
+       		 		mu.${@com.qiandi.table.MenberUserTable@name} as name,
+       		 		mu.${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+       		 		mu.${@com.qiandi.table.MenberUserTable@level} as level,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsBlance} as smsBlance,
+       		 		mu.${@com.qiandi.table.MenberUserTable@price} as price,
+       		 		mu.${@com.qiandi.table.MenberUserTable@position} as position,
+       		 		mu.${@com.qiandi.table.MenberUserTable@createTime} as createTime,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@accountStatus} as accountStatus,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsType} as smsType,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@auditAuthority} as auditAuthority,
+       		 		mu.${@com.qiandi.table.MenberUserTable@password} as password,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@billingMethod} as billingMethod,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@warningStatus} as warningStatus,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@defaultValue} as defaultValue,
+       		 		bs.${@com.qiandi.table.BrandSignatureTable@newSignature} as newSignature,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@minRecharge} as minRecharge,
+       		 		al1.${@com.qiandi.table.AisleTable@name} as yiDongAisleName,
+       		 		al2.${@com.qiandi.table.AisleTable@name} as lianTongAisleName,
+       		 		al3.${@com.qiandi.table.AisleTable@name} as dianXingAisleName,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@expansionNum} as expansionNum,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@totalRechargeCount} as totalRechargeCount,
+       		 		mu.${@com.qiandi.table.MenberUserTable@company} as company,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@address} as address
+			 from ${@com.qiandi.table.MenberUserTable@tableName} mu  
+			 left join ${@com.qiandi.table.MenberUserSettingTable@tableName} ms on ms.${@com.qiandi.table.MenberUserSettingTable@menberUserId} = mu.${@com.qiandi.table.MenberUserTable@id}
+			 left join ${@com.qiandi.table.BlanceWarningStatusTable@tableName} bws on mu.${@com.qiandi.table.MenberUserTable@id}= bws.${@com.qiandi.table.BlanceWarningStatusTable@menberUserId} 
+			 left join ${@com.qiandi.table.AisleTable@tableName} al1 on ms.${@com.qiandi.table.MenberUserSettingTable@yiDongAisleId} = al1.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al2 on ms.${@com.qiandi.table.MenberUserSettingTable@lianTongAisleId} = al2.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al3 on ms.${@com.qiandi.table.MenberUserSettingTable@dianXingAisleId} = al3.${@com.qiandi.table.AisleTable@id}
+			 left join (select * from ${@com.qiandi.table.BrandSignatureTable@tableName} where ${@com.qiandi.table.BrandSignatureTable@isDeleted}=false and ${@com.qiandi.table.BrandSignatureTable@isUsed}=true) bs on mu.${@com.qiandi.table.MenberUserTable@id} = bs.${@com.qiandi.table.BrandSignatureTable@menberUserId} 
+	       where mu.${@com.qiandi.table.MenberUserTable@isDeleted}= false and mu.${@com.qiandi.table.MenberUserTable@leaderId} = #{leaderId}
+	      	<if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})">and mu.${@com.qiandi.table.MenberUserTable@id}=#{id}</if>
+	      	<!-- <if test="beginTime!=null  and beginTime!=endTime">and mu.${@com.qiandi.table.MenberUserTable@createTime} &gt;= #{beginTime}</if>
+            <if test="endTime!=null and beginTime!=endTime">and mu.${@com.qiandi.table.MenberUserTable@createTime} &lt;= #{endTime}</if>
+            <if test="beginTime==endTime and beginTime!=null">and date_format(mu.${@com.qiandi.table.MenberUserTable@createTime},'%Y-%m-%d') = date_format(#{beginTime},'%Y-%m-%d')</if> -->
+            <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{accountName})">and mu.${@com.qiandi.table.MenberUserTable@accountName}  like  "%"#{accountName}"%"</if>
+            <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{name})">and mu.${@com.qiandi.table.MenberUserTable@name}  like  "%"#{name}"%"</if>
+            <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{phoneNum})">and mu.${@com.qiandi.table.MenberUserTable@phoneNum} = #{phoneNum}</if>
+            <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{accountStatus})">and ms.${@com.qiandi.table.MenberUserSettingTable@accountStatus} = #{accountStatus}</if>
+            <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{warningStatus})">and bws.${@com.qiandi.table.BlanceWarningStatusTable@warningStatus} = #{warningStatus}</if>
+    </select>
+    
+    <select id="selectDetail" parameterType="int" resultType="Map">
+       		<!--  select 
+       		 		mu.${@com.qiandi.table.MenberUserTable@id} as id,
+       		 		mu.${@com.qiandi.table.MenberUserTable@accountName} as accountName,
+       		 		mu.${@com.qiandi.table.MenberUserTable@name} as name,
+       		 		mu.${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+       		 		mu.${@com.qiandi.table.MenberUserTable@level} as level,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsBlance} as smsBlance,
+       		 		mu.${@com.qiandi.table.MenberUserTable@price} as price,
+       		 		mu.${@com.qiandi.table.MenberUserTable@postion} as position,
+       		 		mu.${@com.qiandi.table.MenberUserTable@createTime} as createTime,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@accountStatus} as accountStatus,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsType} as smsType,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@auditAuthority} as auditAuthority,
+       		 		mu.${@com.qiandi.table.MenberUserTable@password} as password,
+       		 		mu.${@com.qiandi.table.MenberUserTable@billingMethod} as billingMethod,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@warningStatus} as warningStatus,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@defaultValue} as defaultValue,
+       		 		bs.${@com.qiandi.table.BrandSignatureTable@newSignature} as newSignature,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@minRecharge} as minRecharge,
+       		 		al1.name as yiDongAisleName,
+       		 		al2.name as lianTongAisleName,
+       		 		al3.name as dianXingAisleName,
+       		 		mu.expansionNum as expansionNum,
+       		 		mu.totalRechargeCount as totalRechargeCount,
+       		 		mu.company as company,
+       		 		mu.address as address
+			 from ${@com.qiandi.table.MenberUserTable@tableName} mu 
+			 left join ${@com.qiandi.table.BrandSignatureTable@tableName} bws on mu.${@com.qiandi.table.MenberUserTable@id}= bws.${@com.qiandi.table.BlanceWarningStatusTable@menberUserId} 
+			 left join ${@com.qiandi.table.AisleTable@tableName} al1 on mu.${@com.qiandi.table.MenberUserTable@yiDongAisleId} = al1.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al2 on mu.${@com.qiandi.table.MenberUserTable@lianTongAisleId} = al2.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al3 on mu.${@com.qiandi.table.MenberUserTable@dianXingAisleId} = al3.${@com.qiandi.table.AisleTable@id}
+			 left join (select * from ${@com.qiandi.table.BrandSignatureTable@tableName} where isDeleted=false and isUsed=true) bs on mu.${@com.qiandi.table.MenberUserTable@id} = bs.${@com.qiandi.table.BrandSignatureTable@menberUserId} 
+	       where mu.${@com.qiandi.table.MenberUserTable@isDeleted}= false and mu.${@com.qiandi.table.MenberUserTable@id} = #{id} -->
+    </select>
+    
+    <select id="selectMyMeberUserList" parameterType="int" resultType="Map">
+       		 select 
+       		 		mu.${@com.qiandi.table.MenberUserTable@id} as id,
+       		 		mu.${@com.qiandi.table.MenberUserTable@accountName} as accountName,
+       		 		mu.${@com.qiandi.table.MenberUserTable@name} as name,
+       		 		mu.${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+       		 		mu.${@com.qiandi.table.MenberUserTable@level} as level,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsBlance} as smsBlance,
+       		 		mu.${@com.qiandi.table.MenberUserTable@price} as price,
+       		 		mu.${@com.qiandi.table.MenberUserTable@postion} as position,
+       		 		mu.${@com.qiandi.table.MenberUserTable@createTime} as createTime,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@accountStatus} as accountStatus,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsType} as smsType,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@auditAuthority} as auditAuthority,
+       		 		mu.${@com.qiandi.table.MenberUserTable@password} as password,
+       		 		mu.${@com.qiandi.table.MenberUserTable@billingMethod} as billingMethod,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@warningStatus} as warningStatus,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@defaultValue} as defaultValue,
+       		 		bs.${@com.qiandi.table.BrandSignatureTable@newSignature} as newSignature,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@minRecharge} as minRecharge,
+       		 		al1.${@com.qiandi.table.AisleTable@name} as yiDongAisleName,
+       		 		al2.${@com.qiandi.table.AisleTable@name} as lianTongAisleName,
+       		 		al3.${@com.qiandi.table.AisleTable@name} as dianXingAisleName,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@expansionNum} as expansionNum,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@totalRechargeCount} as totalRechargeCount,
+       		 		mu.${@com.qiandi.table.MenberUserTable@company} as company,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@address} as address
+			 from ${@com.qiandi.table.MenberUserTable@tableName} mu 
+			 left join ${@com.qiandi.table.MenberUserSettingTable@tableName} ms on ms.${@com.qiandi.table.MenberUserSettingTable@menberUserId} = mu.${@com.qiandi.table.MenberUserTable@id}
+			 left join ${@com.qiandi.table.BrandSignatureTable@tableName} bws on mu.${@com.qiandi.table.MenberUserTable@id}= bws.${@com.qiandi.table.BlanceWarningStatusTable@menberUserId} 
+			 left join ${@com.qiandi.table.AisleTable@tableName} al1 on ms.${@com.qiandi.table.MenberUserSettingTable@yiDongAisleId} = al1.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al2 on ms.${@com.qiandi.table.MenberUserSettingTable@lianTongAisleId} = al2.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al3 on ms.${@com.qiandi.table.MenberUserSettingTable@dianXingAisleId} = al3.${@com.qiandi.table.AisleTable@id}
+			 left join (select * from ${@com.qiandi.table.BrandSignatureTable@tableName} where isDeleted=false and isUsed=true) bs on mu.${@com.qiandi.table.MenberUserTable@id} = bs.${@com.qiandi.table.BrandSignatureTable@menberUserId} 
+	       where mu.${@com.qiandi.table.MenberUserTable@isDeleted}= false and mu.leaderId = #{leaderId}  order by mu.${@com.qiandi.table.MenberUserTable@createTime} desc
+    </select>
+    
+    <select id="selectMyMeberUserListById" parameterType="java.util.List" resultType="Map">
+       		 select 
+       		 		mu.${@com.qiandi.table.MenberUserTable@id} as id,
+       		 		mu.${@com.qiandi.table.MenberUserTable@accountName} as accountName,
+       		 		mu.${@com.qiandi.table.MenberUserTable@name} as name,
+       		 		mu.${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+       		 		mu.${@com.qiandi.table.MenberUserTable@level} as level,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsBlance} as smsBlance,
+       		 		mu.${@com.qiandi.table.MenberUserTable@price} as price,
+       		 		mu.${@com.qiandi.table.MenberUserTable@position} as position,
+       		 		mu.${@com.qiandi.table.MenberUserTable@createTime} as createTime,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@accountStatus} as accountStatus,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@smsType} as smsType,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@auditAuthority} as auditAuthority,
+       		 		mu.${@com.qiandi.table.MenberUserTable@password} as password,
+       		 		mu.${@com.qiandi.table.MenberUserTable@billingMethod} as billingMethod,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@warningStatus} as warningStatus,
+       		 		bws.${@com.qiandi.table.BlanceWarningStatusTable@defaultValue} as defaultValue,
+       		 		bs.${@com.qiandi.table.BrandSignatureTable@newSignature} as newSignature,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@minRecharge} as minRecharge,
+       		 			al1.${@com.qiandi.table.AisleTable@name} as yiDongAisleName,
+       		 		al2.${@com.qiandi.table.AisleTable@name} as lianTongAisleName,
+       		 		al3.${@com.qiandi.table.AisleTable@name} as dianXingAisleName,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@expansionNum} as expansionNum,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@totalRechargeCount} as totalRechargeCount,
+       		 		mu.${@com.qiandi.table.MenberUserTable@company} as company,
+       		 		ms.${@com.qiandi.table.MenberUserSettingTable@address} as address
+			 from ${@com.qiandi.table.MenberUserTable@tableName} mu 
+			 left join ${@com.qiandi.table.MenberUserTable@tableName}ettings ms on ms.${@com.qiandi.table.MenberUserSettingTable@menberUserId} = mu.${@com.qiandi.table.MenberUserTable@id}
+			 left join ${@com.qiandi.table.BrandSignatureTable@tableName} bws on mu.${@com.qiandi.table.MenberUserTable@id}= bws.${@com.qiandi.table.BlanceWarningStatusTable@menberUserId} 
+			 left join ${@com.qiandi.table.AisleTable@tableName} al1 on ms.${@com.qiandi.table.MenberUserSettingTable@yiDongAisleId} = al1.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al2 on ms.${@com.qiandi.table.MenberUserSettingTable@lianTongAisleId} = al2.${@com.qiandi.table.AisleTable@id}
+			 left join ${@com.qiandi.table.AisleTable@tableName} al3 on ms.${@com.qiandi.table.MenberUserSettingTable@dianXingAisleId} = al3.${@com.qiandi.table.AisleTable@id}
+			 left join (select * from ${@com.qiandi.table.BrandSignatureTable@tableName} where ${@com.qiandi.table.BrandSignatureTable@isDeleted}=false and ${@com.qiandi.table.BrandSignatureTable@isUsed}=true) bs on mu.${@com.qiandi.table.MenberUserTable@id} = bs.${@com.qiandi.table.BrandSignatureTable@menberUserId} 
+	       where mu.${@com.qiandi.table.MenberUserTable@isDeleted}= false and mu.${@com.qiandi.table.MenberUserTable@id} in
+	       <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+			#{id}
+			</foreach>
+		   order by mu.${@com.qiandi.table.MenberUserTable@createTime} desc
+    </select>
+    
+
+    <!-- 增加方法 -->
+    <insert id="insert" parameterType="MenberUser">
+		insert into ${@com.qiandi.table.MenberUserTable@tableName}(
+     	${@com.qiandi.table.MenberUserTable@id},
+     	${@com.qiandi.table.MenberUserTable@leaderId},
+     	${@com.qiandi.table.MenberUserTable@managerId},
+     	${@com.qiandi.table.MenberUserTable@level},
+     	${@com.qiandi.table.MenberUserTable@accountName},
+     	${@com.qiandi.table.MenberUserTable@name},
+     	${@com.qiandi.table.MenberUserTable@phoneNum},
+     	${@com.qiandi.table.MenberUserTable@password},
+     	${@com.qiandi.table.MenberUserTable@passwordSalt},
+     	${@com.qiandi.table.MenberUserTable@qianShangUserId},
+     	${@com.qiandi.table.MenberUserTable@createTime},
+     	${@com.qiandi.table.MenberUserTable@company},
+     	${@com.qiandi.table.MenberUserTable@position},
+     	${@com.qiandi.table.MenberUserTable@department},
+     	${@com.qiandi.table.MenberUserTable@qqNum},
+     	${@com.qiandi.table.MenberUserTable@weiXinNum},
+     	${@com.qiandi.table.MenberUserTable@email})
+     	values(#{id},#{leaderId},#{managerId},#{level} ,#{accountName},#{name},#{phoneNum},#{password},#{passwordSalt},
+     	#{qianShangUserId},#{createTime},#{company},#{position},#{department},#{qqNum},#{weiXinNum},#{email})
+    </insert>
+
+	<!-- 修改方法 -->
+    <update id="update" parameterType="MenberUser">
+        update ${@com.qiandi.table.MenberUserTable@tableName} 
+        set
+				         ${@com.qiandi.table.MenberUserTable@leaderId} =#{leaderId},
+				          ${@com.qiandi.table.MenberUserTable@managerId} =#{managerId},
+				          ${@com.qiandi.table.MenberUserTable@accountName} =#{accountName},
+				          ${@com.qiandi.table.MenberUserTable@phoneNum} =#{phoneNum},
+						 ${@com.qiandi.table.MenberUserTable@name} =#{name},
+						 ${@com.qiandi.table.MenberUserTable@password} =#{password},
+						 ${@com.qiandi.table.MenberUserTable@passwordSalt} =#{passwordSalt},
+						 ${@com.qiandi.table.MenberUserTable@company} =#{company},
+						 ${@com.qiandi.table.MenberUserTable@department} =#{department},
+						 ${@com.qiandi.table.MenberUserTable@position} =#{position},
+						 ${@com.qiandi.table.MenberUserTable@email} =#{email},
+						 ${@com.qiandi.table.MenberUserTable@qqNum} =#{qqNum},
+						 ${@com.qiandi.table.MenberUserTable@weiXinNum} =#{weiXinNum},
+						 ${@com.qiandi.table.MenberUserTable@createTime} =#{createTime},
+						 ${@com.qiandi.table.MenberUserTable@qianShangUserId} =#{qianShangUserId},
+						 ${@com.qiandi.table.MenberUserTable@industryId} =#{industryId},
+						 ${@com.qiandi.table.MenberUserTable@level} =#{level},
+						 ${@com.qiandi.table.MenberUserTable@price} =#{price},
+						  ${@com.qiandi.table.MenberUserTable@settlementPrice} =#{settlementPrice} 
+        where  ${@com.qiandi.table.MenberUserTable@id} =#{id}
+    </update>
+    
+   <!--  删除方法 -->
+    <update id="delete" parameterType="int">
+       update ${@com.qiandi.table.MenberUserTable@tableName} set 
+       ${@com.qiandi.table.MenberUserTable@isDeleted}=true
+        where ${@com.qiandi.table.MenberUserTable@id} =#{id}
+    </update>
+
+    <!-- 查询方法 -->
+    <select id="select" parameterType="MenberUser" resultType="MenberUser">
+        select 
+        mu.${@com.qiandi.table.MenberUserTable@id} as id,
+        mu.${@com.qiandi.table.MenberUserTable@leaderId} as leaderId,
+        mu.${@com.qiandi.table.MenberUserTable@managerId} as managerId,
+        mu.${@com.qiandi.table.MenberUserTable@accountName} as accountName,
+        mu.${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+        mu.${@com.qiandi.table.MenberUserTable@name} as name,
+        mu.${@com.qiandi.table.MenberUserTable@password} as password,
+        mu.${@com.qiandi.table.MenberUserTable@passwordSalt} as passwordSalt,
+        mu.${@com.qiandi.table.MenberUserTable@company} as company,
+        mu.${@com.qiandi.table.MenberUserTable@department} as department,
+        mu.${@com.qiandi.table.MenberUserTable@position} as position,
+        mu.${@com.qiandi.table.MenberUserTable@email} as email,
+        mu.${@com.qiandi.table.MenberUserTable@qqNum} as qqNum,
+        mu.${@com.qiandi.table.MenberUserTable@weiXinNum} as weiXinNum,
+        mu.${@com.qiandi.table.MenberUserTable@createTime} as createTime,
+        mu.${@com.qiandi.table.MenberUserTable@qianShangUserId} as qianShangUserId,
+        mu.${@com.qiandi.table.MenberUserTable@level} as level,
+        mu.${@com.qiandi.table.MenberUserTable@price} as price,
+        mu.${@com.qiandi.table.MenberUserTable@settlementPrice} as settlementPrice,
+        mu.${@com.qiandi.table.MenberUserTable@settlementPercent} as settlementPercent,
+        mu.${@com.qiandi.table.MenberUserTable@pipelinePrice} as pipelinePrice,
+        mu.${@com.qiandi.table.MenberUserTable@settlementPrice} as settlementPrice,
+        mu.${@com.qiandi.table.MenberUserTable@industryId} as industryId,
+        ms.${@com.qiandi.table.MenberUserSettingTable@yiDongAisleId} as yiDongAisleId,
+        ms.${@com.qiandi.table.MenberUserSettingTable@lianTongAisleId} as lianTongAisleId,
+        ms.${@com.qiandi.table.MenberUserSettingTable@dianXingAisleId} as dianXingAisleId,
+        ms.${@com.qiandi.table.MenberUserSettingTable@smsBlance} as smsBlance,
+        ms.${@com.qiandi.table.MenberUserSettingTable@totalRechargeCount} as totalRechargeCount,
+        ms.${@com.qiandi.table.MenberUserSettingTable@count} as count,
+        ms.${@com.qiandi.table.MenberUserSettingTable@address} as address,
+        ms.${@com.qiandi.table.MenberUserSettingTable@lastLoginTime} as lastLoginTime,
+        ms.${@com.qiandi.table.MenberUserSettingTable@accountStatus} as accountStatus,
+        ms.${@com.qiandi.table.MenberUserSettingTable@channelId} as channelId,
+        ms.${@com.qiandi.table.MenberUserSettingTable@auditAuthority} as auditAuthority,
+        ms.${@com.qiandi.table.MenberUserSettingTable@minRecharge} as minRecharge,
+        ms.${@com.qiandi.table.MenberUserSettingTable@phoneOperator} as phoneOperator,
+        ms.${@com.qiandi.table.MenberUserSettingTable@expansionNum} as expansionNum,
+        ms.${@com.qiandi.table.MenberUserSettingTable@isSerious} as expansionNum,
+        ms.${@com.qiandi.table.MenberUserSettingTable@billingMethod} as billingMethod 
+        
+         from ${@com.qiandi.table.MenberUserTable@tableName} mu  
+         left join ${@com.qiandi.table.MenberUserSettingTable@tableName} ms on
+          ms.${@com.qiandi.table.MenberUserSettingTable@menberUserId} =
+           mu.${@com.qiandi.table.MenberUserTable@id}
+        where mu.${@com.qiandi.table.MenberUserTable@isDeleted}=false
+          <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{id})"> and 
+           mu.${@com.qiandi.table.MenberUserTable@id}=#{id} </if>
+           <if test="@com.qiandi.table.TableUtils@isNotEmpty(#{phoneNum})"> and 
+            mu.${@com.qiandi.table.MenberUserTable@phoneNum}=#{phoneNum} </if>
+    </select>
+    
+    <!-- 查询方法 -->
+    <select id="selectBlanceAndCount" parameterType="Integer" resultType="map">
+        select smsBlance as smsBlance,count as count from ${@com.qiandi.table.MenberUserTable@tableName}
+        where isDeleted=false and id = #{id}
+    </select>
+    
+    <!-- 更新短信余额以及充值次数 -->
+     <update id="updateSMSBlanceAndCount" parameterType="map">
+       update ${@com.qiandi.table.MenberUserSettingTable@tableName} set 
+       ${@com.qiandi.table.MenberUserSettingTable@smsBlance} = #{smsBlance},
+       ${@com.qiandi.table.MenberUserSettingTable@count} = #{count},
+       ${@com.qiandi.table.MenberUserSettingTable@totalRechargeCount} = #{totalRechargeCount}
+       where ${@com.qiandi.table.MenberUserSettingTable@menberUserId}=#{menberUserId}
+    </update>
+    
+    
+     <insert id="registerInsert" parameterType="MenberUser">
+     	insert into ${@com.qiandi.table.MenberUserTable@tableName}(
+     	${@com.qiandi.table.MenberUserTable@id},
+     	${@com.qiandi.table.MenberUserTable@phoneNum},
+     	${@com.qiandi.table.MenberUserTable@password},
+     	${@com.qiandi.table.MenberUserTable@passwordSalt},
+     	${@com.qiandi.table.MenberUserTable@qianShangUserId},
+     	${@com.qiandi.table.MenberUserTable@createTime})
+     	values(#{id},#{phoneNum},#{password},#{passwordSalt},#{qianShangUserId},#{createTime})
+     </insert>
+     
+     <insert id="insertMyMenberUser" parameterType="MenberUser">
+     	insert into ${@com.qiandi.table.MenberUserTable@tableName}(
+     	${@com.qiandi.table.MenberUserTable@id},
+     	${@com.qiandi.table.MenberUserTable@leaderId},
+     	${@com.qiandi.table.MenberUserTable@managerId},
+     	${@com.qiandi.table.MenberUserTable@level},
+     	${@com.qiandi.table.MenberUserTable@accountName},
+     	${@com.qiandi.table.MenberUserTable@name},
+     	${@com.qiandi.table.MenberUserTable@phoneNum},
+     	${@com.qiandi.table.MenberUserTable@password},
+     	${@com.qiandi.table.MenberUserTable@passwordSalt},
+     	${@com.qiandi.table.MenberUserTable@qianShangUserId},
+     	${@com.qiandi.table.MenberUserTable@createTime},
+     	${@com.qiandi.table.MenberUserTable@company},
+     	${@com.qiandi.table.MenberUserTable@position},
+     	${@com.qiandi.table.MenberUserTable@department},
+     	${@com.qiandi.table.MenberUserTable@qqNum},
+     	${@com.qiandi.table.MenberUserTable@weiXinNum},
+     	${@com.qiandi.table.MenberUserTable@email})
+     	values(#{id},#{leaderId},#{managerId},#{level} ,#{accountName},#{name},#{phoneNum},#{password},#{passwordSalt},
+     	#{qianShangUserId},#{createTime},#{company},#{position},#{department},#{qqNum},#{weiXinNum},#{email})
+     </insert>
+     <select id="selectMaxLevel" parameterType="Integer" resultType="Integer">
+        select max(${@com.qiandi.table.MenberUserTable@level}) from 
+        ${@com.qiandi.table.MenberUserTable@tableName}
+        where ${@com.qiandi.table.MenberUserTable@isDeleted}=false and ${@com.qiandi.table.MenberUserTable@leaderId} = #{leaderId}
+    </select>
+    
+    <!-- 选取手机号和真实姓名用于更改权限 -->
+    <select id="selectItem" parameterType="int" resultType="Map">
+        select
+        ${@com.qiandi.table.MenberUserTable@id} as id,
+         ${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+         ${@com.qiandi.table.MenberUserTable@name} as name
+          from ${@com.qiandi.table.MenberUserTable@tableName}
+        where ${@com.qiandi.table.MenberUserTable@isDeleted}=false and ${@com.qiandi.table.MenberUserTable@managerId} = #{managerId}
+    </select>
+    
+    <!-- 获取我的会员总数 -->
+    <select id="selectMyMenberUserTotalCount" parameterType="int" resultType="Integer">
+        select
+       	count(*) from ${@com.qiandi.table.MenberUserTable@tableName}
+        where ${@com.qiandi.table.MenberUserTable@isDeleted}=false and 
+        ${@com.qiandi.table.MenberUserTable@leaderId} = #{leaderId}
+    </select>
+    
+    <select id="selectCustom" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select
+			${@com.qiandi.table.MenberUserTable@id} as id,
+			${@com.qiandi.table.MenberUserTable@leaderId} as leaderId,
+			${@com.qiandi.table.MenberUserTable@managerId} as managerId,
+			${@com.qiandi.table.MenberUserTable@accountName} as accountName,
+			${@com.qiandi.table.MenberUserTable@phoneNum} as phoneNum,
+			${@com.qiandi.table.MenberUserTable@name} as name,
+			${@com.qiandi.table.MenberUserTable@password} as password,
+			${@com.qiandi.table.MenberUserTable@passwordSalt} as passwordSalt,
+			${@com.qiandi.table.MenberUserTable@company} as company,
+			${@com.qiandi.table.MenberUserTable@department} as department,
+			${@com.qiandi.table.MenberUserTable@position} as position,
+			${@com.qiandi.table.MenberUserTable@email} as email,
+			${@com.qiandi.table.MenberUserTable@qqNum} as qqNum,
+			${@com.qiandi.table.MenberUserTable@weiXinNum} as weiXinNum,
+			${@com.qiandi.table.MenberUserTable@createTime} as createTime,
+			${@com.qiandi.table.MenberUserTable@qianShangUserId} as qianShangUserId,
+			${@com.qiandi.table.MenberUserTable@level} as level,
+			${@com.qiandi.table.MenberUserTable@price} as price
+		from ${@com.qiandi.table.MenberUserTable@tableName}
+		where ${@com.qiandi.table.MenberUserTable@isDeleted}=false
+		<if test="startTime !=null and startTime !='' and startTime != 'undefined'"> and to_days(${@com.qiandi.table.MenberUserSettingTable@createTime}) <![CDATA[   >=  ]]> to_days(#{startTime})  </if>
+		<if test="endTime !=null and endTime !='' and endTime != 'undefined'"> and to_days(${@com.qiandi.table.MenberUserSettingTable@createTime}) <![CDATA[   <=  ]]> to_days(#{endTime}) </if>
+		<if test="id!=null and id!='' and id != 'undefined'"> and ${@com.qiandi.table.MenberUserSettingTable@id}=#{id} </if>
+		<if test="accountName !=null and accountName !='' and accountName != 'undefined'"> and ${@com.qiandi.table.MenberUserSettingTable@accountName} like "%"#{phoneNum}"%"  </if>
+		<if test="name !=null and name !='' and name != 'undefined'"> and ${@com.qiandi.table.MenberUserSettingTable@name} like "%"#{name}"%" </if>
+		<if test="phoneNum !=null and phoneNum !='' and phoneNum != 'undefined'"> and ${@com.qiandi.table.MenberUserSettingTable@phoneNum} like "%"#{phoneNum}"%" </if>
+	</select>
+	
+	
+	<!-- 选择操作员 -->
+    <select id="selectManagerData" parameterType="Map" resultType="MenberUserManagerData">
+    	${@com.qiandi.table.MenberUserTable@selectManagerSQL_admin} 
+    	<if test="id!=null">${@com.qiandi.table.MenberUserTable@selectIdNotNullSQL_admin} #{id}</if>
+    	<if test="accountName!=null">${@com.qiandi.table.MenberUserTable@selectAccountNameNotNullSQL_admin} #{accountName}</if>
+    	<if test="name!=null">${@com.qiandi.table.MenberUserTable@selectNameNotNullSQL_admin} "%"#{name}"%" </if>
+    	<if test="phoneNum!=null">${@com.qiandi.table.MenberUserTable@selectPhoneNumNotNullSQL_admin}  #{phoneNum}</if>
+    	<if test="managerName!=null">${@com.qiandi.table.MenberUserTable@selectManagerNameNotNullSQL_admin}  "%"#{managerName} "%"</if>
+    	<if test="beginTime!=null and endTime!= null">
+            and ${@com.qiandi.table.MenberUserTable@selectBeginTimeNotNullSQL_admin}  #{beginTime} 
+           	and ${@com.qiandi.table.MenberUserTable@selectEndTimeNotNullSQL_admin}  #{endTime} 
+            </if>
+    	${@com.qiandi.table.MenberUserTable@selectOrderBySQL_admin} 
+    </select> 
+    
+    		 <!-- 批量选择 -->
+   	 <select id="selectByArray" resultType="MenberUserManagerData">
+	        ${@com.qiandi.table.MenberUserTable@selectManagerSQL_admin} 
+	        ${@com.qiandi.table.MenberUserTable@selectByArraySQL} 
+	    	<foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+			${@com.qiandi.table.MenberUserTable@selectOrderBySQL_admin} 
+    	</select>
+    	
+    	<select id="selectAccountNameAndName" parameterType="Map" resultType="MenberUser">
+    	
+    	</select>
+    	
+    	
+    	
+    
+    
+</mapper>

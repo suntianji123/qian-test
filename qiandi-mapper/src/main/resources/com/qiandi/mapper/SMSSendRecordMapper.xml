@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiandi.mapper.SMSSendRecordMapper">
+    
+    <insert id="insert" parameterType="SMSSendRecord">
+        insert into ${@com.qiandi.table.SMSSendRecordTable@tableName}(
+        ${@com.qiandi.table.SMSSendRecordTable@id},
+        ${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId},
+        ${@com.qiandi.table.SMSSendRecordTable@phoneNum},
+        ${@com.qiandi.table.SMSSendRecordTable@submitTime},
+        ${@com.qiandi.table.SMSSendRecordTable@sendTime},
+        ${@com.qiandi.table.SMSSendRecordTable@sendStatus},
+        ${@com.qiandi.table.SMSSendRecordTable@recivedStatus},
+        ${@com.qiandi.table.SMSSendRecordTable@recivedStatusDescription},
+        ${@com.qiandi.table.SMSSendRecordTable@reviewMode},
+        ${@com.qiandi.table.SMSSendRecordTable@qianShangUserId},
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessStatus},
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessDescription},
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessTime},
+        ${@com.qiandi.table.SMSSendRecordTable@content},
+        ${@com.qiandi.table.SMSSendRecordTable@length},
+        ${@com.qiandi.table.SMSSendRecordTable@segment},
+        ${@com.qiandi.table.SMSSendRecordTable@reportCode},
+        ${@com.qiandi.table.SMSSendRecordTable@operator},
+        ${@com.qiandi.table.SMSSendRecordTable@province},
+        ${@com.qiandi.table.SMSSendRecordTable@region}
+        ) 
+        values(#{id},#{smsSendTemplateId},#{phoneNum},#{submitTime},#{sendTime},
+        #{sendStatus},#{recivedStatus},#{recivedStatusDescription},#{reviewMode},
+        #{qianShangUserId},#{recivedSuccessStatus},#{recivedSuccessDescription},#{recivedSuccessTime},#{content},#{length},#{segment},#{reportCode},#{operaotr},
+        #{province},#{city})
+    </insert>
+    
+    <select id="isExistMsgId" resultType="Integer" parameterType="long">
+    	select count(*) from ${@com.qiandi.table.SMSSendRecordTable@tableName} sr left join 
+    	${@com.qiandi.table.SMSSendTemplateTable@tableName} st 
+    	on sr.${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId} = st.${@com.qiandi.table.SMSSendTemplateTable@id} 
+    	where st.${@com.qiandi.table.SMSSendTemplateTable@menberUserId} =#{menberUserId}  
+    	and  sr.${@com.qiandi.table.SMSSendRecordTable@recivedStatus}  = 0 
+    	and sr.${@com.qiandi.table.SMSSendRecordTable@sendStatus}  = 1  ; 
+    </select>
+
+    <update id="update" parameterType="SMSSendRecord">
+        update ${@com.qiandi.table.SMSSendRecordTable@tableName} set
+            ${@com.qiandi.table.SMSSendRecordTable@tableName}=#{smsSendTemplateId},
+            ${@com.qiandi.table.SMSSendRecordTable@phoneNum}=#{phoneNum},
+            ${@com.qiandi.table.SMSSendRecordTable@submitTime}=#{submitTime},
+            ${@com.qiandi.table.SMSSendRecordTable@sendTime}=#{sendTime},
+            ${@com.qiandi.table.SMSSendRecordTable@sendStatus}=#{sendStatus},
+            ${@com.qiandi.table.SMSSendRecordTable@recivedStatus}=#{recivedStatus},
+            ${@com.qiandi.table.SMSSendRecordTable@recivedStatusDescription}=#{recivedStatusDescription},
+            ${@com.qiandi.table.SMSSendRecordTable@reviewMode}=#{reviewMode},
+            ${@com.qiandi.table.SMSSendRecordTable@qianShangUserId}=#{qianShangUserId},
+            ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessStatus}=#{recivedSuccessStatus},
+            ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessDescription}=#{recivedSuccessDescription},
+            ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessTime}=#{recivedSuccessTime},
+            ${@com.qiandi.table.SMSSendRecordTable@content} = #{content},
+            ${@com.qiandi.table.SMSSendRecordTable@length} = #{length},
+            ${@com.qiandi.table.SMSSendRecordTable@reportCode} = #{reportCode},
+            ${@com.qiandi.table.SMSSendRecordTable@segment} = #{segment},
+            ${@com.qiandi.table.SMSSendRecordTable@operator} = #{operator},
+            ${@com.qiandi.table.SMSSendRecordTable@province} = #{province},
+            ${@com.qiandi.table.SMSSendRecordTable@sendMode} = #{sendMode},
+            ${@com.qiandi.table.SMSSendRecordTable@city} = #{city}
+        where ${@com.qiandi.table.SMSSendRecordTable@id}=#{id}
+    </update>
+    
+    <update id="updateReportData" parameterType="java.util.List">
+    	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+	        update ${@com.qiandi.table.SMSSendRecordTable@tableName}
+	        <set>
+	            ${@com.qiandi.table.SMSSendRecordTable@reportCode} = #{item.reportCode},
+	            ${@com.qiandi.table.SMSSendRecordTable@recivedStatus} = #{item.recivedStatus},
+	            ${@com.qiandi.table.SMSSendRecordTable@recivedTime} = #{item.recivedTime},
+	            ${@com.qiandi.table.SMSSendRecordTable@recivedStatusDescription} = #{item.recivedStatusDescription}
+	        </set>
+	        where ${@com.qiandi.table.SMSSendRecordTable@msgId} = #{item.msgId};
+	        
+	         update ${@com.qiandi.table.SMSSendTemplateTable@tableName} set 
+	       <if test="item.reportCode!='0'.toString()">
+	       		${@com.qiandi.table.SMSSendTemplateTable@recivedFailCount} = ${@com.qiandi.table.SMSSendTemplateTable@recivedFailCount}+1
+	       </if>
+	       <if test="item.reportCode=='0'.toString()">
+	       		${@com.qiandi.table.SMSSendTemplateTable@recivedSuccessCount} = ${@com.qiandi.table.SMSSendTemplateTable@recivedSuccessCount}+1
+	       </if>
+	       where ${@com.qiandi.table.SMSSendTemplateTable@id}  in (select smsSendTemplateId  from ${@com.qiandi.table.SMSSendRecordTable@tableName}  where msgId = #{item.msgId})
+    	</foreach>     
+    </update>
+    
+    
+    
+    <delete id="delete" parameterType="long">
+        update ${@com.qiandi.table.SMSSendRecordTable@tableName} set
+         ${@com.qiandi.table.SMSSendRecordTable@isDeleted}=true 
+         where ${@com.qiandi.table.SMSSendRecordTable@id}=#{id}
+    </delete>
+    
+    <delete id="deleteOneByTask" parameterType="long">
+        update ${@com.qiandi.table.SMSSendTemplateTable@tableName} set
+         ${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=true where id=#{id}
+    </delete>
+     <delete id="deleteOneByNumber" parameterType="long">
+        update ${@com.qiandi.table.SMSSendRecordTable@tableName} set
+         ${@com.qiandi.table.SMSSendRecordTable@isDeleted}=true 
+         where ${@com.qiandi.table.SMSSendRecordTable@id}=#{id}
+    </delete>
+    
+    <select id="select" parameterType="SMSSendRecord" resultType="SMSSendRecord">
+        select 
+        ${@com.qiandi.table.SMSSendRecordTable@id} as id,
+        ${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId} as smsSendTemplateId,
+        ${@com.qiandi.table.SMSSendRecordTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.SMSSendRecordTable@submitTime} as submitTime,
+        ${@com.qiandi.table.SMSSendRecordTable@sendTime} as sendTime,
+        ${@com.qiandi.table.SMSSendRecordTable@sendStatus} as sendStatus,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedStatus} as recivedStatus,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedStatusDescription} as recivedStatusDescription,
+        ${@com.qiandi.table.SMSSendRecordTable@reviewMode} as reviewMode,
+        ${@com.qiandi.table.SMSSendRecordTable@qianShangUserId} as qianShangUserId,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessStatus} as recivedSuccessStatus,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessDescription} as recivedSuccessDescription,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessTime} as recivedSuccessTime,
+        ${@com.qiandi.table.SMSSendRecordTable@content} as content,
+        ${@com.qiandi.table.SMSSendRecordTable@length} as length,
+        ${@com.qiandi.table.SMSSendRecordTable@segment} as segment,
+        ${@com.qiandi.table.SMSSendRecordTable@reportCode} as reportCode,
+        ${@com.qiandi.table.SMSSendRecordTable@operator} as operator,
+        ${@com.qiandi.table.SMSSendRecordTable@province} as province,
+        ${@com.qiandi.table.SMSSendRecordTable@region} as region
+        
+         from ${@com.qiandi.table.SMSSendRecordTable@tableName}
+        where ${@com.qiandi.table.SMSSendRecordTable@isDeleted}=false
+           <if test="id!=null"> and ${@com.qiandi.table.SMSSendRecordTable@id}=#{id} </if>
+           <if test="reportCode!=null"> and ${@com.qiandi.table.SMSSendRecordTable@reportCode}=#{reportCode} </if>
+            <if test="smsSendTemplateId!=null"> and ${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId}=#{smsSendTemplateId} </if>
+    </select>
+    
+    <select id="selectOneById" parameterType="long" resultType="SMSSendRecord">
+        select 
+        ${@com.qiandi.table.SMSSendRecordTable@id} as id,
+        ${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId} as smsSendTemplateId,
+        ${@com.qiandi.table.SMSSendRecordTable@phoneNum} as phoneNum,
+        ${@com.qiandi.table.SMSSendRecordTable@submitTime} as submitTime,
+        ${@com.qiandi.table.SMSSendRecordTable@sendTime} as sendTime,
+        ${@com.qiandi.table.SMSSendRecordTable@sendStatus} as sendStatus,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedStatus} as recivedStatus,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedStatusDescription} as recivedStatusDescription,
+        ${@com.qiandi.table.SMSSendRecordTable@reviewMode} as reviewMode,
+        ${@com.qiandi.table.SMSSendRecordTable@qianShangUserId} as qianShangUserId,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessStatus} as recivedSuccessStatus,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessDescription} as recivedSuccessDescription,
+        ${@com.qiandi.table.SMSSendRecordTable@recivedSuccessTime} as recivedSuccessTime,
+        ${@com.qiandi.table.SMSSendRecordTable@content} as content,
+        ${@com.qiandi.table.SMSSendRecordTable@length} as length,
+        ${@com.qiandi.table.SMSSendRecordTable@segment} as segment,
+        ${@com.qiandi.table.SMSSendRecordTable@reportCode} as reportCode,
+        ${@com.qiandi.table.SMSSendRecordTable@operator} as operator,
+        ${@com.qiandi.table.SMSSendRecordTable@province} as province,
+        ${@com.qiandi.table.SMSSendRecordTable@region} as region
+         from ${@com.qiandi.table.SMSSendRecordTable@tableName}
+        where  ${@com.qiandi.table.SMSSendRecordTable@isDeleted} =false 
+        and ${@com.qiandi.table.SMSSendRecordTable@id} =#{id}
+    </select>
+    
+	    <!-- 批量插入发送数据 -->
+	    <insert id="insertSendData" parameterType="java.util.List">
+		   	  insert into ${@com.qiandi.table.SMSSendRecordTable@tableName}
+			    (${@com.qiandi.table.SMSSendRecordTable@id},
+			    ${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId},
+			    ${@com.qiandi.table.SMSSendRecordTable@msgId},
+			    ${@com.qiandi.table.SMSSendRecordTable@phoneNum},
+			    ${@com.qiandi.table.SMSSendRecordTable@sendTime},
+			    ${@com.qiandi.table.SMSSendRecordTable@sendStatus},
+			    ${@com.qiandi.table.SMSSendRecordTable@content},
+			    ${@com.qiandi.table.SMSSendRecordTable@operator},
+			    ${@com.qiandi.table.SMSSendRecordTable@province},
+			    ${@com.qiandi.table.SMSSendRecordTable@city},
+			    ${@com.qiandi.table.SMSSendRecordTable@length},
+			    ${@com.qiandi.table.SMSSendRecordTable@segment}
+			    )VALUES
+			    <foreach collection="list" item="item" index="index" separator=",">
+			        (#{item.id},#{item.smsSendTemplateId},#{item.msgId},#{item.phoneNum},
+			        #{item.sendTime},#{item.sendStatus},#{item.content},#{item.operator},
+			        #{item.province},#{item.city},#{item.length},#{item.segment})     
+			    </foreach>
+	    </insert>
+    
+    
+		<insert id="insertByList" parameterType="java.util.List">
+		     insert into ${@com.qiandi.table.SMSSendRecordTable@tableName}
+		    (${@com.qiandi.table.SMSSendRecordTable@id},
+		    ${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId},
+		    ${@com.qiandi.table.SMSSendRecordTable@phoneNum},
+		    ${@com.qiandi.table.SMSSendRecordTable@reportCode},
+		    ${@com.qiandi.table.SMSSendRecordTable@sendStatus},
+		    ${@com.qiandi.table.SMSSendRecordTable@recivedStatu}
+			)VALUES
+		    <foreach collection="list" item="item" index="index" separator=",">
+		        (#{item.id},#{item.smsSendTemplateId},#{item.phoneNum},#{item.reportCode},#{item.sendStatus},#{item.recivedStatus})     
+		    </foreach>
+		</insert>
+		
+		 <select id="selectData" parameterType="map" resultType="Map">
+		 	 select 
+			 	 sr.id${@com.qiandi.table.SMSSendRecordTable@tableName} as id,
+			 	 sr.phoneNum${@com.qiandi.table.SMSSendRecordTable@tableName} as phoneNum,
+			 	 sr.operator${@com.qiandi.table.SMSSendRecordTable@tableName} as operator,
+			 	 sr.province${@com.qiandi.table.SMSSendRecordTable@tableName} as province,
+			 	 sr.city${@com.qiandi.table.SMSSendRecordTable@tableName} as city,
+			 	 sr.content${@com.qiandi.table.SMSSendRecordTable@tableName} as content,
+			 	 sr.length${@com.qiandi.table.SMSSendRecordTable@tableName} as length,
+			 	 sr.segment${@com.qiandi.table.SMSSendRecordTable@tableName} as segment,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@totalCount} as totalCount,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@totalPriceCount} as totalPriceCount,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@submitTime} as submitTime,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@sendMode} as sendMode,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@smsType} as smsType,
+			 	 sr.${@com.qiandi.table.SMSSendRecordTable@sendTime} as sendTime,
+			 	 sr.${@com.qiandi.table.SMSSendRecordTable@sendStatus} as sendStatus,
+			 	 sr.${@com.qiandi.table.SMSSendRecordTable@recivedStatus} as recivedStatus,
+			 	 sr.${@com.qiandi.table.SMSSendRecordTable@recivedStatusDescription} as recivedStatusDescription,
+			 	 sr.${@com.qiandi.table.SMSSendRecordTable@recivedTime} as recivedTime
+			 	  from ${@com.qiandi.table.SMSSendRecordTable@tableName} sr 
+			 	  left join ${@com.qiandi.table.SMSSendTemplateTable@tableName} st on
+			 	   sr.${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId} = st.${@com.qiandi.table.SMSSendTemplateTable@id}
+       		 where sr.${@com.qiandi.table.SMSSendRecordTable@isDeleted} =false
+           <if test="id!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@id} =#{id} </if>
+           <if test="smsSendTemplateId!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId}  = #{smsSendTemplateId} </if>
+           <if test="submitBeginTime!=null  and submitBeginTime!=submitEndTime">and st.${@com.qiandi.table.SMSSendTemplateTable@submitTime} &gt;= #{submitBeginTime}</if>
+           <if test="submitEndTime!=null and submitBeginTime!=submitEndTime">and st.${@com.qiandi.table.SMSSendTemplateTable@submitTime} &lt;= #{submitEndTime}</if>
+           <if test="submitBeginTime==submitEndTime and submitBeginTime!=null">and date_format(st.${@com.qiandi.table.SMSSendTemplateTable@submitTime},'%Y-%m-%d') = date_format(#{submitBeginTime},'%Y-%m-%d')</if>
+           <if test="sendBeginTime!=null  and sendBeginTime!=sendEndTime">and sr.${@com.qiandi.table.SMSSendRecordTable@sendTime} &gt;= #{sendBeginTime}</if>
+           <if test="sendEndTime!=null and sendBeginTime!=sendEndTime">and sr.${@com.qiandi.table.SMSSendRecordTable@sendTime} &lt;= #{sendEndTime}</if>
+           <if test="sendBeginTime==sendEndTime and sendBeginTime!=null">and date_format(sr.${@com.qiandi.table.SMSSendRecordTable@sendTime},'%Y-%m-%d') = date_format(#{sendBeginTime},'%Y-%m-%d')</if>
+	 		<if test="phoneNum!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@phoneNum} like  "%"#{phoneNum}"%" </if>
+	 		<if test="content!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@content} like "%"#{content}"%" </if>
+	 		<if test="sendStatus!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@sendStatus}=#{sendStatus} </if>
+	 		<if test="province!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@province} like "%"#{province}"%" </if>
+	 		<if test="city!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@city} like "%"#{city}"%" </if>
+	 		<if test="operator!=null"> and sr.${@com.qiandi.table.SMSSendRecordTable@operator} like "%"#{operator}"%"</if>
+	 		<if test="sendMode!=null"> and st.${@com.qiandi.table.SMSSendRecordTable@sendMode} = #{sendMode} </if>
+	 		<if test="recivedStatus!=null"> and ${@com.qiandi.table.SMSSendRecordTable@recivedStatus} = #{recivedStatus} </if>
+	 		
+		 </select>
+		 
+		 
+		 <!-- 获取统计数据 -->
+		 <select id="getTotalSMSSendRecordItem" parameterType="int"  resultType="Map">
+		 select 
+		 (select sum(sr.${@com.qiandi.table.SMSSendRecordTable@segment}) from ${@com.qiandi.table.SMSSendRecordTable@tableName}  sr left join ${@com.qiandi.table.SMSSendTemplateTable@tableName} st 
+		 on sr.${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId} = st.${@com.qiandi.table.SMSSendRecordTable@id} 
+		 where sr.${@com.qiandi.table.SMSSendRecordTable@isDeleted}=false 
+		 and st.${@com.qiandi.table.SMSSendRecordTable@menberUserId}=#{menberUserId}) 
+		 as totalSmsCount,
+		 (select sum(st.${@com.qiandi.table.SMSSendTemplateTable@totalPriceCount}) from  ${@com.qiandi.table.SMSSendTemplateTable@tableName} st 
+		  where st.${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=false
+		   and st.${@com.qiandi.table.SMSSendTemplateTable@menberUserId}=#{menberUserId}) 
+		 as totalPriceCount,
+		 (select sum(st.${@com.qiandi.table.SMSSendTemplateTable@totalCount}) from 
+		  ${@com.qiandi.table.SMSSendTemplateTable@tableName} st 
+		  where st.${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=false 
+		  and st.${@com.qiandi.table.SMSSendTemplateTable@menberUserId}=#{menberUserId}) 
+		 as totalNumCount,
+		 (select sum(st.${@com.qiandi.table.SMSSendTemplateTable@recivedSuccessCount}) from 
+		  ${@com.qiandi.table.SMSSendTemplateTable@tableName} st 
+		  where st.${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=false 
+		  and st.${@com.qiandi.table.SMSSendTemplateTable@menberUserId}=#{menberUserId}) 
+		 as totalRecivedSuccessCount,
+		  (select sum(st.${@com.qiandi.table.SMSSendTemplateTable@recivedFailCount}) from
+		    ${@com.qiandi.table.SMSSendTemplateTable@tableName} st 
+		  where st.${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=false
+		   and st.${@com.qiandi.table.SMSSendTemplateTable@menberUserId}=#{menberUserId}) 
+		 as totalRecivedFailCount,
+		 (select sum(st.${@com.qiandi.table.SMSSendTemplateTable@recivedUnknownCount}) from  
+		 ${@com.qiandi.table.SMSSendTemplateTable@tableName} st 
+		  where st.${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=false 
+		  and st.${@com.qiandi.table.SMSSendTemplateTable@menberUserId}=#{menberUserId}) 
+		 as totalRecivedUnknownCount
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 
+		 </select>
+		 
+		  <select id="selectDataByTask" parameterType="map" resultType="Map">
+		  select
+		 	  	st.${@com.qiandi.table.SMSSendTemplateTable@id} as id,
+		 	  	 st.${@com.qiandi.table.SMSSendTemplateTable@content} as content,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@length} as length,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@segment} as segment,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@totalCount} as totalCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@totalPayCount} as totalPayCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@totalPriceCount} as totalPriceCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@submitTime} as submitTime,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@sendMode} as sendMode,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@smsType} as smsType,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@sendTime} as sendTime,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@sendStatus} as sendStatus,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@recivedSuccessCount} as recivedSuccessCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@recivedFailCount} as recivedFailCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@recivedUnknownCount} as recivedUnknownCount
+		 	 from ${@com.qiandi.table.SMSSendTemplateTable@tableName} st
+       		 where st.${@com.qiandi.table.SMSSendTemplateTable@isDeleted}=false
+           <if test="id!=null"> and st.${@com.qiandi.table.SMSSendTemplateTable@id}=#{id} </if>
+           <if test="submitBeginTime!=null  and submitBeginTime!=submitEndTime">and st.${@com.qiandi.table.SMSSendTemplateTable@submitTime} &gt;= #{submitBeginTime}</if>
+           <if test="submitEndTime!=null and submitBeginTime!=submitEndTime">and st.${@com.qiandi.table.SMSSendTemplateTable@submitTime} &lt;= #{submitEndTime}</if>
+           <if test="submitBeginTime==submitEndTime and submitBeginTime!=null">and date_format(st.${@com.qiandi.table.SMSSendTemplateTable@submitTime},'%Y-%m-%d') = date_format(#{submitBeginTime},'%Y-%m-%d')</if>
+           <if test="sendBeginTime!=null  and sendBeginTime!=sendEndTime">and st.${@com.qiandi.table.SMSSendTemplateTable@sendTime} &gt;= #{sendBeginTime}</if>
+           <if test="sendEndTime!=null and sendBeginTime!=sendEndTime">and st.${@com.qiandi.table.SMSSendTemplateTable@sendTime} &lt;= #{sendEndTime}</if>
+           <if test="sendBeginTime==sendEndTime and sendBeginTime!=null">and date_format(st.${@com.qiandi.table.SMSSendTemplateTable@sendTime},'%Y-%m-%d') = date_format(#{sendBeginTime},'%Y-%m-%d')</if>
+	 		<if test="sendStatus!=null"> and st.${@com.qiandi.table.SMSSendTemplateTable@sendStatus}=#{sendStatus} </if>
+	 		<if test="sendMode!=null"> and st.${@com.qiandi.table.SMSSendTemplateTable@sendMode} = #{sendMode} </if>
+		 </select>
+		 
+		 <select id="selectOneByTask" parameterType="long" resultType="Map">
+		 	 select
+		 	  st.${@com.qiandi.table.SMSSendTemplateTable@id} as id,
+		 	  	 st.${@com.qiandi.table.SMSSendTemplateTable@content} as content,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@length} as length,
+			 	 st.${@com.qiandi.table.SMSSendTemplateTable@segment} as segment,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@totalCount} as totalCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@totalPayCount} as totalPayCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@totalPriceCount} as totalPriceCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@submitTime} as submitTime,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@sendMode} as sendMode,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@smsType} as smsType,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@sendTime} as sendTime,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@sendStatus} as sendStatus,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@recivedSuccessCount} as recivedSuccessCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@recivedFailCount} as recivedFailCount,
+		 	 	st.${@com.qiandi.table.SMSSendTemplateTable@recivedUnknownCount} as recivedUnknownCount
+		 	 from ${@com.qiandi.table.SMSSendTemplateTable@tableName} st
+       		 where st.isDeleted=false and st.id=#{id}
+	 	</select>
+	 	
+	 	<select id="selectRecivedStatusCount" parameterType="long" resultType="Map">
+	 		select ${@com.qiandi.table.SMSSendRecordTable@recivedStatus} as recivedStatus,
+	 		count(*) as recivedStatusCount
+	 		from ${@com.qiandi.table.SMSSendRecordTable@tableName} sr 
+			left join ${@com.qiandi.table.SMSSendTemplateTable@tableName} st on 
+			sr.${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId}  = st.${@com.qiandi.table.SMSSendTemplateTable@id} 
+			where  sr.${@com.qiandi.table.SMSSendRecordTable@smsSendTemplateId}  =#{smsSendTemplateId}
+			group by sr.${@com.qiandi.table.SMSSendRecordTable@recivedStatus}  ;
+	 	
+	 	</select>
+	 	
+ 		<update id="deleteAllByTask" parameterType="java.util.List">
+	       update ${@com.qiandi.table.SMSSendTemplateTable@tableName} set
+	        ${@com.qiandi.table.SMSSendTemplateTable@isDeleted} = true 
+	        where ${@com.qiandi.table.SMSSendTemplateTable@id} in 
+	    	<foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    	<update id="deleteAllByNumber" parameterType="java.util.List">
+	       update ${@com.qiandi.table.SMSSendRecordTable@tableName} set
+	        ${@com.qiandi.table.SMSSendRecordTable@isDeleted\
+	        } = true
+	         where ${@com.qiandi.table.SMSSendRecordTable@id} in 
+	    	<foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+    	</update>
+    
+</mapper>
